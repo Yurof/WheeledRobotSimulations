@@ -3,4 +3,4 @@ Apprentissage et généralisation sur une tâche de navigation d'un robot à rou
 
 lancer install-dependencies.sh pour installer les librairies nécessaire 
 
-python /Simulation fastsim RobotAléatoire.py
+python Simulationfastsim/RobotAléatoire.py
