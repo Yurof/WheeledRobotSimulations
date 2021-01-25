@@ -13,7 +13,7 @@ import random
 
 display= True
 
-env = gym.make('maze-v0')
+env = gym.make('kitchen-v0')
 env.reset()
 action=[10,11]
 
