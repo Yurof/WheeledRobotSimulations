@@ -1,1 +1,0 @@
-from pybulletgym.envs.roboschool.envs.pendulum.inverted_pendulum_env import InvertedPendulumBulletEnv, InvertedPendulumSwingupBulletEnv
