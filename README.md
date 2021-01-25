@@ -6,7 +6,7 @@ lancer `install-dependencies.sh` pour installer les librairies nécessaires :
 - gym
 - libfastsim
 - pybind11
-- pydastsim
+- pyfastsim
 - pybullet-gym
 
 ## Usage
