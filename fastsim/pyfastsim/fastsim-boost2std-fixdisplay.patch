@@ -1,0 +1,633 @@
+diff -r -u3 '--exclude=.git' libfastsim-git/src/display.cpp libfastsim-pyfastsim/src/display.cpp
+--- libfastsim-git/src/display.cpp	2020-10-30 19:36:59.210387334 +0100
++++ libfastsim-pyfastsim/src/display.cpp	2020-10-30 19:33:16.117384211 +0100
+@@ -56,7 +56,7 @@
+     SDL_UpdateRect(_screen, 0, 0, _w, _h);
+   }
+ 
+-  Display :: Display(const boost::shared_ptr<Map>& m, const Robot& r) : 
++  Display :: Display(std::shared_ptr<Map> m, std::shared_ptr<Robot> r) : 
+     _map(m), _robot(r)
+   {
+     _w = _map->get_pixel_w();
+@@ -84,7 +84,7 @@
+     _map_bmp = SDL_CreateRGBSurface(SDL_SWSURFACE, _w, _h, 32, 
+ 				    rmask, gmask, bmask, amask);
+     _blit_map();
+-    _bb_to_sdl(_robot.get_bb(), &_prev_bb);
++    _bb_to_sdl(_robot->get_bb(), &_prev_bb);
+   }
+   
+   void Display :: _line(SDL_Surface* surf,
+@@ -245,10 +245,10 @@
+ 
+   void Display :: _disp_bb()
+   {
+-    unsigned x = _map->real_to_pixel(_robot.get_bb().x);
+-    unsigned y = _map->real_to_pixel(_robot.get_bb().y);
+-    unsigned w = _map->real_to_pixel(_robot.get_bb().w);
+-    unsigned h = _map->real_to_pixel(_robot.get_bb().h);
++    unsigned x = _map->real_to_pixel(_robot->get_bb().x);
++    unsigned y = _map->real_to_pixel(_robot->get_bb().y);
++    unsigned w = _map->real_to_pixel(_robot->get_bb().w);
++    unsigned h = _map->real_to_pixel(_robot->get_bb().h);
+     
+     assert(x >= 0);
+     assert(y >= 0);
+@@ -289,17 +289,17 @@
+ 
+   void Display :: _disp_radars()
+   {
+-    unsigned r = _map->real_to_pixel(_robot.get_radius())  / 2;
+-    unsigned x = _map->real_to_pixel(_robot.get_pos().x());
+-    unsigned y = _map->real_to_pixel(_robot.get_pos().y());
++    unsigned r = _map->real_to_pixel(_robot->get_radius())  / 2;
++    unsigned x = _map->real_to_pixel(_robot->get_pos().x());
++    unsigned y = _map->real_to_pixel(_robot->get_pos().y());
+ 
+-    for (size_t i = 0; i < _robot.get_radars().size(); ++i)
++    for (size_t i = 0; i < _robot->get_radars().size(); ++i)
+       {
+-	const Radar& radar = _robot.get_radars()[i];
++	const Radar& radar = _robot->get_radars()[i];
+ 	if (radar.get_activated_slice() != -1)
+ 	  {
+-	    float a1 = _robot.get_pos().theta() + radar.get_inc() * radar.get_activated_slice();
+-	    float a2 = _robot.get_pos().theta() + radar.get_inc() * (radar.get_activated_slice() + 1);
++	    float a1 = _robot->get_pos().theta() + radar.get_inc() * radar.get_activated_slice();
++	    float a2 = _robot->get_pos().theta() + radar.get_inc() * (radar.get_activated_slice() + 1);
+ 	    _line(_screen,
+ 		  cos(a1) * r + x, sin(a1) * r + y,
+ 		  cos(a2) * r + x, sin(a2) * r + y,
+@@ -317,12 +317,12 @@
+   void Display :: _disp_bumpers()
+   {
+     // convert to pixel
+-    unsigned x = _map->real_to_pixel(_robot.get_pos().x());
+-    unsigned y = _map->real_to_pixel(_robot.get_pos().y());
+-    unsigned r = _map->real_to_pixel(_robot.get_radius());
+-    float theta = _robot.get_pos().theta();
+-    Uint32 cb_left = SDL_MapRGB(_screen->format, _robot.get_left_bumper() ? 255 : 0, 0, 0);
+-    Uint32 cb_right = SDL_MapRGB(_screen->format, _robot.get_right_bumper() ? 255 : 0, 0, 0);
++    unsigned x = _map->real_to_pixel(_robot->get_pos().x());
++    unsigned y = _map->real_to_pixel(_robot->get_pos().y());
++    unsigned r = _map->real_to_pixel(_robot->get_radius());
++    float theta = _robot->get_pos().theta();
++    Uint32 cb_left = SDL_MapRGB(_screen->format, _robot->get_left_bumper() ? 255 : 0, 0, 0);
++    Uint32 cb_right = SDL_MapRGB(_screen->format, _robot->get_right_bumper() ? 255 : 0, 0, 0);
+     _line(_screen,
+ 	  (int) (r * cosf(theta + M_PI / 2.0f) + x),
+ 	  (int) (r * sinf(theta + M_PI / 2.0f) + y),
+@@ -369,13 +369,13 @@
+   {
+     for (size_t i = 0; i < lasers.size(); ++i)
+       {
+-	unsigned x_laser = _map->real_to_pixel(_robot.get_pos().x() 
++	unsigned x_laser = _map->real_to_pixel(_robot->get_pos().x() 
+ 					       + lasers[i].get_gap_dist() 
+-					       * cosf(_robot.get_pos().theta() 
++					       * cosf(_robot->get_pos().theta() 
+ 						      + lasers[i].get_gap_angle()));
+-	unsigned y_laser = _map->real_to_pixel(_robot.get_pos().y() 
++	unsigned y_laser = _map->real_to_pixel(_robot->get_pos().y() 
+ 					       + lasers[i].get_gap_dist() 
+-					       * sinf(_robot.get_pos().theta()
++					       * sinf(_robot->get_pos().theta()
+ 						      + lasers[i].get_gap_angle()));
+ 	_line(_screen, x_laser, y_laser,
+ 	      lasers[i].get_x_pixel(),
+@@ -386,27 +386,27 @@
+ 
+   void Display :: _disp_light_sensors()
+   {
+-    for (size_t i = 0; i < _robot.get_light_sensors().size(); ++i)
++    for (size_t i = 0; i < _robot->get_light_sensors().size(); ++i)
+       {
+-	const LightSensor& ls = _robot.get_light_sensors()[i];
+-	unsigned x_ls = _map->real_to_pixel(_robot.get_pos().x());
+-	unsigned y_ls = _map->real_to_pixel(_robot.get_pos().y());
+-	unsigned x_ls1 = _map->real_to_pixel(_robot.get_pos().x() 
++	const LightSensor& ls = _robot->get_light_sensors()[i];
++	unsigned x_ls = _map->real_to_pixel(_robot->get_pos().x());
++	unsigned y_ls = _map->real_to_pixel(_robot->get_pos().y());
++	unsigned x_ls1 = _map->real_to_pixel(_robot->get_pos().x() 
+ 					     + 200./((float)ls.get_color() + 1) 
+-					     * cosf(_robot.get_pos().theta() 
++					     * cosf(_robot->get_pos().theta() 
+ 						    + ls.get_angle()-ls.get_range()/2.0));
+-	unsigned y_ls1 = _map->real_to_pixel(_robot.get_pos().y() 
++	unsigned y_ls1 = _map->real_to_pixel(_robot->get_pos().y() 
+ 					     + 200./((float)ls.get_color() + 1)
+-					     * sinf(_robot.get_pos().theta()
++					     * sinf(_robot->get_pos().theta()
+ 						    + ls.get_angle()-ls.get_range()/2.0));	
+ 	_line(_screen, x_ls, y_ls, x_ls1, y_ls1, _color_from_id(_screen, ls.get_color()));
+-	unsigned x_ls2 = _map->real_to_pixel(_robot.get_pos().x() 
++	unsigned x_ls2 = _map->real_to_pixel(_robot->get_pos().x() 
+ 					     + 200./((float)ls.get_color() + 1)
+-					     * cosf(_robot.get_pos().theta() 
++					     * cosf(_robot->get_pos().theta() 
+ 						    + ls.get_angle()+ls.get_range()/2.0));
+-	unsigned y_ls2 = _map->real_to_pixel(_robot.get_pos().y() 
++	unsigned y_ls2 = _map->real_to_pixel(_robot->get_pos().y() 
+ 					     + 200./((float)ls.get_color() + 1)
+-					     * sinf(_robot.get_pos().theta()
++					     * sinf(_robot->get_pos().theta()
+ 						    + ls.get_angle()+ls.get_range()/2.0));	
+ 	_line(_screen, x_ls, y_ls, x_ls2, y_ls2, _color_from_id(_screen, ls.get_color()));
+        	_line(_screen, x_ls1, y_ls1, x_ls2, y_ls2, _color_from_id(_screen, ls.get_color()));
+@@ -425,20 +425,20 @@
+   void Display :: _disp_camera()
+   {
+     static const int pw = 20;
+-    if (!_robot.use_camera())
++    if (!_robot->camera_enabled())
+       return;
+-    unsigned x_ls = _map->real_to_pixel(_robot.get_pos().x());
+-    unsigned y_ls = _map->real_to_pixel(_robot.get_pos().y());
+-    float a1 = _robot.get_pos().theta() + _robot.get_camera().get_angular_range() / 2.0;
++    unsigned x_ls = _map->real_to_pixel(_robot->get_pos().x());
++    unsigned y_ls = _map->real_to_pixel(_robot->get_pos().y());
++    float a1 = _robot->get_pos().theta() + _robot->get_camera().get_angular_range() / 2.0;
+     _line(_screen, x_ls, y_ls, cos(a1) * 200 + x_ls, 
+ 	  sin(a1) * 200 + y_ls, 0x0000ff);
+-    float a2 = _robot.get_pos().theta() - _robot.get_camera().get_angular_range() / 2.0;
++    float a2 = _robot->get_pos().theta() - _robot->get_camera().get_angular_range() / 2.0;
+     _line(_screen, x_ls, y_ls, cos(a2) * 200 + x_ls, 
+ 	  sin(a2) * 200 + y_ls, 0x0000ff);
+ 
+-    for (size_t i = 0; i < _robot.get_camera().pixels().size(); ++i)
++    for (size_t i = 0; i < _robot->get_camera().pixels().size(); ++i)
+       {
+-	int pix = _robot.get_camera().pixels()[i];	
++	int pix = _robot->get_camera().pixels()[i];	
+ 	Uint32 color = pix == -1 ? 0xffffff : _color_from_id(_screen, pix);
+ 	SDL_Rect r; r.x = i * pw; r.y = 0; r.w = pw; r.h = pw;
+ 	SDL_FillRect(_screen, &r, color);
+@@ -450,10 +450,10 @@
+   {
+     _events();
+     // convert to pixel
+-    unsigned x = _map->real_to_pixel(_robot.get_pos().x());
+-    unsigned y = _map->real_to_pixel(_robot.get_pos().y());
+-    unsigned r = _map->real_to_pixel(_robot.get_radius());
+-    float theta = _robot.get_pos().theta();
++    unsigned x = _map->real_to_pixel(_robot->get_pos().x());
++    unsigned y = _map->real_to_pixel(_robot->get_pos().y());
++    unsigned r = _map->real_to_pixel(_robot->get_radius());
++    float theta = _robot->get_pos().theta();
+     
+     // erase robot
+     SDL_BlitSurface(_map_bmp, &_prev_bb, _screen, &_prev_bb);
+@@ -477,7 +477,7 @@
+     _disp_camera();
+ 
+     // draw the circle again (robot)
+-	unsigned int col=_robot.color();
++	unsigned int col=_robot->color();
+     _disc(_screen, x, y, r, _color_from_id(_screen,col));
+ 	_circle(_screen,x,y,r,255,0,0);
+     // direction
+@@ -492,7 +492,7 @@
+ 
+         
+     SDL_Rect rect;
+-    _bb_to_sdl(_robot.get_bb(), &rect);
++    _bb_to_sdl(_robot->get_bb(), &rect);
+     using namespace std;
+     rect.x = max(0, min((int)rect.x, (int)_prev_bb.x));
+     rect.y = max(0, min((int)rect.y, (int)_prev_bb.y));
+@@ -506,7 +506,7 @@
+     //SDL_UpdateRect(_screen, rect.x, rect.y, rect.w, rect.h);
+     // the slow one (needed when we have more than a circle to draw...)
+     SDL_UpdateRect(_screen, 0, 0, _screen->w, _screen->h);
+-    _bb_to_sdl(_robot.get_bb(), &_prev_bb);
++    _bb_to_sdl(_robot->get_bb(), &_prev_bb);
+ 
+   }
+ 
+diff -r -u3 '--exclude=.git' libfastsim-git/src/display.hpp libfastsim-pyfastsim/src/display.hpp
+--- libfastsim-git/src/display.hpp	2020-10-30 19:36:59.210387334 +0100
++++ libfastsim-pyfastsim/src/display.hpp	2020-10-30 19:33:16.117384211 +0100
+@@ -37,7 +37,7 @@
+ 
+ #include "map.hpp"
+ #include "robot.hpp"
+-#include <boost/shared_ptr.hpp>
++#include <memory>
+ 
+ namespace fastsim
+ {
+@@ -46,7 +46,7 @@
+ 
+   public:
+ #ifdef USE_SDL
+-    Display(const boost::shared_ptr<Map>& m, const Robot& r);
++    Display(std::shared_ptr<Map> m, std::shared_ptr<Robot> r);
+     ~Display()
+     {
+       SDL_FreeSurface(_map_bmp);
+@@ -59,14 +59,14 @@
+       _blit_map();
+     }
+ #else
+-    Display(const boost::shared_ptr<Map>& m, const Robot& r) : _map(m), _robot(r) {}
++    Display(std::shared_ptr<Map> m, std::shared_ptr<Robot> r) : _map(m), _robot(r) {}
+     ~Display() {}
+     void update(){}
+     void update_map(){}
+ #endif
+   protected:
+-    const boost::shared_ptr<Map>& _map;
+-    const Robot& _robot;
++    const std::shared_ptr<Map> _map;
++    const  std::shared_ptr<Robot> _robot;
+ #ifdef USE_SDL
+     void _events();
+     void _bb_to_sdl(const Robot::BoundingBox& bb,
+@@ -138,9 +138,9 @@
+     void _disp_bumpers();
+     void _disp_lasers(const std::vector<Laser>& lasers);
+     void _disp_lasers() {
+-      _disp_lasers(_robot.get_lasers());
+-      for (size_t i = 0; i < _robot.get_laser_scanners().size(); ++i)
+-	_disp_lasers(_robot.get_laser_scanners()[i].get_lasers());
++      _disp_lasers(_robot->get_lasers());
++      for (size_t i = 0; i < _robot->get_laser_scanners().size(); ++i)
++	_disp_lasers(_robot->get_laser_scanners()[i].get_lasers());
+     }
+     void _disp_light_sensors();
+     void _disp_camera();
+diff -r -u3 '--exclude=.git' libfastsim-git/src/illuminated_switch.hpp libfastsim-pyfastsim/src/illuminated_switch.hpp
+--- libfastsim-git/src/illuminated_switch.hpp	2020-10-30 19:36:59.210387334 +0100
++++ libfastsim-pyfastsim/src/illuminated_switch.hpp	2020-10-30 19:33:16.117384211 +0100
+@@ -47,21 +47,21 @@
+       float get_y() const { return _y; }
+       void set_pos(float x, float y) { _x = x; _y = y; }
+       bool get_activated() const { return _activated; }
+-      void link(boost::shared_ptr<IlluminatedSwitch> o) { _linked_lights.push_back(o); }
++      void link(std::shared_ptr<IlluminatedSwitch> o) { _linked_lights.push_back(o); }
+     protected:
+       int _color;
+       float _radius;
+       float _x, _y;
+       bool _on;
+       bool _activated;
+-      std::vector<boost::shared_ptr<IlluminatedSwitch> > _linked_lights;
++      std::vector<std::shared_ptr<IlluminatedSwitch> > _linked_lights;
+   };
+ 
+   struct ClosestSwitch_f
+   {
+     ClosestSwitch_f(float x, float y) : _x(x), _y(y) {}
+-    bool operator()(const boost::shared_ptr<IlluminatedSwitch> i1,
+-		    const boost::shared_ptr<IlluminatedSwitch> i2)
++    bool operator()(const std::shared_ptr<IlluminatedSwitch> i1,
++		    const std::shared_ptr<IlluminatedSwitch> i2)
+     {
+       float x1 = i1->get_x() - _x;
+       float y1 = i1->get_y() - _y;
+diff -r -u3 '--exclude=.git' libfastsim-git/src/laser.cpp libfastsim-pyfastsim/src/laser.cpp
+--- libfastsim-git/src/laser.cpp	2020-10-30 19:36:59.210387334 +0100
++++ libfastsim-pyfastsim/src/laser.cpp	2020-10-30 19:33:16.117384211 +0100
+@@ -26,7 +26,7 @@
+ namespace fastsim
+ {
+   float Laser :: update(const Posture& pos,
+-			const boost::shared_ptr<Map>& m)
++			const std::shared_ptr<Map>& m)
+   {
+     float x2 = cosf(_angle + pos.theta()) * _range + pos.x() + _gap_dist * cosf(_gap_angle + pos.theta());
+     float y2 = sinf(_angle + pos.theta()) * _range + pos.y() + _gap_dist * sinf(_gap_angle + pos.theta());
+diff -r -u3 '--exclude=.git' libfastsim-git/src/laser.hpp libfastsim-pyfastsim/src/laser.hpp
+--- libfastsim-git/src/laser.hpp	2020-10-30 19:36:59.210387334 +0100
++++ libfastsim-pyfastsim/src/laser.hpp	2020-10-30 19:33:16.117384211 +0100
+@@ -24,7 +24,7 @@
+ # define   	LASER_HH_
+ #include "map.hpp"
+ #include "posture.hpp"
+-#include <boost/shared_ptr.hpp>
++#include <memory>
+ 
+ namespace fastsim
+ {
+@@ -38,7 +38,7 @@
+       _x_pixel(0), _y_pixel(0),
+       _dist(-1) {}
+     float update(const Posture& pos,
+-		 const boost::shared_ptr<Map>& map);
++		 const std::shared_ptr<Map>& map);
+     float get_dist() const { return _dist; }
+     float get_angle() const { return _angle; }
+     float get_range() const { return _range; }
+@@ -58,8 +58,8 @@
+     int _x_pixel, _y_pixel;
+     float _dist;
+     // 
+-    bool _try_pixel(const boost::shared_ptr<Map>& m, int x, int y);
+-    bool _line_inter(const boost::shared_ptr<Map>& m,
++    bool _try_pixel(const std::shared_ptr<Map>& m, int x, int y);
++    bool _line_inter(const std::shared_ptr<Map>& m,
+ 		     int y1, int x1, // src
+ 		     int y2, int x2, // dest
+ 		     int& x_res, int& y_res //res
+diff -r -u3 '--exclude=.git' libfastsim-git/src/laser_scanner.hpp libfastsim-pyfastsim/src/laser_scanner.hpp
+--- libfastsim-git/src/laser_scanner.hpp	2020-10-30 19:36:59.210387334 +0100
++++ libfastsim-pyfastsim/src/laser_scanner.hpp	2020-10-30 19:33:16.117384211 +0100
+@@ -41,7 +41,7 @@
+ 	_lasers.push_back(Laser(a, range_max));
+     }
+     void update(const Posture& pos,
+-		 const boost::shared_ptr<Map>& map){
++		 const std::shared_ptr<Map>& map){
+       for (size_t i = 0; i < _lasers.size(); ++i)
+ 	_lasers[i].update(pos, map);
+     }    
+diff -r -u3 '--exclude=.git' libfastsim-git/src/light_sensor.cpp libfastsim-pyfastsim/src/light_sensor.cpp
+--- libfastsim-git/src/light_sensor.cpp	2020-10-30 19:36:59.210387334 +0100
++++ libfastsim-pyfastsim/src/light_sensor.cpp	2020-10-30 19:33:16.117384211 +0100
+@@ -5,7 +5,7 @@
+ namespace fastsim
+ {
+   int LightSensor :: update(const Posture& pos,
+-			    const boost::shared_ptr<Map>& map)
++			    const std::shared_ptr<Map>& map)
+   {
+     const std::vector<Map::ill_sw_t>& isv = map->get_illuminated_switches();
+     _activated = false;
+diff -r -u3 '--exclude=.git' libfastsim-git/src/light_sensor.hpp libfastsim-pyfastsim/src/light_sensor.hpp
+--- libfastsim-git/src/light_sensor.hpp	2020-10-30 19:36:59.210387334 +0100
++++ libfastsim-pyfastsim/src/light_sensor.hpp	2020-10-30 19:33:16.117384211 +0100
+@@ -1,7 +1,7 @@
+ #ifndef FASTSIM_LIGHT_SENSOR_HPP_
+ #define FASTSIM_LIGHT_SENSOR_HPP_
+ 
+-#include <boost/shared_ptr.hpp>
++#include <memory>
+ #include "posture.hpp"
+ #include "map.hpp"
+ 
+@@ -20,7 +20,7 @@
+       //      std::cout<<"angle="<<angle<<" range="<<range<<std::endl;
+     }
+     int update(const Posture& pos,
+-	       const boost::shared_ptr<Map>& map);
++	       const std::shared_ptr<Map>& map);
+     int	get_color() const { return _color; }
+     float get_angle() const { return _angle; }
+     float get_range() const { return _range; }
+diff -r -u3 '--exclude=.git' libfastsim-git/src/linear_camera.cpp libfastsim-pyfastsim/src/linear_camera.cpp
+--- libfastsim-git/src/linear_camera.cpp	2020-10-30 19:36:59.210387334 +0100
++++ libfastsim-pyfastsim/src/linear_camera.cpp	2020-10-30 19:33:16.117384211 +0100
+@@ -6,7 +6,7 @@
+ {
+   
+   void LinearCamera :: update(const Posture& pos,
+-                             const boost::shared_ptr<Map>& map)
++                             const std::shared_ptr<Map>& map)
+   {
+     float inc = _angular_range / _pixels.size();
+     float r = -_angular_range / 2.0f;
+diff -r -u3 '--exclude=.git' libfastsim-git/src/linear_camera.hpp libfastsim-pyfastsim/src/linear_camera.hpp
+--- libfastsim-git/src/linear_camera.hpp	2020-10-30 19:36:59.210387334 +0100
++++ libfastsim-pyfastsim/src/linear_camera.hpp	2020-10-30 19:33:16.117384211 +0100
+@@ -1,7 +1,7 @@
+ #ifndef FASTSIM_LINEAR_CAMERA_HPP_
+ #define FASTSIM_LINEAR_CAMERA_HPP_
+ 
+-#include <boost/shared_ptr.hpp>
++#include <memory>
+ #include "posture.hpp"
+ #include "map.hpp"
+ 
+@@ -17,7 +17,7 @@
+     { std::fill(_pixels.begin(), _pixels.end(), -1); }
+    
+     void update(const Posture& pos,
+-	       const boost::shared_ptr<Map>& map);
++	       const std::shared_ptr<Map>& map);
+     const std::vector<int>& pixels() const { return _pixels; }
+     float get_angular_range() const { return _angular_range; }
+   protected:
+diff -r -u3 '--exclude=.git' libfastsim-git/src/main.cpp libfastsim-pyfastsim/src/main.cpp
+--- libfastsim-git/src/main.cpp	2020-10-30 19:36:59.210387334 +0100
++++ libfastsim-pyfastsim/src/main.cpp	2020-10-30 19:33:16.117384211 +0100
+@@ -26,13 +26,14 @@
+     exit(1);
+   }
+   fastsim::Settings settings(argv[1]);
+-  boost::shared_ptr<Map> map = settings.map();
+-  boost::shared_ptr<Robot> robot = settings.robot();
++  std::shared_ptr<Map> map = settings.map();
++  std::shared_ptr<Robot> robot = settings.robot();
+ 
+-  Display d(map, *robot);
++  Display d(map, robot);
+   
+   for (int i = 0; i < 10000; ++i)
+     {
++      std::cout << "Step " << i << " robot pos: x = "<< robot->get_pos().x() <<"    y = "<< robot->get_pos().y() <<"    theta = "<< robot->get_pos().theta() << std::endl;
+       d.update();
+       robot->move(1.0, 1.1, map);
+       usleep(1000);
+@@ -46,8 +47,8 @@
+   try
+     {
+       using namespace fastsim; 
+-      boost::shared_ptr<Map> m = 
+-	boost::shared_ptr<Map>(new Map("cuisine.pbm", 600));
++      std::shared_ptr<Map> m = 
++	std::shared_ptr<Map>(new Map("cuisine.pbm", 600));
+       m->add_goal(Goal(100, 100, 10, 0));
+       Robot r(20.0f, Posture(200, 200, 0));
+       r.add_laser(Laser(M_PI / 4.0, 100.0f));
+diff -r -u3 '--exclude=.git' libfastsim-git/src/map.hpp libfastsim-pyfastsim/src/map.hpp
+--- libfastsim-git/src/map.hpp	2020-10-30 19:36:59.210387334 +0100
++++ libfastsim-pyfastsim/src/map.hpp	2020-10-30 19:33:16.117384211 +0100
+@@ -27,7 +27,8 @@
+ #include <fstream>
+ #include <cmath>
+ #include <cassert>
+-#include <boost/shared_ptr.hpp>
++#include <memory>
++#include <algorithm>
+ #include <iostream>
+ 
+ #include "misc.hpp"
+@@ -58,6 +59,27 @@
+       assert(_w == _h);
+       _fx = _w / _real_w;
+     }
++    
++    Map(int pixel_w, int pixel_h, float real_w) : 
++      _w(pixel_w),
++      _h(pixel_h),
++      _real_w(real_w),
++      _real_h(real_w)
++    {
++      _data.resize(_w * _h);
++      _fx = _w / _real_w;
++      //std::fill(_data.begin(), _data.end(), free);
++    }
++    
++    const std::vector<status_t>& get_data() const {
++      return _data;
++    }
++    
++    void set_data(const std::vector<status_t>& from) {
++      assert(from.size() == _w*_h);
++      _data = from;
++    }
++    
+     // copy ONLY the picture (no goal, illuminated switches, etc) 
+     // REASON:
+     // we want to avoid reading the data data but we don't want to
+@@ -121,7 +143,7 @@
+     const std::vector<Goal>& get_goals() const { return _goals; }
+     void add_goal(const Goal& g) { _goals.push_back(g); }
+ 
+-    typedef boost::shared_ptr<IlluminatedSwitch> ill_sw_t;
++    typedef std::shared_ptr<IlluminatedSwitch> ill_sw_t;
+     void add_illuminated_switch(ill_sw_t is) 
+     { _illuminated_switches.push_back(is); }
+     const std::vector<ill_sw_t>& get_illuminated_switches() const 
+diff -r -u3 '--exclude=.git' libfastsim-git/src/radar.cpp libfastsim-pyfastsim/src/radar.cpp
+--- libfastsim-git/src/radar.cpp	2020-10-30 19:36:59.210387334 +0100
++++ libfastsim-pyfastsim/src/radar.cpp	2020-10-30 19:33:16.117384211 +0100
+@@ -5,7 +5,7 @@
+ namespace fastsim
+ {
+   int Radar :: update(const Posture& pos,
+-		      const boost::shared_ptr<Map>& map)
++		      const std::shared_ptr<Map>& map)
+   {
+     const Goal& g = map->get_goals()[_color];
+     float angle = normalize_angle_2pi(atan2(g.get_y() - pos.y(), g.get_x() - pos.x())
+diff -r -u3 '--exclude=.git' libfastsim-git/src/radar.hpp libfastsim-pyfastsim/src/radar.hpp
+--- libfastsim-git/src/radar.hpp	2020-10-30 19:36:59.210387334 +0100
++++ libfastsim-pyfastsim/src/radar.hpp	2020-10-30 19:33:16.117384211 +0100
+@@ -1,7 +1,7 @@
+ #ifndef FASTSIM_RADAR_HPP_
+ #define FASTSIM_RADAR_HPP_
+ 
+-#include <boost/shared_ptr.hpp>
++#include <memory>
+ #include "posture.hpp"
+ #include "map.hpp"
+ 
+@@ -18,7 +18,7 @@
+       _through_walls(through_walls)
+     {}
+     int update(const Posture& pos,
+-	       const boost::shared_ptr<Map>& map);
++	       const std::shared_ptr<Map>& map);
+     int get_activated_slice() const { return _activated_slice; }
+     int get_nb_slices() const { return _nb_slices; }
+     int get_color() const { return _color; }
+diff -r -u3 '--exclude=.git' libfastsim-git/src/robot.cpp libfastsim-pyfastsim/src/robot.cpp
+--- libfastsim-git/src/robot.cpp	2020-10-30 19:36:59.210387334 +0100
++++ libfastsim-pyfastsim/src/robot.cpp	2020-10-30 19:33:16.117384211 +0100
+@@ -28,7 +28,7 @@
+ 
+ namespace fastsim
+ {
+-  void Robot :: move(float v1, float v2, const boost::shared_ptr<Map>& m, bool sticky_walls)
++  void Robot :: move(float v1, float v2, const std::shared_ptr<Map>& m, bool sticky_walls)
+   {
+     Posture prev = _pos;
+     _pos.move(v1, v2, _radius * 2);
+@@ -70,7 +70,7 @@
+     _bb.y = _pos.y() - _radius - 4;
+   }
+ 
+-  bool Robot :: _check_collision(const boost::shared_ptr<Map>& m)
++  bool Robot :: _check_collision(const std::shared_ptr<Map>& m)
+   {
+     // pixel wise
+     int rp = m->real_to_pixel(_radius);
+diff -r -u3 '--exclude=.git' libfastsim-git/src/robot.hpp libfastsim-pyfastsim/src/robot.hpp
+--- libfastsim-git/src/robot.hpp	2020-10-30 19:36:59.210387334 +0100
++++ libfastsim-pyfastsim/src/robot.hpp	2020-10-30 19:33:16.117384211 +0100
+@@ -74,9 +74,9 @@
+     }
+ 
+     // v1, v2 - (double) velocites to be applied to motors
+-    // m - (boost::shared_ptr) pointer to map
++    // m - (std::shared_ptr) pointer to map
+     // sticky_walls - (boolean) whether we want sticky walls or not (the robot turns when in collision if this value is false)
+-    void move(float v1, float v2, const boost::shared_ptr<Map>& m, bool sticky_walls = true);
++    void move(float v1, float v2, const std::shared_ptr<Map>& m, bool sticky_walls = true);
+ 
+     const Posture& get_pos() const { return _pos; }
+     void set_pos(const Posture& pos) { _pos = pos; }
+@@ -113,9 +113,9 @@
+     void use_camera(const LinearCamera& c) { _camera = c; _use_camera = true; }
+     void use_camera() { _use_camera = true; }
+     const LinearCamera& get_camera() const { return _camera; }
+-    bool use_camera() const { return _use_camera; }
++    bool camera_enabled() const { return _use_camera; }
+   protected:
+-    bool _check_collision(const boost::shared_ptr<Map>& m);
++    bool _check_collision(const std::shared_ptr<Map>& m);
+     void _update_bb();
+     float _radius;
+     Posture _pos;
+diff -r -u3 '--exclude=.git' libfastsim-git/src/settings.cpp libfastsim-pyfastsim/src/settings.cpp
+--- libfastsim-git/src/settings.cpp	2020-10-30 19:36:59.210387334 +0100
++++ libfastsim-pyfastsim/src/settings.cpp	2020-10-30 19:33:33.441798810 +0100
+@@ -7,12 +7,12 @@
+     read_xml(config_file, pt);
+         
+     ptree &n_map = pt.get_child("fastsim.map");
+-    _map = boost::shared_ptr<Map>
++    _map = std::shared_ptr<Map>
+       (new Map(_get_a<std::string>(n_map, "name").c_str(),
+ 	       _get_a<float>(n_map, "size")));
+ 
+     ptree &n_robot = pt.get_child("fastsim.robot");
+-    _robot = boost::shared_ptr<Robot>
++    _robot = std::shared_ptr<Robot>
+       (new Robot(_get_a<float>(n_robot, "diameter"),
+ 		 Posture(_get_a<float>(n_robot, "x"),
+ 			 _get_a<float>(n_robot, "y"),
+@@ -20,7 +20,7 @@
+ 
+     ptree& n_display = pt.get_child("fastsim.display");
+     _display = _get_a_bool(n_display, "enable");
+-    std::cout<<"display=" << _display << std::endl;
++    //std::cout<<"display=" << _display << std::endl;
+ 
+     BOOST_FOREACH(ptree::value_type &v, pt.get_child("fastsim")) {
+       if (v.first == "goal")
+diff -r -u3 '--exclude=.git' libfastsim-git/src/settings.hpp libfastsim-pyfastsim/src/settings.hpp
+--- libfastsim-git/src/settings.hpp	2020-10-30 19:36:59.210387334 +0100
++++ libfastsim-pyfastsim/src/settings.hpp	2020-10-30 19:33:16.117384211 +0100
+@@ -12,12 +12,12 @@
+   public:
+     // parse a xml file to instantiate the map & the robot
+     Settings(const std::string& xml_file);
+-    boost::shared_ptr<Map> map() { return _map; }
+-    boost::shared_ptr<Robot> robot() { return _robot; }
++    std::shared_ptr<Map> map() { return _map; }
++    std::shared_ptr<Robot> robot() { return _robot; }
+     bool display() const { return _display; }
+   protected:
+-    boost::shared_ptr<Map> _map;
+-    boost::shared_ptr<Robot> _robot;
++    std::shared_ptr<Map> _map;
++    std::shared_ptr<Robot> _robot;
+     bool _display;
+ 
+     template<typename R>
+diff -r -u3 '--exclude=.git' libfastsim-git/wscript libfastsim-pyfastsim/wscript
+--- libfastsim-git/wscript	2020-10-30 19:36:59.210387334 +0100
++++ libfastsim-pyfastsim/wscript	2020-10-30 19:33:16.117384211 +0100
+@@ -30,7 +30,7 @@
+     #            min_version='1.35')
+ 
+     # release
+-    opt_flags = common_flags + ' -O3 -msse2 -ggdb3 -g'
++    opt_flags = common_flags + ' -O3 -msse2 -fPIC'
+     conf.env['CXXFLAGS'] = cxxflags + opt_flags.split(' ')
+     print conf.env['CXXFLAGS']
+ 
