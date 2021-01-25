@@ -1,6 +1,14 @@
 # Prandroide
 Apprentissage et généralisation sur une tâche de navigation d'un robot à roues 
 
-lancer install-dependencies.sh pour installer les librairies nécessaire 
+## installation
+lancer `install-dependencies.sh` pour installer les librairies nécessaires :
+- gym
+- libfastsim
+- pybind11
+- pyfastsim
+- pybullet-gym
 
-python Simulationfastsim/RobotAléatoire.py
+## Usage
+
+`python Simulationfastsim/RobotAléatoire.py`
