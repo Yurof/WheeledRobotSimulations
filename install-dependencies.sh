@@ -91,16 +91,8 @@ echo "====================================="
 echo "===== (5/6) Installing fastsim_gym ====="
 echo "====================================="
 echo
-cd "${BASE_DIR}/src"
+cd "${BASE_DIR}/Simulationfastsim"
 
-if [ ! -d "fastsim_gym" ] ; then
-    git clone https://github.com/alexendy/fastsim_gym.git fastsim_gym
-    cd fastsim_gym
-else
-    cd "fastsim_gym"
-    git pull https://github.com/alexendy/fastsim_gym.git
-fi
-# Install the fastsim_gym python module
 pip3 install .
 
 cd "${BASE_DIR}/src"
