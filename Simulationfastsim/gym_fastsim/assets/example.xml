@@ -3,7 +3,7 @@
   <display enable="true"/>
   <!-- world -->
   <map name="cuisine.pbm" size="600"/>
-  <robot x="300" y="300" theta="0" diameter="30"/>
+  <robot x="300" y="300" theta="90" diameter="30"/>
   <illuminated_switch x="250" y="450" color="0" radius="10" on="true"/>
   <light_sensor angle="100" color="0" angular_range="50"/>
   <goal x="100" y="100" color="0" diameter="10"/>
