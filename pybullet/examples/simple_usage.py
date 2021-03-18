@@ -4,11 +4,11 @@ from racecar_gym.envs import SingleAgentRaceEnv
 import random
 from numpy import array
 
-env = gym.make('SingleAgentAustria_Gui-v0')
+env = gym.make('SingleAgentKitchen_Gui-v0')
 
 done = False
 
-obs = env.reset(mode='grid')
+obs = env.reset()
 t = 0
 action = dict([('motor', array([1])), ('steering', array([-1]))])
 lidar_collision = 0.3
@@ -25,16 +25,16 @@ while not done:
     #obs, rewards, done, states = env.step(action)
     #print(states['wall_collision'])
     #print(obs['lidar'][540])
-    if obs['lidar'][540]< lidar_collision-0.15:
-        print("avant")
+    if obs['lidar'][540]< lidar_collision-0.1:
+        #print("avant")
         obs, rewards, done, states= mouvement(-1, random.uniform(-0.5,0.5), 10)
 
     elif obs['lidar'][0]< lidar_collision:
-        print("gauche?")
+        #print("gauche?")
         obs, rewards, done, states= mouvement(0.25, 1, 1)
 
     elif obs['lidar'][-1]< lidar_collision:
-        print("droite?")
+        #print("droite?")
         obs, rewards, done, states= mouvement(0.25, -1, 1)
     
 
@@ -43,7 +43,7 @@ while not done:
         obs, rewards, done, states= mouvement(random.uniform(-0.2,1),random.uniform(-1,1),1)
     sleep(0.01)
     if t % 10 == 0:
-        image = env.render(mode='follow')
+        image = env.render()
     t+=1
 
 

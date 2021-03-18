@@ -89,7 +89,6 @@ def load_world(spec: WorldSpec, agents: List[Agent]) -> core.World:
 
     config.sdf = resolve_path(file=config_file, relative_path=config.sdf)
     config.map.maps = resolve_path(file=config_file, relative_path=config.map.maps)
-    config.map.starting_grid = resolve_path(file=config_file, relative_path=config.map.starting_grid)
 
 
     world_config = World.Config(

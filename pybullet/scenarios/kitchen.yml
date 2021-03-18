@@ -1,0 +1,10 @@
+world:
+  name: kitchen
+agents:
+  - id: A
+    vehicle:
+      name: racecar
+      sensors: [ lidar, pose, velocity, acceleration ]
+    task:
+      task_name: maximize_progress
+      params: { time_limit: 120.0, terminate_on_collision: False}

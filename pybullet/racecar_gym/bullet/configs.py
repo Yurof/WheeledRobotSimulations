@@ -33,7 +33,6 @@ class MapConfig(YamlDataClassConfig):
     resolution: float = None
     origin: List[float] = None
     maps: str = None
-    starting_grid: str = None
     checkpoints: int = None
 
 
