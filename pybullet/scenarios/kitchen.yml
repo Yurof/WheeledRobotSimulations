@@ -4,7 +4,7 @@ agents:
   - id: A
     vehicle:
       name: iRobot
-      sensors: [ lidar, pose, velocity, acceleration,rgb_camera ]
+      sensors: [ lidar, pose, velocity, acceleration ]
     task:
       task_name: maximize_progress
       params: { time_limit: 120.0, terminate_on_collision: False}
