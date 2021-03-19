@@ -9,12 +9,12 @@ import pybullet as p
 from PIL import Image
 from gym import logger
 
-from racecar_gym.bullet import util
-from racecar_gym.bullet.configs import MapConfig
-from racecar_gym.core import world
-from racecar_gym.core.agent import Agent
-from racecar_gym.core.definitions import Pose
-from racecar_gym.core.gridmaps import GridMap
+from iRobot_gym.bullet import util
+from iRobot_gym.bullet.configs import MapConfig
+from iRobot_gym.core import world
+from iRobot_gym.core.agent import Agent
+from iRobot_gym.core.definitions import Pose
+from iRobot_gym.core.gridmaps import GridMap
 
 
 class World(world.World):
@@ -66,7 +66,7 @@ class World(world.World):
         self._load_scene(self._config.sdf)
         p.setTimeStep(self._config.time_step)
         p.setGravity(0, 0, self._config.gravity)
-        p.resetDebugVisualizerCamera( cameraDistance=10, cameraYaw=0, cameraPitch=-89, cameraTargetPosition=[0,3,0])
+        p.resetDebugVisualizerCamera( cameraDistance=5.5, cameraYaw=0, cameraPitch=-89.9, cameraTargetPosition=[0.5,1.5,0])
 
 
     def reset(self):

@@ -4,7 +4,7 @@ import gym
 
 from .definitions import Pose, Velocity
 from .vehicles import Vehicle
-from racecar_gym.tasks import Task
+from iRobot_gym.tasks import Task
 
 
 class Agent:

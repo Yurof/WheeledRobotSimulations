@@ -1,22 +1,22 @@
 from time import sleep
 import gym
-from racecar_gym.envs import SingleAgentRaceEnv
+from iRobot_gym.envs import SingleAgentRaceEnv
 import random
 from numpy import array
 
 env = gym.make('SingleAgentKitchen_Gui-v0')
-
 done = False
 
 obs = env.reset()
+
 t = 0
-action = dict([('motor', array([1])), ('steering', array([-1]))])
+action = dict([('motor', array([1,-1])), ('steering', array([-1]))])
 lidar_collision = 0.3
 obs, rewards, done, states = env.step(action)
 
 def mouvement(m, s, n):
     for k in range(n):
-        obs, rewards, done, states = env.step(dict([('motor', array([m])), ('steering', array([s]))]))
+        obs, rewards, done, states = env.step(dict([('motor', array([m,-m])), ('steering', array([s]))]))
         return obs, rewards, done, states
 
 while not done:
@@ -25,7 +25,7 @@ while not done:
     #obs, rewards, done, states = env.step(action)
     #print(states['wall_collision'])
     #print(obs['lidar'][540])
-    if obs['lidar'][540]< lidar_collision-0.1:
+    if obs['lidar'][50]< lidar_collision-0.1:
         #print("avant")
         obs, rewards, done, states= mouvement(-1, random.uniform(-0.5,0.5), 10)
 
@@ -36,17 +36,19 @@ while not done:
     elif obs['lidar'][-1]< lidar_collision:
         #print("droite?")
         obs, rewards, done, states= mouvement(0.25, -1, 1)
-    
-
-    
     else:
-        obs, rewards, done, states= mouvement(random.uniform(-0.2,1),random.uniform(-1,1),1)
-    sleep(0.01)
+        obs, rewards, done, states= mouvement(random.uniform(-0.2,1),random.uniform(0,0),1)
+    
+    sleep(0.1)
     if t % 10 == 0:
         image = env.render()
     t+=1
-
-
+"""
+sleep(100)
+if t % 10 == 0:
+    image = env.render()
+t+=1
+"""
 env.close()
 
 # Currently, there are two reset modes available: 'grid' and 'random'.

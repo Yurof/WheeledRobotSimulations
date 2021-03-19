@@ -5,7 +5,7 @@ import pybullet
 from nptyping import NDArray
 import matplotlib.pyplot as plt
 
-from racecar_gym.core import Agent
+from iRobot_gym.core import Agent
 
 def get_velocity(id: int) -> NDArray[(6,), np.float]:
     linear, angular = pybullet.getBaseVelocity(id)

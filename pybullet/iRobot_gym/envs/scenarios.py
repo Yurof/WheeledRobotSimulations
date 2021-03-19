@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from typing import Dict
 
-from racecar_gym.bullet import load_world, load_vehicle
-from racecar_gym.tasks import Task, get_task
-from racecar_gym.core import World, Agent
+from iRobot_gym.bullet import load_world, load_vehicle
+from iRobot_gym.tasks import Task, get_task
+from iRobot_gym.core import World, Agent
 from .specs import ScenarioSpec, TaskSpec
 
 def task_from_spec(spec: TaskSpec) -> Task:

@@ -3,10 +3,10 @@ from typing import List, Dict, Any, Tuple
 
 import pybullet
 
-from racecar_gym.bullet.actuators import BulletActuator
-from racecar_gym.bullet.sensors import BulletSensor
-from racecar_gym.core.definitions import Pose
-from racecar_gym.core.vehicles import Vehicle
+from iRobot_gym.bullet.actuators import BulletActuator
+from iRobot_gym.bullet.sensors import BulletSensor
+from iRobot_gym.core.definitions import Pose
+from iRobot_gym.core.vehicles import Vehicle
 
 
 class RaceCar(Vehicle):
@@ -21,14 +21,15 @@ class RaceCar(Vehicle):
         self._config = config
         self._on_finish = False
 
+        
         self._sensor_indices = {
-            'lidar': 4,
-            'rgb_camera': 5
+            'lidar': 0,
+            'rgb_camera': 9
         }
 
         self._actuator_indices = {
-            'motor': [8, 15],
-            'steering': [0, 2]
+            'motor': [9,10],
+            'steering': [1, 2]
         }
         self._actuators = dict([(a.name, a) for a in actuators])
         self._sensors = sensors
@@ -69,11 +70,16 @@ class RaceCar(Vehicle):
         position, orientation = initial_pose
         orientation = pybullet.getQuaternionFromEuler(orientation)
         id = pybullet.loadURDF(model, position, orientation)
-        pybullet.changeVisualShape(id, -1, rgbaColor=self._config.color)
+        #pybullet.changeVisualShape(id, -1, rgbaColor=self._config.color)
+        
+        #for k in range(pybullet.getNumJoints(id)):
+        #    print("ID",id, pybullet.getJointInfo(id,k))
         return id
 
     def _setup_constraints(self):
         car = self._id
+"""
+        print("get num joints",pybullet.getNumJoints(car))
         for wheel in range(pybullet.getNumJoints(car)):
             pybullet.setJointMotorControl2(car,
                                           wheel,
@@ -81,6 +87,7 @@ class RaceCar(Vehicle):
                                           targetVelocity=0,
                                           force=0)
             pybullet.getJointInfo(car, wheel)
+            
 
             # pybullet.setJointMotorControl2(car,10,pybullet.VELOCITY_CONTROL,targetVelocity=1,force=10)
         c = pybullet.createConstraint(car,
@@ -161,3 +168,4 @@ class RaceCar(Vehicle):
                                      parentFramePosition=[0, 0, 0],
                                      childFramePosition=[0, 0, 0])
         pybullet.changeConstraint(c, gearRatio=-1, gearAuxLink=15, maxForce=10000)
+"""

@@ -204,7 +204,7 @@
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
-  <!-- Add the left front wheel with its joints and tranmissions -->
+  <!-- Add the right front wheel with its joints and tranmissions -->
   <link name="right_front_wheel">
 <contact>
       <lateral_friction value="0.8"/>
@@ -712,6 +712,8 @@
     <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
     <axis rpy="0 0 0" xyz="0 1 0"/>
   </joint>
+
+  
   <material name="white">
     <color rgba="1. 1. 1. 1.0"/>
   </material>

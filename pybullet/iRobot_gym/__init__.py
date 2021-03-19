@@ -11,7 +11,7 @@ def _register_single_agent(name: str, file: str, rendering: bool):
     scenario = SingleAgentScenario.from_spec(path=f'{base_path}/../scenarios/{file}', rendering=rendering)
     register(
         id=name,
-        entry_point='racecar_gym.envs:SingleAgentRaceEnv',
+        entry_point='iRobot_gym.envs:SingleAgentRaceEnv',
         kwargs={'scenario': scenario}
     )
 

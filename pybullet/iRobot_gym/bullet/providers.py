@@ -4,13 +4,13 @@ import urllib.request
 import zipfile
 from typing import List, Tuple
 
-from racecar_gym import core
-from racecar_gym.bullet.actuators import BulletActuator, Motor, SteeringWheel
-from racecar_gym.bullet.configs import SensorConfig, VehicleConfig, ActuatorConfig, SceneConfig
-from racecar_gym.bullet.sensors import Lidar, PoseSensor, AccelerationSensor, VelocitySensor, RGBCamera, BulletSensor, \
+from iRobot_gym import core
+from iRobot_gym.bullet.actuators import BulletActuator, Motor, SteeringWheel
+from iRobot_gym.bullet.configs import SensorConfig, VehicleConfig, ActuatorConfig, SceneConfig
+from iRobot_gym.bullet.sensors import Lidar, PoseSensor, AccelerationSensor, VelocitySensor, RGBCamera, BulletSensor, \
     FixedTimestepSensor
-from racecar_gym.bullet.vehicle import RaceCar
-from racecar_gym.envs.specs import WorldSpec, VehicleSpec
+from iRobot_gym.bullet.vehicle import RaceCar
+from iRobot_gym.envs.specs import WorldSpec, VehicleSpec
 from .world import World
 from ..core.agent import Agent
 
@@ -52,7 +52,7 @@ def load_vehicle(spec: VehicleSpec) -> core.Vehicle:
     config = VehicleConfig()
     config.load(config_file)
     config.urdf_file = f'{os.path.dirname(config_file)}/{config.urdf_file}'
-    config.color = spec.color
+    #config.color = spec.color
     requested_sensors = set(spec.sensors)
     available_sensors = set([sensor.name for sensor in config.sensors])
 
@@ -75,7 +75,7 @@ def load_world(spec: WorldSpec, agents: List[Agent]) -> core.World:
         try:
             print(f'Downloading {spec.name} track.')
             urllib.request.urlretrieve(
-                f'https://github.com/axelbr/racecar_gym/releases/download/tracks-v1.0.0/{spec.name}.zip',
+                f'https://github.com/axelbr/iRobot_gym/releases/download/tracks-v1.0.0/{spec.name}.zip',
                 f'{scene_path}/{spec.name}.zip'
             )
             with zipfile.ZipFile(f'{scene_path}/{spec.name}.zip', 'r') as zip:

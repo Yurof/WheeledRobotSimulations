@@ -4,7 +4,7 @@
     <gravity>0 0 -9.8</gravity>
     <model name="walls">
       <static>1</static>
-      <pose frame="">-5 -2 0 0 0 0</pose>
+      <pose frame="">-2 -1 0 0 0 0</pose>
       <link name="link_d0">
         <inertial>
           <mass>0</mass>
@@ -20,7 +20,7 @@
         <collision concave="yes" name="collision_0">
           <geometry>
             <mesh>
-              <scale>200 200 200</scale>
+              <scale>100 100 100</scale>
               <uri>meshes/kitchen.obj</uri>
             </mesh>
           </geometry>
@@ -28,7 +28,7 @@
         <visual name="visual">
           <geometry>
             <mesh>
-              <scale>200 200 200</scale>
+              <scale>100 100 100</scale>
               <uri>meshes/kitchen.obj</uri>
             </mesh>
           </geometry>

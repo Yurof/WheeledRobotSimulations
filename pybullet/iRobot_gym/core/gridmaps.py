@@ -2,7 +2,7 @@ from typing import Tuple
 
 import numpy as np
 
-from racecar_gym.core.definitions import Position
+from iRobot_gym.core.definitions import Position
 
 
 class GridMap:

@@ -7,8 +7,8 @@ import numpy as np
 import pybullet as p
 from nptyping import NDArray
 
-from racecar_gym.bullet import util
-from racecar_gym.core import Sensor
+from iRobot_gym.bullet import util
+from iRobot_gym.core import Sensor
 
 T = TypeVar('T')
 

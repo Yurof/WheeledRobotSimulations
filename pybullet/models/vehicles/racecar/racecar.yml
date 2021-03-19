@@ -1,4 +1,4 @@
-urdf_file: racecar.urdf
+urdf_file: iRobot.urdf
 
 actuators:
   - type: steering
@@ -46,7 +46,7 @@ sensors:
     frequency: 25
     params:
       accuracy: 0.03 # maximum deviation from true scan range (percentage)
-      rays: 1080
+      rays: 100 #1080
       range: 15.0
       min_range: 0.05
       angle_start: -0.85 #angle/2 pour que ce soit centré
