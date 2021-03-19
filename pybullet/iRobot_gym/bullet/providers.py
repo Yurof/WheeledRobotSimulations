@@ -44,7 +44,7 @@ def _compute_color(name: str) -> Tuple[float, float, float, float]:
     ).get(name, (random.random(), random.random(), random.random(), 1.0))
 
 def load_vehicle(spec: VehicleSpec) -> core.Vehicle:
-    config_file = f'{base_path}/../../models/vehicles/{spec.name}/{spec.name}.yml'
+    config_file = f'{base_path}/../../models/{spec.name}/{spec.name}.yml'
     if not os.path.exists(config_file):
         raise NotImplementedError(f'No vehicle with name {spec.name} implemented.')
 
