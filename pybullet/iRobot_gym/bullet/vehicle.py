@@ -9,7 +9,7 @@ from iRobot_gym.core.definitions import Pose
 from iRobot_gym.core.vehicles import Vehicle
 
 
-class RaceCar(Vehicle):
+class IRobot(Vehicle):
     @dataclass
     class Config:
         urdf_file: str
@@ -23,13 +23,12 @@ class RaceCar(Vehicle):
 
         
         self._sensor_indices = {
-            'lidar': 0,
-            'rgb_camera': 9
+            'lidar': 4,
+            'rgb_camera': 5
         }
 
         self._actuator_indices = {
-            'motor': [9,10],
-            'steering': [1, 2]
+            'motor': [0, 1]
         }
         self._actuators = dict([(a.name, a) for a in actuators])
         self._sensors = sensors
@@ -72,8 +71,8 @@ class RaceCar(Vehicle):
         id = pybullet.loadURDF(model, position, orientation)
         #pybullet.changeVisualShape(id, -1, rgbaColor=self._config.color)
         
-        #for k in range(pybullet.getNumJoints(id)):
-        #    print("ID",id, pybullet.getJointInfo(id,k))
+        for k in range(pybullet.getNumJoints(id)):
+            print("ID",id, pybullet.getJointInfo(id,k))
         return id
 
     def _setup_constraints(self):

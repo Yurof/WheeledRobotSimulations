@@ -5,11 +5,11 @@ import zipfile
 from typing import List, Tuple
 
 from iRobot_gym import core
-from iRobot_gym.bullet.actuators import BulletActuator, Motor, SteeringWheel
+from iRobot_gym.bullet.actuators import BulletActuator, Motor
 from iRobot_gym.bullet.configs import SensorConfig, VehicleConfig, ActuatorConfig, SceneConfig
 from iRobot_gym.bullet.sensors import Lidar, PoseSensor, AccelerationSensor, VelocitySensor, RGBCamera, BulletSensor, \
     FixedTimestepSensor
-from iRobot_gym.bullet.vehicle import RaceCar
+from iRobot_gym.bullet.vehicle import IRobot
 from iRobot_gym.envs.specs import WorldSpec, VehicleSpec
 from .world import World
 from ..core.agent import Agent
@@ -32,8 +32,7 @@ def load_sensor(config: SensorConfig) -> BulletSensor:
 def load_actuator(config: ActuatorConfig) -> BulletActuator:
     if config.type == 'motor':
         return Motor(name=config.name, config=Motor.Config(**config.params))
-    if config.type == 'steering':
-        return SteeringWheel(name=config.name, config=SteeringWheel.Config(**config.params))
+
 
 def _compute_color(name: str) -> Tuple[float, float, float, float]:
     return dict(
@@ -62,8 +61,8 @@ def load_vehicle(spec: VehicleSpec) -> core.Vehicle:
     sensors = [FixedTimestepSensor(sensor=load_sensor(config=c), frequency=c.frequency, time_step=0.01) for c in
                sensors]
     actuators = [load_actuator(config=c) for c in config.actuators]
-    car_config = RaceCar.Config(urdf_file=config.urdf_file, color=_compute_color(config.color))
-    vehicle = RaceCar(sensors=sensors, actuators=actuators, config=car_config)
+    car_config = IRobot.Config(urdf_file=config.urdf_file, color=_compute_color(config.color))
+    vehicle = IRobot(sensors=sensors, actuators=actuators, config=car_config)
     return vehicle
 
 

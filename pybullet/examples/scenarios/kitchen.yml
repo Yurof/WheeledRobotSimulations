@@ -3,8 +3,8 @@ world:
 agents:
   - id: A
     vehicle:
-      name: racecar
-      sensors: [ lidar, pose, velocity, acceleration ]
+      name: iRobot
+      sensors: [ lidar, pose, velocity, acceleration,rgb_camera ]
     task:
       task_name: maximize_progress
       params: { time_limit: 120.0, terminate_on_collision: False}

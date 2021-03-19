@@ -50,7 +50,7 @@ while info["dist_obj"]>diametre_goal :
         mouvement(2, -2, 1)
 
     else:
-        mouvement(random.randint(-2,5),random.randint(-2,5),1)
+        mouvement(random.uniform(-2,5),random.uniform(-2,5),1)
 
 
 now = time.time()

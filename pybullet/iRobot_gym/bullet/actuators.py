@@ -75,27 +75,3 @@ class Motor(BulletActuator[Tuple[float, float]]):
 
     def space(self) -> gym.Space:
         return gym.spaces.Box(low=-1.0, high=1.0, shape=(1,), dtype=np.float64)
-
-
-class SteeringWheel(BulletActuator[float]):
-    @dataclass
-    class Config:
-        steering_multiplier: float
-        max_steering_angle: float
-
-    def __init__(self, name: str, config: Config):
-        super().__init__(name)
-        self._config = config
-
-    def control(self, command: float) -> None:
-        angle = command * self._config.max_steering_angle * self._config.steering_multiplier
-        for joint in self.joint_indices:
-            pybullet.setJointMotorControl2(
-                self.body_id,
-                joint,
-                pybullet.POSITION_CONTROL,
-                targetPosition=-angle
-            )
-
-    def space(self) -> gym.Space:
-        return gym.spaces.Box(low=-1.0, high=1.0, shape=(1,), dtype=np.float64)
