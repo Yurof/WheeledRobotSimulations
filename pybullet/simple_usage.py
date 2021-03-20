@@ -5,6 +5,8 @@ import random
 from numpy import array
 
 env = gym.make('SingleAgentKitchen_Gui-v0')
+#env = gym.make('SingleAgentMaze_hard_Gui-v0')
+
 done = False
 time_sleep= 0.1
 

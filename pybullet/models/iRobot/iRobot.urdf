@@ -17,6 +17,11 @@
 <material name="grey">
     <color rgba="0.4 0.4 0.4 1.0"/>
   </material>
+
+  <material name="yellow">
+    <color rgba="1.0, 1.0, 0.0, 1.0"/>
+  </material>
+
   <material name="body">
     <texture filename="materials/textures/create_body.png"/>
 </material>
@@ -26,7 +31,7 @@
         <visual name="base_visual">
             <origin xyz="0 0 0.047800" rpy="0 0 0 " />
             <geometry>
-                <mesh filename="meshes/create_body.dae"/>
+                <mesh filename="meshes/create_body3.dae"/>
             </geometry>
             <material name="grey"/>
 
@@ -34,7 +39,7 @@
         <collision name="base_visual">
             <origin xyz="0 0 0.047800" rpy="0 0 0 " />
             <geometry>
-                <mesh filename="meshes/create_body.dae"/>
+                <mesh filename="meshes/create_body3.dae"/>
             </geometry>
         </collision>
     </link>
@@ -139,20 +144,21 @@
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <box size="0.1 0.1 0.1"/>
+        <mesh scale="0.5 0.5 0.5 0.5" filename="meshes/hokuyo.obj"/>
       </geometry>
     </collision>
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="meshes/hokuyo.obj"/>
-        <material name="grey"/>
+        <mesh scale="0.5 0.5 0.5 0.5" filename="meshes/hokuyo.obj"/>
       </geometry>
+        <material name="yellow"/>
+
     </visual>
   </link>
 
   <joint name="hokuyo_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="-0.08 0.0 0.085"/>
+    <origin rpy="0 0 0" xyz="-0.011 0.0 0.085"/>
     <parent link="base_footprint"/>
     <child link="laser"/>
     <axis xyz="0 0 1"/>
