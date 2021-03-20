@@ -5,6 +5,7 @@ map:
   origin: [-50, -50, 0.0]
   maps: maps/maps.npz
   checkpoints: 1
+  starting_position: [0, 0, 0.05, 0.0, 0.0, 1]
 
 physics:
   gravity: -9.81

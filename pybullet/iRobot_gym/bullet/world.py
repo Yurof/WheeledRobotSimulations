@@ -82,7 +82,9 @@ class World(world.World):
         self._objects = objects
 
     def get_starting_position(self, agent: Agent) -> Pose:
-        return (0, 0, 0.05), (0.0, 0.0, 0.0)
+        s_p = self._config.map_config.starting_position
+        return (s_p[0], s_p[1], s_p[2]), (s_p[3], s_p[4], s_p[5]) 
+        #return (0, 0, 0.05), (0.0, 0.0, 0.0)
 
     def update(self):
         p.stepSimulation()

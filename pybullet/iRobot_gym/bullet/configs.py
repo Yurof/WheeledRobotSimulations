@@ -22,7 +22,6 @@ class ActuatorConfig(YamlDataClassConfig):
 @dataclass
 class VehicleConfig(YamlDataClassConfig):
     urdf_file: str = None
-    color: str = 'blue'
     debug: bool = False
     actuators: List[ActuatorConfig] = field(default_factory=lambda: [])
     sensors: List[SensorConfig] = field(default_factory=lambda: [])
@@ -34,6 +33,7 @@ class MapConfig(YamlDataClassConfig):
     origin: List[float] = None
     maps: str = None
     checkpoints: int = None
+    starting_position : List[float] = None
 
 
 @dataclass

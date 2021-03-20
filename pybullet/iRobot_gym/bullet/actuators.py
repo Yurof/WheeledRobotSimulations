@@ -69,8 +69,8 @@ class Motor(BulletActuator[Tuple[float, float]]):
         pybullet.setJointMotorControl2(
             self.body_id, self.joint_indices[1],
             pybullet.VELOCITY_CONTROL,
-            targetVelocity=velocity1,
-            force=force1
+            targetVelocity=velocity2,
+            force=force2
         )
 
     def space(self) -> gym.Space:

@@ -34,14 +34,21 @@
                 <mesh filename="meshes/create_body3.dae"/>
             </geometry>
             <material name="grey"/>
-
         </visual>
+
         <collision name="base_visual">
             <origin xyz="0 0 0.047800" rpy="0 0 0 " />
             <geometry>
                 <mesh filename="meshes/create_body3.dae"/>
             </geometry>
         </collision>
+
+        <inertial>
+            <origin  xyz="0.001453 -0.000453 0.029787" rpy="0 0 0"/>
+            <mass value="2.234000"/>
+            <inertia ixx="0.058640" ixy="0.000124" ixz="0.000615" iyy="0.058786" iyz="0.000014" izz="1.532440"/>
+        </inertial>
+
     </link>
 
     <!-- Left  Wheel -->
@@ -52,11 +59,18 @@
             </geometry>
             <material name="blue"/>
         </visual>
+
         <collision>
             <geometry>
                 <cylinder length="0.023000" radius="0.03000"/>
             </geometry>
         </collision>
+
+        <inertial>
+            <origin xyz="0 0.130000 0.032000"  rpy="0 0 0"/>
+            <mass value="0.010000"/>
+            <inertia ixx="0.001000" ixy="0" ixz="0" iyy="0.001000" iyz="0" izz="0.001000"/>
+        </inertial>
     </link>
 
     <joint name="left_wheel" type="continuous">
@@ -75,11 +89,18 @@
             </geometry>
             <material name="red"/>
         </visual>
+
         <collision>
             <geometry>
                 <cylinder length="0.023000" radius="0.03000"/>
             </geometry>
         </collision>
+
+        <inertial>
+            <origin rpy="0 0 0" xyz="0 -0.130000 0.032000"/>
+            <mass value="0.010000"/>
+            <inertia ixx="0.001000" ixy="0" ixz="0" iyy="0.001000" iyz="0" izz="0.001000"/>
+        </inertial>
     </link>
 
     <joint name="right_wheel" type="continuous">

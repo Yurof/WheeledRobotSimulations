@@ -12,18 +12,22 @@ time_sleep= 0.1
 
 obs = env.reset()
 
-t = 0
+i = 0 
 action = dict([('motor', array([0,0]))])
-lidar_collision = 0.5
+lidar_collision = 0.35
 obs, rewards, done, states = env.step(action)
 
 def mouvement(l, r, n):
     for k in range(n):
         obs, rewards, done, states = env.step(dict([('motor', array([l, r]))]))
         #print(l,r)
-        print(obs['lidar'][len(obs['lidar'])//2], end="\r")  
+        #print(obs['lidar'][len(obs['lidar'])//2], end="\r")  
         sleep(time_sleep)
-        image = env.render()                                 
+        image = env.render()
+        global i
+        i+= 1
+        #print("Step  %d robot position=%s progress=%f" % (i,  str(states["pose"][0:3]) ,states["progress"] ) , end="\r" )
+                               
         return obs, rewards, done, states
 
 while not done:
@@ -33,15 +37,15 @@ while not done:
     #print(states['wall_collision'])
     if obs['lidar'][len(obs['lidar'])//2]< lidar_collision-0.1:
         print("avant ")
-        obs, rewards, done, states= mouvement(-2, 2, 5)
+        obs, rewards, done, states= mouvement(-2, 2, 2)
 
     elif obs['lidar'][0]< lidar_collision:
         print("gauche? ")
-        obs, rewards, done, states= mouvement(-2, 2, 1)
+        obs, rewards, done, states= mouvement(2, -2, 1)
 
     elif obs['lidar'][-1]< lidar_collision:
         print("droite? ")
-        obs, rewards, done, states= mouvement(2, -2, 1)
+        obs, rewards, done, states= mouvement(-2, 2, 1)
     else:
         obs, rewards, done, states= mouvement(random.uniform(-2,5),random.uniform(-2,5),1)
 

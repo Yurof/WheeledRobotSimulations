@@ -157,55 +157,6 @@ class Lidar(BulletSensor[NDArray[(Any,), np.float]]):
             angle += increment
 
 
-class RGBCamera(BulletSensor[NDArray[(Any, Any, 3), np.int]]):
-    @dataclass
-    class Config:
-        width: int
-        height: int
-        fov: int
-        distance: float
-        near_plane: float
-        far_plane: float
-
-    def __init__(self, name: str, type: str, config: Config):
-        super().__init__(name, type)
-        self._config = config
-        self._up_vector = [0, 0, 1]
-        self._camera_vector = [1, 0, 0]
-        self._target_distance = config.distance
-        self._fov = config.fov
-        self._near_plane = config.near_plane
-        self._far_plane = config.far_plane
-
-    def space(self) -> gym.Space:
-        return gym.spaces.Box(low=0,
-                              high=255,
-                              shape=(self._config.height, self._config.width, 3),
-                              dtype=np.uint8)
-
-    def observe(self) -> NDArray[(Any, Any, 3), np.int]:
-        width, height = self._config.width, self._config.height
-        state = p.getLinkState(self.body_id, linkIndex=self.joint_index, computeForwardKinematics=True)
-        position, orientation = state[0], state[1]
-        rot_matrix = p.getMatrixFromQuaternion(orientation)
-        rot_matrix = np.array(rot_matrix).reshape(3, 3)
-        camera_vector = rot_matrix.dot(self._camera_vector)
-        up_vector = rot_matrix.dot(self._up_vector)
-        target = position + self._target_distance * camera_vector
-        view_matrix = p.computeViewMatrix(position, target, up_vector)
-        aspect_ratio = float(width) / height
-        proj_matrix = p.computeProjectionMatrixFOV(self._fov, aspect_ratio, self._near_plane, self._far_plane)
-        (_, _, px, _, _) = p.getCameraImage(width=width,
-                                            height=height,
-                                            renderer=p.ER_BULLET_HARDWARE_OPENGL,
-                                            viewMatrix=view_matrix,
-                                            projectionMatrix=proj_matrix)
-
-        rgb_array = np.reshape(px, (height, width, -1))
-        rgb_array = rgb_array[:, :, :3]
-        return rgb_array
-
-
 class AccelerationSensor(BulletSensor[NDArray[(6,), np.float]]):
     @dataclass
     class Config:
