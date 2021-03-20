@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import List, Dict, Any, Tuple
 
 import pybullet
-
+import os
 from iRobot_gym.bullet.actuators import BulletActuator
 from iRobot_gym.bullet.sensors import BulletSensor
 from iRobot_gym.core.definitions import Pose
@@ -65,6 +65,8 @@ class IRobot(Vehicle):
         position, orientation = initial_pose
         orientation = pybullet.getQuaternionFromEuler(orientation)
         id = pybullet.loadURDF(model, position, orientation)
+
+        #pybullet.loadURDF(f'{base_path}/../../models/scenes/kitchen/goal.urdf',(3,3,0))
         #pybullet.changeVisualShape(id, -1, rgbaColor=self._config.color)
         
         # for k in range(pybullet.getNumJoints(id)):

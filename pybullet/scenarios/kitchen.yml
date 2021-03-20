@@ -7,4 +7,4 @@ agents:
       sensors: [ lidar, pose, velocity, acceleration ]
     task:
       task_name: maximize_progress
-      params: { time_limit: 120.0, terminate_on_collision: False}
+      params: { time_limit: 120.0, terminate_on_collision: False, goal_size_detection: 0.2}

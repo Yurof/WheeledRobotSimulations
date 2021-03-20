@@ -31,9 +31,10 @@ class VehicleConfig(YamlDataClassConfig):
 class MapConfig(YamlDataClassConfig):
     resolution: float = None
     origin: List[float] = None
-    maps: str = None
-    checkpoints: int = None
-    starting_position : List[float] = None
+    starting_position : Tuple[float,float,float] = None
+    starting_orientation : Tuple[float,float,float] = None
+    goal_position : Tuple[float,float,float] = None
+    goal_size : float = None
 
 
 @dataclass

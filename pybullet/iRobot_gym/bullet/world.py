@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Dict, Any, List
 
 import gym
+import os
 import numpy as np
 import pybullet as p
 from PIL import Image
@@ -38,21 +39,6 @@ class World(world.World):
         self._agents = agents
         self._state = dict([(a.id, {}) for a in agents])
         self._objects = {}
-        self._maps = dict([
-            (name, GridMap(
-                grid_map=np.load(config.map_config.maps)[data],
-                origin=self._config.map_config.origin,
-                resolution=self._config.map_config.resolution
-            ))
-            for name, data
-            in [
-                ('progress', 'norm_distance_from_start')
-                #('obstacle', 'norm_distance_to_obstacle')
-                ]
-        ])
-        self._state['maps'] = self._maps
-        self._trajectory = []
-        
 
 
     def init(self) -> None:
@@ -63,7 +49,9 @@ class World(world.World):
         else:
             p.connect(p.DIRECT)
 
+        
         self._load_scene(self._config.sdf)
+        self._load_goal()
         p.setTimeStep(self._config.time_step)
         p.setGravity(0, 0, self._config.gravity)
         p.resetDebugVisualizerCamera( cameraDistance=5.5, cameraYaw=0, cameraPitch=-89.9, cameraTargetPosition=[0.5,1.5,0])
@@ -80,11 +68,13 @@ class World(world.World):
         ids = p.loadSDF(sdf_file)
         objects = dict([(p.getBodyInfo(i)[1].decode('ascii'), i) for i in ids])
         self._objects = objects
+    
+    def _load_goal(self):
+        base_path = os.path.dirname(os.path.abspath(__file__))
+        p.loadURDF(f'{base_path}/../../models/scenes/goal.urdf',self._config.map_config.goal_position,globalScaling=self._config.map_config.goal_size)
 
     def get_starting_position(self, agent: Agent) -> Pose:
-        s_p = self._config.map_config.starting_position
-        return (s_p[0], s_p[1], s_p[2]), (s_p[3], s_p[4], s_p[5]) 
-        #return (0, 0, 0.05), (0.0, 0.0, 0.0)
+        return self._config.map_config.starting_position, self._config.map_config.starting_orientation
 
     def update(self):
         p.stepSimulation()
@@ -102,8 +92,7 @@ class World(world.World):
 
     def _update_race_info(self, agent):
         contact_points = set([c[2] for c in p.getContactPoints(agent.vehicle_id)])
-        progress_map = self._maps['progress'] #
-        #obstacle_map = self._maps['obstacle'] 
+        goal_pos = self._config.map_config.goal_position
         pose = util.get_pose(id=agent.vehicle_id)
         if pose is None:
             logger.warn('Could not obtain pose.')
@@ -111,7 +100,7 @@ class World(world.World):
         else:
             self._state[agent.id]['pose'] = pose
         collision_with_wall = False
-        
+        #print("distance to goal",math.sqrt((pose[0]-goal_pos[0])**2+(pose[1]-goal_pos[1])**2))
         self._state[agent.id]['wall_collision'] = collision_with_wall
         velocity = util.get_velocity(id=agent.vehicle_id)
 
@@ -122,31 +111,10 @@ class World(world.World):
             self._state[agent.id]['acceleration'] = velocity / self._config.time_step
 
         pose = self._state[agent.id]['pose']
-        progress = progress_map.get_value(position=(pose[0], pose[1], 0))
-        #dist_obstacle = obstacle_map.get_value(position=(pose[0], pose[1], 0))
         self._state[agent.id]['velocity'] = velocity
-        self._state[agent.id]['progress'] = progress
-        #self._state[agent.id]['obstacle'] = dist_obstacle
+        self._state[agent.id]['progress'] = math.sqrt((pose[0]-goal_pos[0])**2+(pose[1]-goal_pos[1])**2)
         self._state[agent.id]['time'] = self._time
         progress = self._state[agent.id]['progress']
-        checkpoints = 1.0 / float(self._config.map_config.checkpoints)
-        checkpoint = int(progress / checkpoints)
-
-        if 'checkpoint' in self._state[agent.id]:
-            last_checkpoint = self._state[agent.id]['checkpoint']
-            if last_checkpoint + 1 == checkpoint:
-                self._state[agent.id]['checkpoint'] = checkpoint
-                self._state[agent.id]['wrong_way'] = False
-            elif last_checkpoint - 1 == checkpoint:
-                self._state[agent.id]['wrong_way'] = True
-            elif last_checkpoint == self._config.map_config.checkpoints and checkpoint == 0:
-                self._state[agent.id]['checkpoint'] = checkpoint
-                self._state[agent.id]['wrong_way'] = False
-            elif last_checkpoint == 0 and checkpoint == self._config.map_config.checkpoints:
-                self._state[agent.id]['wrong_way'] = True
-        else:
-            self._state[agent.id]['checkpoint'] = checkpoint
-            self._state[agent.id]['wrong_way'] = False
 
 
     def render(self, agent_id: str, width=640, height=480) -> np.ndarray:

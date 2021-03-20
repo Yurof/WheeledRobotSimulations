@@ -62,7 +62,6 @@ def load_world(spec: WorldSpec, agents: List[Agent]) -> core.World:
     config.simulation.rendering = spec.rendering
 
     config.sdf = resolve_path(file=config_file, relative_path=config.sdf)
-    config.map.maps = resolve_path(file=config_file, relative_path=config.map.maps)
 
     world_config = World.Config(
         name=spec.name,

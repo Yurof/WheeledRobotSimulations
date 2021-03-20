@@ -1,13 +1,15 @@
 from .task import Task
 import numpy as np
-
+import os
 
 class MaximizeProgressTask(Task):
-    def __init__(self, time_limit: float, terminate_on_collision: bool,
-                 delta_progress: float = 0.0, collision_reward: float = 0.0,
-                 frame_reward: float = 0.0, progress_reward: float = 100.0, n_min_rays_termination=1080):
+
+    def __init__(self, time_limit: float, terminate_on_collision: bool, goal_size_detection : float,
+                 delta_progress: float = 0.0, collision_reward: float = -10.0,
+                 frame_reward: float = 0.0, progress_reward: float = 100.0, n_min_rays_termination=100):
         self._time_limit = time_limit
         self._terminate_on_collision = terminate_on_collision
+        self._goal_size_detection = goal_size_detection
         self._n_min_rays_termination = n_min_rays_termination
         self._last_stored_progress = None
         # reward params
@@ -21,9 +23,7 @@ class MaximizeProgressTask(Task):
         progress =  agent_state['progress']
         if self._last_stored_progress is None:
             self._last_stored_progress = progress
-        delta = abs(progress - self._last_stored_progress)
-        if delta > .5:  # the agent is crossing the starting line in the wrong direction
-            delta = (1 - progress) + self._last_stored_progress
+        delta = (-1)*(progress - self._last_stored_progress)
         reward = self._frame_reward
         if self._check_collision(agent_state):
             reward += self._collision_reward
@@ -33,7 +33,9 @@ class MaximizeProgressTask(Task):
 
     def done(self, agent_id, state) -> bool:
         agent_state = state[agent_id]
-        if self._terminate_on_collision and self._check_collision(agent_state):
+        if agent_state['progress']<self._goal_size_detection:
+            return True
+        elif self._terminate_on_collision and self._check_collision(agent_state):
             return True
         return self._time_limit < agent_state['time']
 
@@ -50,9 +52,9 @@ class MaximizeProgressTask(Task):
 
 
 class MaximizeProgressMaskObstacleTask(MaximizeProgressTask):
-    def __init__(self, time_limit: float, terminate_on_collision: bool, delta_progress=0.0,
+    def __init__(self, time_limit: float, terminate_on_collision: bool, goal_size_detection: float, delta_progress=0.0,
                  collision_reward=0, frame_reward=0, progress_reward=100):
-        super().__init__( time_limit, terminate_on_collision, delta_progress, collision_reward, frame_reward,
+        super().__init__( time_limit, terminate_on_collision, goal_size_detection, delta_progress, collision_reward, frame_reward,
                          progress_reward)
 
     def reward(self, agent_id, state, action) -> float:
