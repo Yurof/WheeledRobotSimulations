@@ -35,7 +35,7 @@ python RobotAléatoire.py
 # Pybullet
 
 ## Installation
-You can install ``racecar_gym`` with the following commands:
+You can install ``irobot_gym`` with the following commands:
 
 ```shell_script
 cd pybullet
