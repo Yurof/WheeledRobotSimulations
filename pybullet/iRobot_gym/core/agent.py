@@ -9,14 +9,25 @@ from iRobot_gym.tasks import Task
 
 class Agent:
 
-    def __init__(self, id: str, vehicle: Vehicle, task: Task):
+    def __init__(self, id: str, vehicle: Vehicle, task: Task, starting_position, starting_orientation):
         self._id = id
         self._vehicle = vehicle
         self._task = task
+        self._starting_position = starting_position
+        self._starting_orientation = starting_orientation
+
 
     @property
     def id(self) -> str:
         return self._id
+    
+    @property
+    def starting_position(self) -> str:
+        return self._starting_position
+    
+    @property
+    def starting_orientation(self) -> str:
+        return self._starting_orientation
 
     @property
     def vehicle_id(self) -> Any:

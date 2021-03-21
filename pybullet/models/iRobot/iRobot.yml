@@ -9,33 +9,6 @@ actuators:
       max_force: 0.5
 
 sensors:
-  - type: pose
-    name: pose
-    frequency: 100
-    params:
-      gaussian_noise: 0.01
-      bounds: [ 100.0, 100.0, 3.0 ]
-      debug: False
-
-  - type: acceleration
-    name: acceleration
-    frequency: 100
-    params:
-      time_delta: 0.01
-      gaussian_noise: 0.01
-      linear_bounds: [ inf, inf, inf ]
-      angular_bounds: [ inf, inf, inf ]
-      debug: False
-
-  - type: velocity
-    name: velocity
-    frequency: 100
-    params:
-      gaussian_noise: 0.01
-      max_linear_velocity: 14.0
-      max_angular_velocity: 6.0
-      debug: False
-
   - type: lidar
     name: lidar
     frequency: 25

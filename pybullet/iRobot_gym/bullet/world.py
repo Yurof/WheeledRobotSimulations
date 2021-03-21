@@ -11,7 +11,7 @@ from PIL import Image
 from gym import logger
 
 from iRobot_gym.bullet import util
-from iRobot_gym.bullet.configs import MapConfig
+from iRobot_gym.bullet.configs import GoalConfig, AgentSpec
 from iRobot_gym.core import world
 from iRobot_gym.core.agent import Agent
 from iRobot_gym.core.definitions import Pose
@@ -25,8 +25,9 @@ class World(world.World):
     class Config:
         name: str
         sdf: str
-        map_config: MapConfig
+        goal_config: GoalConfig
         rendering: bool
+        #agent_specs: AgentSpec
         time_step: float
         gravity: float
 
@@ -46,12 +47,14 @@ class World(world.World):
                 p.connect(p.GUI)
         else:
             p.connect(p.DIRECT)
-   
+        
+        #p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
+
         self._load_scene(self._config.sdf)
         self._load_goal()
         p.setTimeStep(self._config.time_step)
         p.setGravity(0, 0, self._config.gravity)
-        p.resetDebugVisualizerCamera( cameraDistance=5.5, cameraYaw=0, cameraPitch=-89.9, cameraTargetPosition=[0.5,1.5,0])
+        p.resetDebugVisualizerCamera( cameraDistance=4.6, cameraYaw=0, cameraPitch=-89.9, cameraTargetPosition=[2.5,2,0])
 
 
     def reset(self):
@@ -68,10 +71,10 @@ class World(world.World):
     
     def _load_goal(self):
         base_path = os.path.dirname(os.path.abspath(__file__))
-        p.loadURDF(f'{base_path}/../../models/scenes/goal.urdf',self._config.map_config.goal_position,globalScaling=self._config.map_config.goal_size)
+        p.loadURDF(f'{base_path}/../../models/scenes/goal.urdf',self._config.goal_config.goal_position,globalScaling=self._config.goal_config.goal_size)
 
     def get_starting_position(self, agent: Agent) -> Pose:
-        return self._config.map_config.starting_position, self._config.map_config.starting_orientation
+        return self._agents[0].starting_position,  self._agents[0].starting_orientation
 
     def update(self):
         p.stepSimulation()
@@ -88,8 +91,8 @@ class World(world.World):
         })
 
     def _update_race_info(self, agent):
-        contact_points = set([c[2] for c in p.getContactPoints(agent.vehicle_id)])
-        goal_pos = self._config.map_config.goal_position
+        #contact_points = set([c[2] for c in p.getContactPoints(agent.vehicle_id)])
+        goal_pos = self._config.goal_config.goal_position
         pose = util.get_pose(id=agent.vehicle_id)
         if pose is None:
             logger.warn('Could not obtain pose.')

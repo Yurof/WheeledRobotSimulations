@@ -1,6 +1,6 @@
 import os
 from gym.envs.registration import register
-from .envs import SingleAgentScenario, SingleAgentRaceEnv
+from .envs import SimpleNavScenario, SimpleNavEnv
 from .tasks import get_task, register_task, Task
 
 base_path = os.path.dirname(__file__)
@@ -8,11 +8,10 @@ base_path = os.path.dirname(__file__)
 
 
 def _register_single_agent(name: str, file: str, rendering: bool):
-    print("\n\nregister\n\n",f'{base_path}/../scenarios/{file}')
-    scenario = SingleAgentScenario.from_spec(path=f'{base_path}/../scenarios/{file}', rendering=rendering)
+    scenario = SimpleNavScenario.from_spec(path=f'{base_path}/../scenarios/{file}', rendering=rendering)
     register(
         id=name,
-        entry_point='iRobot_gym.envs:SingleAgentRaceEnv',
+        entry_point='iRobot_gym.envs:SimpleNavEnv',
         kwargs={'scenario': scenario}
     )
 

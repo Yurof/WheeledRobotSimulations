@@ -28,9 +28,7 @@ class VehicleConfig(YamlDataClassConfig):
 
 
 @dataclass
-class MapConfig(YamlDataClassConfig):
-    starting_position : Tuple[float,float,float] = None
-    starting_orientation : Tuple[float,float,float] = None
+class GoalConfig(YamlDataClassConfig):
     goal_position : Tuple[float,float,float] = None
     goal_size : float = None
 
@@ -68,21 +66,25 @@ class VehicleSpec(YamlDataClassConfig):
 class WorldSpec(YamlDataClassConfig):
     name: str = None
     rendering: bool = False
-
+    sdf: str = None
+    physics: PhysicsConfig = None
+    simulation: SimulationConfig = None
+    goal: GoalConfig = None
 
 @dataclass
 class AgentSpec(YamlDataClassConfig):
     id: str
     vehicle: VehicleSpec = VehicleSpec()
     task: TaskSpec = TaskSpec()
+    starting_position : Tuple[float,float,float] = None
+    starting_orientation : Tuple[float,float,float] = None
 
 
 @dataclass
 class ScenarioSpec(YamlDataClassConfig):
     world: WorldSpec = None
-    agents: List[AgentSpec] = None
-    name: str = None
-    sdf: str = None
-    map: MapConfig = None
-    physics: PhysicsConfig = None
-    simulation: SimulationConfig = None
+    agents: AgentSpec = None
+    
+    
+    
+    

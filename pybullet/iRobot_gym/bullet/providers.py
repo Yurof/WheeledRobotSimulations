@@ -7,10 +7,8 @@ from typing import List, Tuple
 from iRobot_gym import core
 from iRobot_gym.bullet.actuators import BulletActuator, Motor
 from iRobot_gym.bullet.configs import SensorConfig, VehicleConfig, ActuatorConfig,ScenarioSpec, WorldSpec, VehicleSpec
-from iRobot_gym.bullet.sensors import Lidar, PoseSensor, AccelerationSensor, VelocitySensor, BulletSensor, \
-    FixedTimestepSensor
+from iRobot_gym.bullet.sensors import Lidar,BulletSensor,FixedTimestepSensor
 from iRobot_gym.bullet.vehicle import IRobot
-#from iRobot_gym.envs.specs import WorldSpec, VehicleSpec
 from .world import World
 from ..core.agent import Agent
 
@@ -19,13 +17,6 @@ base_path = os.path.dirname(os.path.abspath(__file__))
 def load_sensor(config: SensorConfig) -> BulletSensor:
     if config.type == 'lidar':
         return Lidar(name=config.name, type=config.type, config=Lidar.Config(**config.params))
-    if config.type == 'pose':
-        return PoseSensor(name=config.name, type=config.type, config=PoseSensor.Config(**config.params))
-    if config.type == 'acceleration':
-        return AccelerationSensor(name=config.name, type=config.type, config=AccelerationSensor.Config(**config.params))
-    if config.type == 'velocity':
-        return VelocitySensor(name=config.name, type=config.type, config=VelocitySensor.Config(**config.params))
-
 
 def load_actuator(config: ActuatorConfig) -> BulletActuator:
     if config.type == 'motor':
@@ -59,19 +50,19 @@ def load_world(spec: WorldSpec, agents: List[Agent]) -> core.World:
 
     config = ScenarioSpec()
     config.load(config_file)
-    config.simulation.rendering = spec.rendering
+    spec.simulation.rendering = spec.rendering
 
     config_file_sdf= f'{base_path}/../../models/scenes/{spec.name}/{spec.name}'
 
-    config.sdf = resolve_path(file=config_file_sdf, relative_path=config.sdf)
+    config.sdf = resolve_path(file=config_file_sdf, relative_path=spec.sdf)
 
     world_config = World.Config(
         name=spec.name,
         sdf=config.sdf,
-        map_config=config.map,
-        time_step=config.simulation.time_step,
-        gravity=config.physics.gravity,
-        rendering=config.simulation.rendering,
+        goal_config=spec.goal,
+        time_step=spec.simulation.time_step,
+        gravity=spec.physics.gravity,
+        rendering=spec.simulation.rendering,
     )
 
     return World(config=world_config, agents=agents)

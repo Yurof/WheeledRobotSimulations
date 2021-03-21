@@ -1,10 +1,10 @@
 from typing import Dict
 import gym
-from .scenarios import SingleAgentScenario
+from .scenarios import SimpleNavScenario
 
-class SingleAgentRaceEnv(gym.Env):
+class SimpleNavEnv(gym.Env):
 
-    def __init__(self, scenario: SingleAgentScenario):
+    def __init__(self, scenario: SimpleNavScenario):
         self._scenario = scenario
         self._initialized = False
         self._time = 0.0

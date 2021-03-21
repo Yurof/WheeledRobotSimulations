@@ -1,14 +1,14 @@
 from time import sleep
 import gym
-from iRobot_gym.envs import SingleAgentRaceEnv
+from iRobot_gym.envs import SimpleNavEnv
 import random
 from numpy import array
 
 env = gym.make('Kitchen_Gui-v0')
-#env = gym.make('Maze_hard_Gui-v0')
+##env = gym.make('Maze_hard_Gui-v0')
 
 done = False
-time_sleep= 1
+time_sleep= 0.05
 
 obs = env.reset()
 
@@ -20,7 +20,6 @@ obs, rewards, done, states = env.step(action)
 def mouvement(l, r, n):
     for k in range(n):
         obs, rewards, done, states = env.step(dict([('motor', array([l, r]))]))
-        #print(l,r)
         #print(obs['lidar'][len(obs['lidar'])//2], end="\r")  
         sleep(time_sleep)
         image = env.render()
@@ -28,7 +27,7 @@ def mouvement(l, r, n):
         #     print("touche le mur")
         global i
         i+= 1
-        print("Step  %d reward=%f robot position=%s progress=%f" % (i,rewards,  str(states["pose"][0:3]) ,states["progress"] ) , end="\r" )
+        print("Step  %d reward=%f robot position=%s progress=%f" % (i,rewards,  str(states["pose"][0:2]) ,states["progress"] ) , end="\r" )
                                
         return obs, rewards, done, states
 
