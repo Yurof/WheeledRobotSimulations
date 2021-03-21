@@ -19,7 +19,7 @@ def _register_single_agent(name: str, file: str, rendering: bool):
 for scenario_file in os.listdir(f'{base_path}/../scenarios'):
     track_name = os.path.basename(scenario_file).split('.')[0]
     name = f'{track_name.capitalize()}'
-    _register_single_agent(name=f'SingleAgent{name}-v0', file=scenario_file, rendering=False)
-    _register_single_agent(name=f'SingleAgent{name}_Gui-v0', file=scenario_file, rendering=True)
+    _register_single_agent(name=f'{name}-v0', file=scenario_file, rendering=False)
+    _register_single_agent(name=f'{name}_Gui-v0', file=scenario_file, rendering=True)
 
 

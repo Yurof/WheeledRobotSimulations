@@ -1,11 +1,9 @@
 from time import sleep
 import gym
 from iRobot_gym.envs import SingleAgentRaceEnv
-import random
-from numpy import array
 
-#env = gym.make('SingleAgentKitchen_Gui-v0')
-env = gym.make('SingleAgentMaze_hard_Gui-v0')
+env = gym.make('Kitchen_Gui-v0')
+#env = gym.make('Maze_hard_Gui-v0')
 
 done = False
 
