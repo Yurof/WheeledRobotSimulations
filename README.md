@@ -1,8 +1,8 @@
 # Prandroide
-Apprentissage et généralisation sur une tâche de navigation d'un robot à roues 
+Learning and generalization on a navigation task of a wheeled robot 
 
 ## installation
-lancer `install-dependencies.sh` pour installer les librairies nécessaires :
+Run `install-dependencies.sh` to install the necessary libraries:
 - gym
 - libfastsim
 - pybind11
@@ -18,14 +18,15 @@ lancer `install-dependencies.sh` pour installer les librairies nécessaires :
 |![maze_hard](readme_assets/maze_hard.svg)|![maze_hard3D](readme_assets/maze_hard3D.png)|`Maze_hard-v0`|
 
 Use the function ``svg2obj.py`` to convert an svg image to a 3D object using Blender (Note: change directory in the program)
+
 ## Robot
-![iRobot](readme_assets/irobot.png)
+<img src="readme_assets/irobot.png" width="300">
 
 We have modified a model of the iRobot create.
 # libfastsim
 ## Documentation
 documentation can be found here : https://github.com/jbmouret/libfastsim
-and here for the pytohn binding : https://github.com/alexendy/pyfastsim
+and here for the python binding : https://github.com/alexendy/pyfastsim
 ## Example
 ```
 python RobotAléatoire.py
