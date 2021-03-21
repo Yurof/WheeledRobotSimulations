@@ -62,7 +62,7 @@ class World(world.World):
         self._state = dict([(a.id, {}) for a in self._agents])
 
     def _load_scene(self, sdf_file: str):
-        ids = p.loadSDF(sdf_file,(-5,-5,0))
+        ids = p.loadSDF(sdf_file)
         objects = dict([(p.getBodyInfo(i)[1].decode('ascii'), i) for i in ids])
         self._objects = objects
     
