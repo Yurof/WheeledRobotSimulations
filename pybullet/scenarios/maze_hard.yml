@@ -1,3 +1,18 @@
+name: maze_hard
+sdf: maze_hard.sdf
+map:
+  starting_position: [0, 0, 0.05]
+  starting_orientation : [ 0.0, 0.0, 1]
+  goal_position: [-1,3.5,0]
+  goal_size : 0.2
+
+physics:
+  gravity: -9.81
+
+simulation:
+  time_step: 0.01
+  rendering: True
+  
 world:
   name: maze_hard
 agents:

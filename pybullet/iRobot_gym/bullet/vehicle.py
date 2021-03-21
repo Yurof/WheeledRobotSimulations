@@ -66,9 +66,6 @@ class IRobot(Vehicle):
         orientation = pybullet.getQuaternionFromEuler(orientation)
         id = pybullet.loadURDF(model, position, orientation)
 
-        #pybullet.loadURDF(f'{base_path}/../../models/scenes/kitchen/goal.urdf',(3,3,0))
-        #pybullet.changeVisualShape(id, -1, rgbaColor=self._config.color)
-        
         # for k in range(pybullet.getNumJoints(id)):
         #     print("ID",id, pybullet.getJointInfo(id,k))
         

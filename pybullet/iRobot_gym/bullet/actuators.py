@@ -43,23 +43,20 @@ class Motor(BulletActuator[Tuple[float, float]]):
 
     def control(self, acceleration) -> None:
         acceleration1, acceleration2 = acceleration
-        acceleration1 = np.clip(acceleration1, -1, +1)
+        acceleration1 = np.clip(acceleration1, -1, +1) #left wheel
         if acceleration1 < 0:
             velocity1 = -1*self._config.max_velocity * self._config.velocity_multiplier
         else:
             velocity1 = self._config.max_velocity * self._config.velocity_multiplier
         force1 = abs(acceleration1) * self._config.max_force
         
-        acceleration2 = np.clip(acceleration2, -1, +1)
+        acceleration2 = np.clip(acceleration2, -1, +1) #right wheel
         if acceleration2 < 0:
             velocity2 = -1*self._config.max_velocity * self._config.velocity_multiplier
         else:
             velocity2 = self._config.max_velocity * self._config.velocity_multiplier
         force2 = abs(acceleration2) * self._config.max_force
-        #print("velo force",velocity, force)
 
-        #for index in self.joint_indices:
-            #print(self.body_id,index)
         pybullet.setJointMotorControl2(
             self.body_id, self.joint_indices[0],
             pybullet.VELOCITY_CONTROL,

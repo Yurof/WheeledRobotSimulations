@@ -4,8 +4,6 @@ from .scenarios import SingleAgentScenario
 
 class SingleAgentRaceEnv(gym.Env):
 
-    metadata = {'render.modes': ['follow', 'birds_eye', 'lidar']}
-
     def __init__(self, scenario: SingleAgentScenario):
         self._scenario = scenario
         self._initialized = False

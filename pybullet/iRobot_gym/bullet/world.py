@@ -15,8 +15,6 @@ from iRobot_gym.bullet.configs import MapConfig
 from iRobot_gym.core import world
 from iRobot_gym.core.agent import Agent
 from iRobot_gym.core.definitions import Pose
-from iRobot_gym.core.gridmaps import GridMap
-
 
 class World(world.World):
     FLOOR_ID = 0
@@ -48,8 +46,7 @@ class World(world.World):
                 p.connect(p.GUI)
         else:
             p.connect(p.DIRECT)
-
-        
+   
         self._load_scene(self._config.sdf)
         self._load_goal()
         p.setTimeStep(self._config.time_step)
@@ -65,7 +62,7 @@ class World(world.World):
         self._state = dict([(a.id, {}) for a in self._agents])
 
     def _load_scene(self, sdf_file: str):
-        ids = p.loadSDF(sdf_file)
+        ids = p.loadSDF(sdf_file,(-5,-5,0))
         objects = dict([(p.getBodyInfo(i)[1].decode('ascii'), i) for i in ids])
         self._objects = objects
     

@@ -6,11 +6,11 @@ from typing import List, Tuple
 
 from iRobot_gym import core
 from iRobot_gym.bullet.actuators import BulletActuator, Motor
-from iRobot_gym.bullet.configs import SensorConfig, VehicleConfig, ActuatorConfig, SceneConfig
+from iRobot_gym.bullet.configs import SensorConfig, VehicleConfig, ActuatorConfig,ScenarioSpec, WorldSpec, VehicleSpec
 from iRobot_gym.bullet.sensors import Lidar, PoseSensor, AccelerationSensor, VelocitySensor, BulletSensor, \
     FixedTimestepSensor
 from iRobot_gym.bullet.vehicle import IRobot
-from iRobot_gym.envs.specs import WorldSpec, VehicleSpec
+#from iRobot_gym.envs.specs import WorldSpec, VehicleSpec
 from .world import World
 from ..core.agent import Agent
 
@@ -54,14 +54,16 @@ def load_vehicle(spec: VehicleSpec) -> core.Vehicle:
 
 
 def load_world(spec: WorldSpec, agents: List[Agent]) -> core.World:
-    scene_path = f'{base_path}/../../models/scenes'
-    config_file = f'{scene_path}/{spec.name}/{spec.name}.yml'
+    scene_path = f'{base_path}/../../scenarios'
+    config_file = f'{scene_path}/{spec.name}.yml'
 
-    config = SceneConfig()
+    config = ScenarioSpec()
     config.load(config_file)
     config.simulation.rendering = spec.rendering
 
-    config.sdf = resolve_path(file=config_file, relative_path=config.sdf)
+    config_file_sdf= f'{base_path}/../../models/scenes/{spec.name}/{spec.name}'
+
+    config.sdf = resolve_path(file=config_file_sdf, relative_path=config.sdf)
 
     world_config = World.Config(
         name=spec.name,

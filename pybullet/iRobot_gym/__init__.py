@@ -8,6 +8,7 @@ base_path = os.path.dirname(__file__)
 
 
 def _register_single_agent(name: str, file: str, rendering: bool):
+    print("\n\nregister\n\n",f'{base_path}/../scenarios/{file}')
     scenario = SingleAgentScenario.from_spec(path=f'{base_path}/../scenarios/{file}', rendering=rendering)
     register(
         id=name,

@@ -22,10 +22,6 @@
     <color rgba="1.0, 1.0, 0.0, 1.0"/>
   </material>
 
-  <material name="body">
-    <texture filename="materials/textures/create_body.png"/>
-</material>
-
 
     <link name="base_footprint">
         <visual name="base_visual">

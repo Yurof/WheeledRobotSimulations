@@ -4,7 +4,9 @@ from typing import Dict
 from iRobot_gym.bullet import load_world, load_vehicle
 from iRobot_gym.tasks import Task, get_task
 from iRobot_gym.core import World, Agent
-from .specs import ScenarioSpec, TaskSpec
+#from .specs import ScenarioSpec, TaskSpec
+from iRobot_gym.bullet.configs import ScenarioSpec, TaskSpec
+
 
 def task_from_spec(spec: TaskSpec) -> Task:
     task = get_task(spec.task_name)
