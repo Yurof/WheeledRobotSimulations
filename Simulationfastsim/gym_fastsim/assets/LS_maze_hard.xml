@@ -11,7 +11,6 @@
   
   <!-- sensors -->
   <laser range="100" angle="45"/>
-  <laser range="100" angle="0"/>
   <laser range="100" angle="-45"/>
   <!-- <radar slices="4" color="0"/> --> <!-- radar disabled for now -->
 </fastsim>
