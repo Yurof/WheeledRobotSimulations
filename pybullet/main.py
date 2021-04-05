@@ -55,7 +55,7 @@ class SimEnv():
 
         while not self.done:
 
-            if self.i % 100 == 0:
+            if self.i % 50 == 0:
                 command = self.controller.get_command()
                 self.obs, self.rew, self.done, self.info = self.mouvement(
                     command)

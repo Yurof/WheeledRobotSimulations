@@ -20,8 +20,8 @@ class ForwardController:
         self.wall_tooCloseL = False
         self.v_forward = 1
         self.v_turn = 0.4
-        self.right = [self.v_turn, -self.v_turn]
-        self.left = [-self.v_turn, self.v_turn]
+        self.right = [self.v_turn+0.1, -self.v_turn]
+        self.left = [-self.v_turn, self.v_turn+0.1]
         self.forward = [self.v_forward, self.v_forward]
 
     def get_command(self):
@@ -77,6 +77,6 @@ class ForwardController:
         self.wall_tooCloseL = False
         self.v_forward = 1
         self.v_turn = 0.4
-        self.right = [self.v_turn, -self.v_turn]
-        self.left = [-self.v_turn, self.v_turn]
+        self.right = [self.v_turn+0.1, -self.v_turn]
+        self.left = [-self.v_turn, self.v_turn+0.1]
         self.forward = [self.v_forward, self.v_forward]
