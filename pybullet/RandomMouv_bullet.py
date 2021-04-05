@@ -21,7 +21,7 @@ time_sleep = 0.01
 obs = env.reset()
 
 i = 0
-action = dict([('motor', array([0, 0]))])
+action = [0, 0]
 lidar_collision = 0.35
 obs, rewards, done, states = env.step(action)
 ListePosition = []
@@ -29,7 +29,7 @@ ListePosition = []
 
 def mouvement(l, r, n):
     for k in range(n):
-        obs, rewards, done, states = env.step(dict([('motor', array([l, r]))]))
+        obs, rewards, done, states = env.step([l, r])
         #print(obs['lidar'][len(obs['lidar'])//2], end="\r")
         sleep(time_sleep)
         image = env.render()

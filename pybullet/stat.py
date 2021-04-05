@@ -18,12 +18,12 @@ img = plt.imread(f'{base_path}/models/scenes/maze_hard/maze_hard.pbm')
 
 # plt.annotate("Start", xy=(160, 80),  xytext=(160, 60))
 # plt.plot(160, 80, 'rx')
+nb_rapport = img.shape[0]/6.6
+plt.annotate("Goal", xy=(nb_rapport, 9*nb_rapport),  xytext=(10, 170))
+plt.plot(nb_rapport, 6*nb_rapport, 'go', markersize=25)
 
-plt.annotate("Goal", xy=(20, 180),  xytext=(10, 170))
-plt.plot(20, 180, 'go', markersize=25)
-
-plt.annotate("Start", xy=(20, 40),  xytext=(20, 20))
-plt.plot(20, 40, 'rx')
+plt.annotate("Start", xy=(nb_rapport, nb_rapport),  xytext=(20, 20))
+plt.plot(nb_rapport, nb_rapport, 'rx')
 
 plt.imshow(np.flipud(img), origin='lower')
 
@@ -31,7 +31,7 @@ x = df.x
 y = df.y
 steps = df.steps
 dist = df.distance_to_obj
-plt.plot(x*img.shape[0]/10, y*img.shape[0]/10, label="test", alpha=0.7)
+plt.plot(x*nb_rapport, y*nb_rapport, label="test", alpha=0.7)
 plt.axis('off')
 plt.legend()
 plt.show()

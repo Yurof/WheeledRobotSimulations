@@ -11,8 +11,7 @@ from .sensors import Sensor
 class Vehicle(ABC):
 
     def control(self, commands: Dict) -> None:
-        for actuator, command in commands.items():
-            self.actuators[actuator].control(command)
+        self.actuators['motor'].control(commands)
 
     def observe(self) -> Dict[str, Any]:
         observations = {}

@@ -34,7 +34,6 @@ class Motor(BulletActuator[Tuple[float, float]]):
     @dataclass
     class Config:
         velocity_multiplier: float
-        max_velocity: float
         max_force: float
 
     def __init__(self, name: str, config: Config):
@@ -43,31 +42,19 @@ class Motor(BulletActuator[Tuple[float, float]]):
 
     def control(self, acceleration) -> None:
         acceleration1, acceleration2 = acceleration
+
         acceleration1 = np.clip(acceleration1, -1, +1)  # left wheel
-        if acceleration1 < 0:
-            velocity1 = -1*self._config.max_velocity * self._config.velocity_multiplier
-        else:
-            velocity1 = self._config.max_velocity * self._config.velocity_multiplier
-        force1 = abs(acceleration1) * self._config.max_force
+        velocity1 = acceleration1 * self._config.velocity_multiplier
 
         acceleration2 = np.clip(acceleration2, -1, +1)  # right wheel
-        if acceleration2 < 0:
-            velocity2 = -1*self._config.max_velocity * self._config.velocity_multiplier
-        else:
-            velocity2 = self._config.max_velocity * self._config.velocity_multiplier
-        force2 = abs(acceleration2) * self._config.max_force
+        velocity2 = acceleration2 * self._config.velocity_multiplier
 
-        pybullet.setJointMotorControl2(
-            self.body_id, self.joint_indices[0],
+        pybullet.setJointMotorControlArray(
+            self.body_id,
+            self.joint_indices,
             pybullet.VELOCITY_CONTROL,
-            targetVelocity=velocity1,
-            force=force1
-        )
-        pybullet.setJointMotorControl2(
-            self.body_id, self.joint_indices[1],
-            pybullet.VELOCITY_CONTROL,
-            targetVelocity=velocity2,
-            force=force2
+            targetVelocities=[velocity1, velocity2],
+            forces=[self._config.max_force]*2
         )
 
     def space(self) -> gym.Space:
