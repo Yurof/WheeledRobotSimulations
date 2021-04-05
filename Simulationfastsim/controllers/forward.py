@@ -27,9 +27,15 @@ class ForwardController:
 
         self.wall_tooCloseL = False
 
+<<<<<<< Updated upstream
         self.right = [1, -1]
 
         self.left = [-1, 1]
+=======
+        self.right = [-1, 1]
+
+        self.left = [1, -1]
+>>>>>>> Stashed changes
 
         self.forward = [1, 1]
 
@@ -136,8 +142,13 @@ class ForwardController:
 
         self.wall_tooCloseL = False
 
+<<<<<<< Updated upstream
         self.right = [1, -1]
 
         self.left = [-1, 1]
+=======
+        self.right = [-1, 1]
+
+        self.left = [1, -1]
 
         self.forward = [1, 1]

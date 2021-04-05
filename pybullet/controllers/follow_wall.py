@@ -1,5 +1,4 @@
 from .forward import ForwardController
-from numpy import array
 
 
 class Follow_wallController:
@@ -112,7 +111,7 @@ class Follow_wallController:
         if self.verbose:
             print(f"Chosen action : {c}")
 
-        return dict([('motor', array(c))])
+        return c
 
     def reset(self):
         self.forwardcontroller.reset()

@@ -1,6 +1,7 @@
 from controllers.follow_wall import Follow_wallController
 from controllers.forward import ForwardController
 import time
+from numpy import array
 
 from time import sleep
 import gym
@@ -47,7 +48,7 @@ class SimEnv():
         # initialize controllers
         forward = ForwardController(self.env, verbose=True)
         wall = Follow_wallController(self.env, verbose=True)
-        self.controller = wall
+        self.controller = forward
 
         # start timers
         then = time.time()
@@ -56,7 +57,12 @@ class SimEnv():
         while not self.done:
 
             if self.i % 50 == 0:
+<<<<<<< Updated upstream
                 command = self.controller.get_command()
+=======
+                command = dict(
+                    [('motor', array(self.controller.get_command()))])
+>>>>>>> Stashed changes
                 self.obs, self.rew, self.done, self.info = self.mouvement(
                     command)
                 x, y, z, roll, pitch, yaw = self.info['pose']
