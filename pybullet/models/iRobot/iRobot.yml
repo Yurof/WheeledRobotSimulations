@@ -15,7 +15,7 @@ sensors:
     params:
       accuracy: 0.03 # maximum deviation from true scan range (percentage)
       rays: 10 #1080
-      range: 15.0
+      range: 1.0
       min_range: 0.05
       angle_start: -0.85 #angle/2 pour que ce soit centré
       angle: 2.71  #taille de l'angle

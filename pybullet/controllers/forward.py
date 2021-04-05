@@ -14,13 +14,13 @@ class ForwardController:
         self.verbose = verbose
 
         # behavioral parameters
-        self.dist_tooClose = 1
+        self.dist_tooClose = 0.3
         self.wall_tooCloseF = False
         self.wall_tooCloseR = False
         self.wall_tooCloseL = False
-        self.right = [-1, 1]
-        self.left = [1, -1]
-        self.forward = [0.5, 0.5]
+        self.right = [-0.5, 0.5]
+        self.left = [0.5, -0.5]
+        self.forward = [1, 1]
 
         # there is this case where the agent might be stuck and alternate
         # endlessly between left and right, so we add an additional parameter
@@ -80,10 +80,10 @@ class ForwardController:
         return c
 
     def reset(self):
-        self.dist_tooClose = 1
+        self.dist_tooClose = 0.3
         self.wall_tooCloseF = False
         self.wall_tooCloseR = False
         self.wall_tooCloseL = False
-        self.right = [-1, 1]
-        self.left = [1, -1]
-        self.forward = [0.5, 0.5]
+        self.right = [-0.5, 0.5]
+        self.left = [0.5, -0.5]
+        self.forward = [1, 1]

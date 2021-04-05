@@ -29,6 +29,7 @@ class SimEnv():
     def mouvement(self, c, n=1):
         for _ in range(n):
             obs, rew, done, info = self.env.step(c)
+
             #print("Valeur de obs :" + str(obs))
             #print("Valeur de rew :" + str(rew))
             #print("Valeur de done :" + str(done))
@@ -58,7 +59,7 @@ class SimEnv():
             # print(command)
             self.obs, self.rew, self.done, self.info = self.mouvement(command)
             x, y, z, roll, pitch, yaw = self.info['pose']
-            print(x, y, z, roll, pitch, yaw)
+            #print(x, y, z, roll, pitch, yaw)
             ListePosition.append([self.i, x, y, z, roll, pitch, yaw,
                                   self.info["progress"], self.obs['lidar'][::len(self.obs['lidar'])-1]])
             self.controller.reset()
@@ -72,7 +73,7 @@ class SimEnv():
 if __name__ == "__main__":
     env1 = 'Kitchen-v0'
     env2 = 'Maze_hard-v0'
-    sleep_time = 0.01
+    sleep_time = 0.1
     display = True
     simEnv = SimEnv(env2, sleep_time, display)
     simEnv.start()

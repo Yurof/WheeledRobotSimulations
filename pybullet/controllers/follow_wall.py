@@ -15,9 +15,9 @@ class Follow_wallController:
         self.forwardcontroller = ForwardController(env)
 
         # behavioral parameters
-        self.dist_tooClose = 0.6
-        self.dist_tooFar = 2
-        self.dist_obstacle = 1
+        self.dist_tooClose = 0.3
+        self.dist_tooFar = 0.7
+        self.dist_obstacle = 0.7
         self.obstacleFront = False
         self.wall_tooCloseR = False
         self.wall_R_OK = False
@@ -25,9 +25,9 @@ class Follow_wallController:
         self.wall_tooCloseL = False
         self.wall_L_OK = False
         self.wall_tooFarL = False
-        self.right = [-1, 1]
-        self.left = [1, -1]
-        self.forward = [0.5, 0.5]
+        self.right = [-0.5, 0.5]
+        self.left = [0.5, 0.5]
+        self.forward = [1, 1]
 
         # there is this case where the agent might be stuck and alternate
         # endlessly between left and right, so we add an additional parameter
@@ -94,15 +94,15 @@ class Follow_wallController:
                 print("NP")
             c = self.forward
 
-        elif self.wall_tooFarL and (not self.wall_tooFarR or min_dist_R < min_dist_L):
-            if self.verbose:
-                print("TOO FAR LEFT")
-            c = self.left
-
         elif self.wall_tooFarR and (not self.wall_tooFarL or min_dist_L < min_dist_R):
             if self.verbose:
-                print("TOO FAR RIGHT")
+                print("TOO FAR LEFT")
             c = self.right
+
+        elif self.wall_tooFarR and (not self.wall_tooFarR or min_dist_R < min_dist_L):
+            if self.verbose:
+                print("TOO FAR RIGHT")
+            c = self.left
 
         else:
             if self.verbose:
@@ -121,9 +121,9 @@ class Follow_wallController:
 
     def reset(self):
         self.forwardcontroller.reset()
-        self.dist_tooClose = 0.6
-        self.dist_tooFar = 2
-        self.dist_obstacle = 1
+        self.dist_tooClose = 0.3
+        self.dist_tooFar = 0.7
+        self.dist_obstacle = 0.7
         self.obstacleFront = False
         self.wall_tooCloseR = False
         self.wall_R_OK = False
@@ -131,6 +131,6 @@ class Follow_wallController:
         self.wall_tooCloseL = False
         self.wall_L_OK = False
         self.wall_tooFarL = False
-        self.right = [-1, 1]
-        self.left = [1, -1]
-        self.forward = [0.5, 0.5]
+        self.right = [-0.5, 0.5]
+        self.left = [0.5, -0.5]
+        self.forward = [1, 1]
