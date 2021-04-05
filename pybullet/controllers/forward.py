@@ -14,11 +14,7 @@ class ForwardController:
         self.verbose = verbose
 
         # behavioral parameters
-<<<<<<< Updated upstream
-        self.dist_tooClose = 0.4
-=======
         self.dist_tooClose = 0.5
->>>>>>> Stashed changes
         self.wall_tooCloseF = False
         self.wall_tooCloseR = False
         self.wall_tooCloseL = False
@@ -50,11 +46,8 @@ class ForwardController:
                 elif i in range(4, 6):
                     self.wall_tooCloseF = True
                 elif i in range(6, 10):
-<<<<<<< Updated upstream
-=======
                     if min_dist_R > laserRanges[i]:
                         min_dist_R = laserRanges[i]
->>>>>>> Stashed changes
                     self.wall_tooCloseR = True
 
         # we adapt our policy based on what we have detected
@@ -84,11 +77,7 @@ class ForwardController:
         return c
 
     def reset(self):
-<<<<<<< Updated upstream
-        self.dist_tooClose = 0.4
-=======
         self.dist_tooClose = 0.5
->>>>>>> Stashed changes
         self.wall_tooCloseF = False
         self.wall_tooCloseR = False
         self.wall_tooCloseL = False
