@@ -5,10 +5,11 @@ world:
     gravity: -9.81
   simulation:
     time_step: 0.01
-    rendering: True
+    rendering: False
   goal:
     goal_position: [1,4,0]
     goal_size : 0.2
+  rendering: True
 
 agents:
   id: A
@@ -18,5 +19,5 @@ agents:
   task:
     task_name: maximize_progress
     params: { time_limit: 120.0, terminate_on_collision: False, goal_size_detection: 0.2}
-  starting_position: [2, 1, 0.05]
+  starting_position: [2, 1, 0.8]
   starting_orientation: [ 0.0, 0.0, 1]

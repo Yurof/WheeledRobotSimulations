@@ -1,1 +1,1 @@
-from .single_agent_race import SimpleNavEnv, SimpleNavScenario
+from .nav_env import SimpleNavEnv, SimpleNavScenario

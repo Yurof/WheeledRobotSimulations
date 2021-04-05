@@ -2,6 +2,7 @@ from typing import Dict
 import gym
 from .scenarios import SimpleNavScenario
 
+
 class SimpleNavEnv(gym.Env):
 
     def __init__(self, scenario: SimpleNavScenario):
@@ -10,6 +11,7 @@ class SimpleNavEnv(gym.Env):
         self._time = 0.0
         self.observation_space = scenario.agent.observation_space
         self.action_space = scenario.agent.action_space
+        self.observation = dict()
 
     @property
     def scenario(self):
@@ -18,12 +20,12 @@ class SimpleNavEnv(gym.Env):
     def step(self, action: Dict):
         assert self._initialized, 'Reset before calling step'
         state = self._scenario.world.state()
-        observation, info = self._scenario.agent.step(action=action)
-        observation['time'] = self._time
+        self.observation, info = self._scenario.agent.step(action=action)
+        self.observation['time'] = self._time
         done = self._scenario.agent.done(state)
         reward = self._scenario.agent.reward(state, action)
         self._time = self._scenario.world.update()
-        return observation, reward, done, state[self._scenario.agent.id]
+        return self.observation, reward, done, state[self._scenario.agent.id]
 
     def reset(self):
         if not self._initialized:
@@ -31,13 +33,17 @@ class SimpleNavEnv(gym.Env):
             self._initialized = True
         else:
             self._scenario.world.reset()
-        obs = self._scenario.agent.reset(self._scenario.world.get_starting_position(self._scenario.agent))
+        obs = self._scenario.agent.reset(
+            self._scenario.world.get_starting_position(self._scenario.agent))
         self._scenario.world.update()
         obs['time'] = 0
         return obs
 
     def render(self, **kwargs):
-        return self._scenario.world.render( agent_id=self._scenario.agent.id, **kwargs)
+        return self._scenario.world.render(agent_id=self._scenario.agent.id, **kwargs)
 
     def seed(self, seed=None):
         self._scenario.world.seed(seed)
+
+    def get_laserranges(self):
+        return self.observation['lidar']

@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 
 from iRobot_gym.core import Agent
 
+
 def get_velocity(id: int) -> NDArray[(6,), np.float]:
     linear, angular = pybullet.getBaseVelocity(id)
     position, orientation = pybullet.getBasePositionAndOrientation(id)
@@ -27,7 +28,8 @@ def get_pose(id: int) -> Optional[NDArray[(6,), np.float]]:
 
 
 def follow_agent(agent: Agent, width=640, height=480) -> np.ndarray:
-    position, orientation = pybullet.getBasePositionAndOrientation(agent.vehicle_id)
+    position, orientation = pybullet.getBasePositionAndOrientation(
+        agent.vehicle_id)
     _, _, yaw = pybullet.getEulerFromQuaternion(orientation)
     orientation = pybullet.getQuaternionFromEuler((0, 0, yaw))
     rot_matrix = pybullet.getMatrixFromQuaternion(orientation)
@@ -35,7 +37,8 @@ def follow_agent(agent: Agent, width=640, height=480) -> np.ndarray:
     camera_position = position + rot_matrix.dot([-0.8, 0, 0.3])
     up_vector = rot_matrix.dot([0, 0, 1])
     target = position
-    view_matrix = pybullet.computeViewMatrix(camera_position, target, up_vector)
+    view_matrix = pybullet.computeViewMatrix(
+        camera_position, target, up_vector)
     proj_matrix = pybullet.computeProjectionMatrixFOV(
         fov=60,
         aspect=float(width) / height,

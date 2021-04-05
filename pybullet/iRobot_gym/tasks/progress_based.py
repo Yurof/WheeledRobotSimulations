@@ -1,10 +1,11 @@
 from .task import Task
+from iRobot_gym.tasks import Task
 import numpy as np
-import os
+
 
 class MaximizeProgressTask(Task):
 
-    def __init__(self, time_limit: float, terminate_on_collision: bool, goal_size_detection : float,
+    def __init__(self, time_limit: float, terminate_on_collision: bool, goal_size_detection: float,
                  delta_progress: float = 0.0, collision_reward: float = -10.0,
                  frame_reward: float = 0.0, progress_reward: float = 100.0, n_min_rays_termination=100):
         self._time_limit = time_limit
@@ -20,7 +21,7 @@ class MaximizeProgressTask(Task):
 
     def reward(self, agent_id, state, action) -> float:
         agent_state = state[agent_id]
-        progress =  agent_state['progress']
+        progress = agent_state['progress']
         if self._last_stored_progress is None:
             self._last_stored_progress = progress
         delta = (-1)*(progress - self._last_stored_progress)
@@ -33,7 +34,7 @@ class MaximizeProgressTask(Task):
 
     def done(self, agent_id, state) -> bool:
         agent_state = state[agent_id]
-        if agent_state['progress']<self._goal_size_detection:
+        if agent_state['progress'] < self._goal_size_detection:
             return True
         elif self._terminate_on_collision and self._check_collision(agent_state):
             return True
@@ -43,26 +44,10 @@ class MaximizeProgressTask(Task):
         safe_margin = 0.25
         collision = agent_state['wall_collision'] > 0
         if 'observations' in agent_state and 'lidar' in agent_state['observations']:
-            n_min_rays = sum(np.where(agent_state['observations']['lidar'] <= safe_margin, 1, 0))
-            return n_min_rays>self._n_min_rays_termination or collision
+            n_min_rays = sum(
+                np.where(agent_state['observations']['lidar'] <= safe_margin, 1, 0))
+            return n_min_rays > self._n_min_rays_termination or collision
         return collision
 
     def reset(self):
         self._last_stored_progress = None
-
-
-class MaximizeProgressMaskObstacleTask(MaximizeProgressTask):
-    def __init__(self, time_limit: float, terminate_on_collision: bool, goal_size_detection: float, delta_progress=0.0,
-                 collision_reward=0, frame_reward=0, progress_reward=100):
-        super().__init__( time_limit, terminate_on_collision, goal_size_detection, delta_progress, collision_reward, frame_reward,
-                         progress_reward)
-
-    def reward(self, agent_id, state, action) -> float:
-        progress_reward = super().reward(agent_id, state, action)
-        distance_to_obstacle = state[agent_id]['obstacle']
-        if distance_to_obstacle < .3:  # max distance = 1, meaning perfectly centered in the widest point of the track
-            return 0.0
-        else:
-            return progress_reward
-
-

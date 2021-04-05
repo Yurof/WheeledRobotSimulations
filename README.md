@@ -120,4 +120,4 @@ while not done:
 
 env.close()
 ```
-![kitchen](readme_assets/pybullet.gif)
+![pybullet_._gif](readme_assets/pybullet.gif)

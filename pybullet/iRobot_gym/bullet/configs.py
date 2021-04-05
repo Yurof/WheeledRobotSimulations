@@ -29,8 +29,8 @@ class VehicleConfig(YamlDataClassConfig):
 
 @dataclass
 class GoalConfig(YamlDataClassConfig):
-    goal_position : Tuple[float,float,float] = None
-    goal_size : float = None
+    goal_position: List[float] = field(default_factory=lambda: [])
+    goal_size: float = None
 
 
 @dataclass
@@ -42,12 +42,6 @@ class SimulationConfig(YamlDataClassConfig):
 @dataclass
 class PhysicsConfig(YamlDataClassConfig):
     gravity: float = None
-
-# @dataclass
-# class SimulationSpec(YamlDataClassConfig):
-#     time_step: float = 0.01
-#     rendering: bool = False
-#     implementation: str = None
 
 
 @dataclass
@@ -65,26 +59,23 @@ class VehicleSpec(YamlDataClassConfig):
 @dataclass
 class WorldSpec(YamlDataClassConfig):
     name: str = None
-    rendering: bool = False
+    rendering: bool = None
     sdf: str = None
     physics: PhysicsConfig = None
     simulation: SimulationConfig = None
     goal: GoalConfig = None
+
 
 @dataclass
 class AgentSpec(YamlDataClassConfig):
     id: str
     vehicle: VehicleSpec = VehicleSpec()
     task: TaskSpec = TaskSpec()
-    starting_position : Tuple[float,float,float] = None
-    starting_orientation : Tuple[float,float,float] = None
+    starting_position: List[float] = field(default_factory=lambda: [])
+    starting_orientation: List[float] = field(default_factory=lambda: [])
 
 
 @dataclass
 class ScenarioSpec(YamlDataClassConfig):
     world: WorldSpec = None
     agents: AgentSpec = None
-    
-    
-    
-    
