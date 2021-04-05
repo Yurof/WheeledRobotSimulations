@@ -61,8 +61,7 @@ class ForwardController:
         if self.wall_tooCloseF:
             if self.verbose:
                 print("WALL F")
-            # randomly turn right or left
-            if random.random() < 0.5:
+            if min_dist_L < min_dist_R:
                 c = self.right
             else:
                 c = self.left

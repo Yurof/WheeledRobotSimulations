@@ -150,5 +150,6 @@ class ForwardController:
         self.right = [-1, 1]
 
         self.left = [1, -1]
+>>>>>>> Stashed changes
 
         self.forward = [1, 1]
