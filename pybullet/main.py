@@ -39,7 +39,6 @@ class SimEnv():
             if self.done:
                 break
             self.env.render()
-            self.i += 1
 
         return obs, rew, done, info
 
@@ -54,15 +53,18 @@ class SimEnv():
         then = time.time()
         self.i = 0
 
-        while not self.done and self.i < 1000:
-            command = self.controller.get_command()
-            # print(command)
-            self.obs, self.rew, self.done, self.info = self.mouvement(command)
-            x, y, z, roll, pitch, yaw = self.info['pose']
-            #print(x, y, z, roll, pitch, yaw)
-            ListePosition.append([self.i, x, y, z, roll, pitch, yaw,
-                                  self.info["progress"], self.obs['lidar'][::len(self.obs['lidar'])-1]])
-            self.controller.reset()
+        while not self.done:
+
+            if self.i % 50 == 0:
+                command = self.controller.get_command()
+                self.obs, self.rew, self.done, self.info = self.mouvement(
+                    command)
+                x, y, z, roll, pitch, yaw = self.info['pose']
+                #print(x, y, z, roll, pitch, yaw)
+                ListePosition.append([self.i, x, y, z, roll, pitch, yaw,
+                                      self.info["progress"], self.obs['lidar'][::len(self.obs['lidar'])-1]])
+                self.controller.reset()
+            self.i += 1
 
         now = time.time()
         print("%d timesteps took %f seconds" % (self.i, now - then))
@@ -73,7 +75,7 @@ class SimEnv():
 if __name__ == "__main__":
     env1 = 'Kitchen-v0'
     env2 = 'Maze_hard-v0'
-    sleep_time = 0.1
+    sleep_time = 0.01
     display = True
     simEnv = SimEnv(env2, sleep_time, display)
     simEnv.start()
@@ -81,5 +83,5 @@ if __name__ == "__main__":
     with open('results/result.csv', 'w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(["steps", "x", "y", "z", "roll", "pitch", "yaw",
-                        "distance_to_obj", "lidar"])
+                         "distance_to_obj", "lidar"])
         writer.writerows(ListePosition)

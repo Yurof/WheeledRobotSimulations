@@ -5,7 +5,7 @@ actuators:
     name: motor
     params:
       velocity_multiplier: 20.0
-      max_velocity: 5.0
+      max_velocity: 1.0
       max_force: 0.5
 
 sensors:
@@ -17,6 +17,6 @@ sensors:
       rays: 10 #1080
       range: 1.0
       min_range: 0.05
-      angle_start: -0.85 #angle/2 pour que ce soit centré
+      angle_start: -1.355 #angle/2 pour que ce soit centré
       angle: 2.71  #taille de l'angle
       debug: True

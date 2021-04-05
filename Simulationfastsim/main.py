@@ -1,13 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import gym, gym_fastsim
+import gym
+import gym_fastsim
 import time
 from controllers.forward import ForwardController
 from controllers.follow_wall import Follow_wallController
 
 
 class SimEnv():
-    
+
     def __init__(self, env, sleep_time, display):
         self.env = gym.make(env)
         self.env.reset()
@@ -16,8 +17,7 @@ class SimEnv():
         if(self.display):
             self.env.enable_display()
 
-        self.obs, self.rew, self.done, self.info = self.env.step([0,0])
-
+        self.obs, self.rew, self.done, self.info = self.env.step([0, 0])
 
     def mouvement(self, c, n=1):
         for _ in range(n):
@@ -31,37 +31,36 @@ class SimEnv():
             if self.done:
                 break
             self.env.render()
-            self.i+= 1
-            
+
         return obs, rew, done, info
 
     def start(self):
-        
+
         # initialize controllers
         forward = ForwardController(self.env, verbose=True)
         wall = Follow_wallController(self.env, verbose=True)
         self.controller = wall
-        
+
         # start timers
         then = time.time()
         self.i = 0
-        
+
         while not self.done:
             command = self.controller.get_command()
             self.obs, self.rew, self.done, self.info = self.mouvement(command)
             self.controller.reset()
-            
+            self.i += 1
+
         now = time.time()
         print("%d timesteps took %f seconds" % (self.i, now - then))
         input("Press Enter to continue...")
-        self.env.close()        
-    
-    
-if __name__=="__main__":
+        self.env.close()
+
+
+if __name__ == "__main__":
     env1 = 'kitchen-v1'
     env2 = 'maze-v0'
     sleep_time = 0.01
     display = True
     simEnv = SimEnv(env1, sleep_time, display)
     simEnv.start()
-    
