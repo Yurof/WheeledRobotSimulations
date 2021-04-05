@@ -14,18 +14,15 @@ class ForwardController:
         self.verbose = verbose
 
         # behavioral parameters
-        self.dist_tooClose = 0.3
+        self.dist_tooClose = 0.4
         self.wall_tooCloseF = False
         self.wall_tooCloseR = False
         self.wall_tooCloseL = False
-        self.right = [-0.5, 0.5]
-        self.left = [0.5, -0.5]
-        self.forward = [1, 1]
-
-        # there is this case where the agent might be stuck and alternate
-        # endlessly between left and right, so we add an additional parameter
-        # to try to prevent that
-        self.old_c = self.forward
+        self.v_forward = 1
+        self.v_turn = 0.4
+        self.right = [self.v_turn, -self.v_turn]
+        self.left = [-self.v_turn, self.v_turn]
+        self.forward = [self.v_forward, self.v_forward]
 
     def get_command(self):
 
@@ -41,12 +38,10 @@ class ForwardController:
                 # 4 on the right
                 if i in range(4):
                     self.wall_tooCloseL = True
-                if i in range(4, 6):
+                elif i in range(4, 6):
                     self.wall_tooCloseF = True
-                if i in range(6, 10):
+                elif i in range(6, 10):
                     self.wall_tooCloseR = True
-
-        # get bumpers data
 
         # we adapt our policy based on what we have detected
         if self.wall_tooCloseF:
@@ -69,10 +64,6 @@ class ForwardController:
                 print("WALL R")
             # turn left
             c = self.left
-        print(c, self.right, self.old_c, self.left, self.right)
-        if (c == self.right and self.old_c == self.left) or (c == self.left and self.old_c == self.right):
-            c = self.old_c
-        self.old_c = c
 
         if self.verbose:
             print(f"Chosen action : {c}")
@@ -80,10 +71,12 @@ class ForwardController:
         return c
 
     def reset(self):
-        self.dist_tooClose = 0.3
+        self.dist_tooClose = 0.4
         self.wall_tooCloseF = False
         self.wall_tooCloseR = False
         self.wall_tooCloseL = False
-        self.right = [-0.5, 0.5]
-        self.left = [0.5, -0.5]
-        self.forward = [1, 1]
+        self.v_forward = 1
+        self.v_turn = 0.4
+        self.right = [self.v_turn, -self.v_turn]
+        self.left = [-self.v_turn, self.v_turn]
+        self.forward = [self.v_forward, self.v_forward]

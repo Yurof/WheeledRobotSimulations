@@ -15,7 +15,7 @@ class Follow_wallController:
         self.forwardcontroller = ForwardController(env)
 
         # behavioral parameters
-        self.dist_tooClose = 0.3
+        self.dist_tooClose = 0.4
         self.dist_tooFar = 0.7
         self.dist_obstacle = 0.7
         self.obstacleFront = False
@@ -25,14 +25,11 @@ class Follow_wallController:
         self.wall_tooCloseL = False
         self.wall_L_OK = False
         self.wall_tooFarL = False
-        self.right = [-0.5, 0.5]
-        self.left = [0.5, 0.5]
-        self.forward = [1, 1]
-
-        # there is this case where the agent might be stuck and alternate
-        # endlessly between left and right, so we add an additional parameter
-        # to try to prevent that
-        self.old_c = self.forward
+        self.v_forward = 1
+        self.v_turn = 0.4
+        self.right = [self.v_turn, -self.v_turn]
+        self.left = [-self.v_turn, self.v_turn]
+        self.forward = [self.v_forward, self.v_forward]
 
     def get_command(self):
 
@@ -59,7 +56,7 @@ class Follow_wallController:
                 self.wall_tooCloseL = True
             elif dist < self.dist_tooFar:
                 self.wall_L_OK = True
-            else:
+            elif dist < 1:
                 self.wall_tooFarL = True
 
         # 7th to 10th laser are on the right
@@ -70,14 +67,17 @@ class Follow_wallController:
                 self.wall_tooCloseR = True
             elif dist < self.dist_tooFar:
                 self.wall_R_OK = True
-            else:
+            elif dist < 1:
                 self.wall_tooFarR = True
 
         # we adapt our policy based on what we have detected
         if self.obstacleFront:
             if self.verbose:
-                print("OBSTACLE FRONT follow")
-            c = self.forwardcontroller.get_command()
+                print("OBSTACLE FRONT")
+            if min_dist_L < min_dist_R:
+                c = self.right
+            else:
+                c = self.left
 
         elif self.wall_tooCloseL and (not self.wall_tooCloseR or min_dist_L < min_dist_R):
             if self.verbose:
@@ -94,34 +94,29 @@ class Follow_wallController:
                 print("NP")
             c = self.forward
 
-        elif self.wall_tooFarR and (not self.wall_tooFarL or min_dist_L < min_dist_R):
+        elif self.wall_tooFarL and (not self.wall_tooFarR or min_dist_L < min_dist_R):
             if self.verbose:
                 print("TOO FAR LEFT")
-            c = self.right
+            c = self.left
 
-        elif self.wall_tooFarR and (not self.wall_tooFarR or min_dist_R < min_dist_L):
+        elif self.wall_tooFarR and (not self.wall_tooFarL or min_dist_R < min_dist_L):
             if self.verbose:
                 print("TOO FAR RIGHT")
-            c = self.left
+            c = self.right
 
         else:
             if self.verbose:
                 print("NO WALL")
             c = self.forwardcontroller.get_command()
 
-        if (c == self.right and self.old_c == self.left) or \
-                (c == self.left and self.old_c == self.right):
-            c = self.forward
-        self.old_c = c
-
         if self.verbose:
-            print(f"Chosen action follow : {c}")
+            print(f"Chosen action : {c}")
 
         return dict([('motor', array(c))])
 
     def reset(self):
         self.forwardcontroller.reset()
-        self.dist_tooClose = 0.3
+        self.dist_tooClose = 0.4
         self.dist_tooFar = 0.7
         self.dist_obstacle = 0.7
         self.obstacleFront = False
@@ -131,6 +126,8 @@ class Follow_wallController:
         self.wall_tooCloseL = False
         self.wall_L_OK = False
         self.wall_tooFarL = False
-        self.right = [-0.5, 0.5]
-        self.left = [0.5, -0.5]
-        self.forward = [1, 1]
+        self.v_forward = 1
+        self.v_turn = 0.4
+        self.right = [self.v_turn, -self.v_turn]
+        self.left = [-self.v_turn, self.v_turn]
+        self.forward = [self.v_forward, self.v_forward]
