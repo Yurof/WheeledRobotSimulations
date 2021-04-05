@@ -115,7 +115,8 @@ class Follow_wallController:
 
         if self.verbose:
             print(f"Chosen action : {c}")
-
+        
+        self.forwardcontroller.reset()
         return c
 
     def reset(self):
