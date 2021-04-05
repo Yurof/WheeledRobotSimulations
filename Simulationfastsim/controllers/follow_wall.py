@@ -116,10 +116,10 @@ class Follow_wallController:
         if self.verbose:
             print(f"Chosen action : {c}")
         
-        self.forwardcontroller.reset()
         return c
 
     def reset(self):
+        self.forwardcontroller.reset()
         self.dist_tooClose = 20
         self.dist_tooFar = 30
         self.dist_obstacle = 30
