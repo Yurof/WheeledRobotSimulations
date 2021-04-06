@@ -1,5 +1,9 @@
 from controllers.follow_wall import Follow_wallController
 from controllers.forward import ForwardController
+from controllers.rulebased import RuleBasedController
+from controllers.braitenberg import BraitenbergController
+
+
 import time
 
 from time import sleep
@@ -18,13 +22,12 @@ ListePosition = []
 class SimEnv():
 
     def __init__(self, env, sleep_time, display):
-        self.env = gym.make(env)
+        self.env = gym.make(env+str('-v0'))
         self.env.reset()
         self.sleep_time = sleep_time
         self.display = display
 
-        self.obs, self.rew, self.done, self.info = self.env.step(
-            dict([('motor', array([0, 0]))]))
+        self.obs, self.rew, self.done, self.info = self.env.step([0, 0])
 
     def mouvement(self, c, n=1):
         for _ in range(n):
@@ -45,43 +48,55 @@ class SimEnv():
     def start(self):
 
         # initialize controllers
-        forward = ForwardController(self.env, verbose=True)
-        wall = Follow_wallController(self.env, verbose=True)
-        self.controller = wall
+        forward = ForwardController(self.env, verbose=False)
+        wall = Follow_wallController(self.env, verbose=False)
+        rule = RuleBasedController(self.env, verbose=True)
+        brait = BraitenbergController(self.env, verbose=True)
+        self.controller = brait
 
         # start timers
         then = time.time()
         self.i = 0
 
         while not self.done:
-
-            if self.i % 50 == 0:
-                command = self.controller.get_command()
-                self.obs, self.rew, self.done, self.info = self.mouvement(
-                    command)
-                x, y, z, roll, pitch, yaw = self.info['pose']
-                #print(x, y, z, roll, pitch, yaw)
-                ListePosition.append([self.i, x, y, z, roll, pitch, yaw,
-                                      self.info["progress"], self.obs['lidar'][::len(self.obs['lidar'])-1]])
-                self.controller.reset()
-            self.i += 1
-
+            try:
+                if self.i % 50 == 0:
+                    command = self.controller.get_command()
+                    self.obs, self.rew, self.done, self.info = self.mouvement(
+                        command)
+                    x, y, z, roll, pitch, yaw = self.info['pose']
+                    ListePosition.append([self.i, x, y, z, roll, pitch, yaw,
+                                          self.info["progress"], self.obs['lidar'][::len(self.obs['lidar'])-1]])
+                    self.controller.reset()
+                print(self.i, end='\r')
+                self.i += 1
+            except KeyboardInterrupt:
+                print('All done')
+                break
         now = time.time()
-        print("%d timesteps took %f seconds" % (self.i, now - then))
-        input("Press Enter to continue...")
+        print("%d timesteps took %f seconds" % (self.i//50, now - then))
         self.env.close()
 
 
-if __name__ == "__main__":
-    env1 = 'Kitchen-v0'
-    env2 = 'Maze_hard-v0'
-    sleep_time = 0.01
-    display = True
-    simEnv = SimEnv(env2, sleep_time, display)
-    simEnv.start()
-
-    with open('results/result.csv', 'w', newline='') as file:
+def save_result(name, controller):
+    path = f'results/{name}/bullet_{controller}_'
+    i = 1
+    while os.path.exists(path+str(i)+".csv"):
+        i += 1
+    with open('results/race_track/bullet_brait_%s.csv' % i, 'w', newline='') as file:
         writer = csv.writer(file)
+        print("\ndata saved as ", file)
         writer.writerow(["steps", "x", "y", "z", "roll", "pitch", "yaw",
-                         "distance_to_obj", "lidar"])
+                        "distance_to_obj", "lidar"])
         writer.writerows(ListePosition)
+
+
+if __name__ == "__main__":
+    env1 = 'kitchen'
+    env2 = 'maze_hard'
+    env3 = 'race_track'
+    sleep_time = 0.001
+    display = True
+    simEnv = SimEnv(env3, sleep_time, display)
+    simEnv.start()
+    save_result(env3, 'brait')

@@ -46,7 +46,7 @@ class World(world.World):
         p.setTimeStep(self._config.simulation_config.time_step)
         p.setGravity(0, 0, self._config.physics_config.gravity)
         p.resetDebugVisualizerCamera(
-            cameraDistance=4.6, cameraYaw=0, cameraPitch=-89.9, cameraTargetPosition=[2.5, 2, 0])
+            cameraDistance=12, cameraYaw=0, cameraPitch=-89.9, cameraTargetPosition=[7.5, 7.5, 0])
 
     def reset(self):
         p.setTimeStep(self._config.simulation_config.time_step)

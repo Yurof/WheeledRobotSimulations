@@ -41,7 +41,8 @@ class Follow_wallController:
 
         # get lasers data
         laserRanges = self.env.get_laserranges()
-        print("laserrange", laserRanges)
+        if self.verbose:
+            print("laserrange", laserRanges)
         # assuming there are 10 lasers and
         # 5th and 6th laser are on the front
         for dist in laserRanges[4:6]:
@@ -112,7 +113,7 @@ class Follow_wallController:
         if self.verbose:
             print(f"Chosen action : {c}")
 
-        return dict([('motor', array(c))])
+        return c
 
     def reset(self):
         self.forwardcontroller.reset()

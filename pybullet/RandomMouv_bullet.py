@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import os
 import csv
 
-env = gym.make('Kitchen-v0')
+env = gym.make('kitchen-v0')
 ##env = gym.make('Maze_hard-v0')
 
 done = False
