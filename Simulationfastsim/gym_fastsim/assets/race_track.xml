@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<fastsim>
+  <display enable="true"/>
+  <!-- world -->
+  <map name="race_track.pbm" size="1000"/>
+  <robot x="133" y="800" theta="0" diameter="12"/>
+  <goal x="100" y="700" color="0" diameter="10"/>
+  
+  <!-- sensors (optionals) -->
+  <laser range="100" angle="-70"/>
+  <laser range="100" angle="-50"/>
+  <laser range="100" angle="-30"/>
+  <laser range="100" angle="-20"/>
+  <laser range="100" angle="-5"/>
+  
+  <laser range="100" angle="5"/>
+  <laser range="100" angle="20"/>
+  <laser range="100" angle="30"/>
+  <laser range="100" angle="50"/>
+  <laser range="100" angle="70"/>
+
+</fastsim>

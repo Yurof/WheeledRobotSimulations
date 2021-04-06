@@ -83,7 +83,7 @@ def save_result(name, controller):
     i = 1
     while os.path.exists(path+str(i)+".csv"):
         i += 1
-    with open('results/race_track/bullet_brait_%s.csv' % i, 'w', newline='') as file:
+    with open(path+str(i)+".csv", 'w', newline='') as file:
         writer = csv.writer(file)
         print("\ndata saved as ", file)
         writer.writerow(["steps", "x", "y", "z", "roll", "pitch", "yaw",
@@ -95,7 +95,7 @@ if __name__ == "__main__":
     env1 = 'kitchen'
     env2 = 'maze_hard'
     env3 = 'race_track'
-    sleep_time = 0.001
+    sleep_time = 10
     display = True
     simEnv = SimEnv(env3, sleep_time, display)
     simEnv.start()

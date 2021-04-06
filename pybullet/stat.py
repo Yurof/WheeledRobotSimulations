@@ -25,7 +25,7 @@ def plot_position(name, ListeResults, startx, starty, goalx, goaly, ratio):
 
     plt.imshow(np.flipud(img), origin='lower')
     for s in ListeResults:
-        df = pd.read_csv(f'results/{name}/{s}.csv')
+        df = pd.read_csv(f'{base_path}/../results/{name}/{s}.csv')
         x = df.x
         y = df.y
         plt.plot(x*nb_rapport, y*nb_rapport, label=s, alpha=0.5)
@@ -35,7 +35,7 @@ def plot_position(name, ListeResults, startx, starty, goalx, goaly, ratio):
 
 def plot_dist_to_target(name, ListeResults):
     for s in ListeResults:
-        df = pd.read_csv(f'results/{name}/{s}.csv')
+        df = pd.read_csv(f'{base_path}/../results/{name}/{s}.csv')
         x = df.x
         y = df.y
         steps = df.steps
@@ -54,7 +54,7 @@ maze_hard =6.6
 kitchen =5
 """
 
-plot_position('race_track', ['bullet_rule_1', 'bullet_brait_1'],
+plot_position('race_track', ['bullet_brait_1', 'fastsim_brait_2','fastsim_brait_3'],
               startx=2, starty=3, goalx=1, goaly=4, ratio=15)
 
-plot_dist_to_target('race_track', ['bullet_rule_1', 'bullet_brait_1'])
+plot_dist_to_target('race_track', ['bullet_rule_1', 'fastsim_rule_1'])
