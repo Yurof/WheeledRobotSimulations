@@ -10,7 +10,7 @@ class BraitenbergController:
         self.verbose = verbose
 
         # behavioral parameters
-        self.reactivity = 0.005
+        self.reactivity = 0.5
         self.speed = 0.7
 
     def get_command(self):
@@ -31,5 +31,5 @@ class BraitenbergController:
         return [left, right]
 
     def reset(self):
-        self.reactivity = 0.005
+        self.reactivity = 0.5
         self.speed = 0.7

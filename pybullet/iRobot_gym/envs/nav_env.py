@@ -47,3 +47,7 @@ class SimpleNavEnv(gym.Env):
 
     def get_laserranges(self):
         return self.observation['lidar']
+    
+    def logfile(self):
+        return
+        #self._scenario.world.loginfo()

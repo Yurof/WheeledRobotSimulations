@@ -16,6 +16,6 @@ sensors:
       rays: 10 #1080
       range: 1.0
       min_range: 0.05
-      angle_start: -1.355 #angle/2 pour que ce soit centré
-      angle: 2.71  #taille de l'angle
+      angle_start: -1.56 
+      angle: 3.46 #taille de l'angle
       debug: True

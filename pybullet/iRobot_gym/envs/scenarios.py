@@ -71,7 +71,7 @@ class SimpleNavScenario:
     agent: Agent
 
     @staticmethod
-    def from_spec(path: str, rendering: bool = None) -> 'SimpleNavScenario':
+    def from_spec(path: str, rendering: bool = False) -> 'SimpleNavScenario':
         spec = ScenarioSpec()
         spec.load(path)
         if rendering:

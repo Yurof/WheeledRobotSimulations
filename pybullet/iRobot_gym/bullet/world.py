@@ -16,6 +16,7 @@ from iRobot_gym.core import world
 from iRobot_gym.core.agent import Agent
 from iRobot_gym.core.definitions import Pose
 
+import pybullet_data
 
 class World(world.World):
 
@@ -33,7 +34,6 @@ class World(world.World):
         self._time = 0.0
         self._agents = agents
         self._state = dict([(a.id, {}) for a in agents])
-        self._objects = {}
 
     def init(self) -> None:
         if self._config.simulation_config.rendering:
@@ -44,9 +44,10 @@ class World(world.World):
         self._load_scene(self._config.sdf)
         self._load_goal()
         p.setTimeStep(self._config.simulation_config.time_step)
+        #self.logId = p.startStateLogging(p.STATE_LOGGING_PROFILE_TIMINGS, "timings3.json")
         p.setGravity(0, 0, self._config.physics_config.gravity)
         p.resetDebugVisualizerCamera(
-            cameraDistance=12, cameraYaw=0, cameraPitch=-89.9, cameraTargetPosition=[7.5, 7.5, 0])
+            cameraDistance=4.6, cameraYaw=0, cameraPitch=-89.9, cameraTargetPosition=[3, 4, 0])
 
     def reset(self):
         p.setTimeStep(self._config.simulation_config.time_step)
@@ -57,8 +58,8 @@ class World(world.World):
 
     def _load_scene(self, sdf_file: str):
         ids = p.loadSDF(sdf_file)
-        objects = dict([(p.getBodyInfo(i)[1].decode('ascii'), i) for i in ids])
-        self._objects = objects
+        p.setAdditionalSearchPath(pybullet_data.getDataPath())
+        planeId = p.loadURDF('plane.urdf')
 
     def _load_goal(self):
         base_path = os.path.dirname(os.path.abspath(__file__))
@@ -72,6 +73,8 @@ class World(world.World):
     def update(self):
         p.stepSimulation()
         self._time += self._config.simulation_config.time_step
+
+
 
     def state(self) -> Dict[str, Any]:
         for agent in self._agents:
@@ -111,9 +114,7 @@ class World(world.World):
 
     def render(self, agent_id: str, width=640, height=480) -> np.ndarray:
         agent = list(filter(lambda a: a.id == agent_id, self._agents))
-        assert len(agent) == 1
-        agent = agent[0]
-        return util.follow_agent(agent=agent, width=width, height=height)
+        return util.follow_agent(agent=agent[0], width=width, height=height)
 
     def seed(self, seed: int = None):
         if self is None:

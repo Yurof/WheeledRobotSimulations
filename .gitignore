@@ -5,3 +5,5 @@
 eggs/
 .eggs/
 pybullet/iRobot_gym.egg-info/
+*.pyc
+*.pyc

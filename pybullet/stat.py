@@ -53,8 +53,7 @@ race_track =15
 maze_hard =6.6
 kitchen =5
 """
+ListPlot = ['bullet_brait_23']
+plot_position('race_track', ListPlot, startx=2, starty=3, goalx=1, goaly=4, ratio=15)
 
-plot_position('race_track', ['bullet_brait_1', 'fastsim_brait_2','fastsim_brait_3'],
-              startx=2, starty=3, goalx=1, goaly=4, ratio=15)
-
-plot_dist_to_target('race_track', ['bullet_rule_1', 'fastsim_rule_1'])
+plot_dist_to_target('race_track', ListPlot)

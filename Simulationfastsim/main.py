@@ -87,7 +87,7 @@ if __name__ == "__main__":
     env1 = 'kitchen-v1'
     env2 = 'maze-v0'
     env3 = 'race_track-v0'
-    sleep_time = 0.001
+    sleep_time = 0.1
     display = True
     simEnv = SimEnv(env3, sleep_time, display)
     simEnv.start()
