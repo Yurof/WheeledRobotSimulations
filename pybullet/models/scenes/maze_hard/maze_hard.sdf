@@ -20,7 +20,7 @@
         <collision concave="yes" name="collision_0">
           <geometry>
             <mesh>
-              <scale>1.32 1.32 1.32</scale>
+              <scale>4 4 1</scale>
               <uri>meshes/maze_hard.obj</uri>
             </mesh>
           </geometry>
@@ -28,7 +28,7 @@
         <visual name="visual">
           <geometry>
             <mesh>
-              <scale>1.32 1.32 1.32</scale>
+              <scale>4 4 1</scale>
               <uri>meshes/maze_hard.obj</uri>
             </mesh>
           </geometry>

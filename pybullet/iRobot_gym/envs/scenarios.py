@@ -46,7 +46,7 @@ def load_world(spec: WorldSpec, agents: List[Agent]) -> core.World:
     config = ScenarioSpec()
     config.load(config_file_path)
 
-    spec.simulation.rendering = spec.rendering
+    #spec.simulation.rendering = spec.rendering
     sdf_path = f'{base_path}/../../models/scenes/{spec.name}/{spec.sdf}'
 
     world_config = World.Config(

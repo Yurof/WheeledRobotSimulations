@@ -24,7 +24,8 @@ class SimpleNavEnv(gym.Env):
         self.observation['time'] = self._time
         done = self._scenario.agent.done(state)
         reward = self._scenario.agent.reward(state, action)
-        self._time = self._scenario.world.update()
+        self._time = self._scenario.world.update(
+            agent_id=self._scenario.agent.id)
         return self.observation, reward, done, state[self._scenario.agent.id]
 
     def reset(self):
@@ -35,7 +36,7 @@ class SimpleNavEnv(gym.Env):
             self._scenario.world.reset()
         obs = self._scenario.agent.reset(
             self._scenario.world.get_starting_position(self._scenario.agent))
-        self._scenario.world.update()
+        self._scenario.world.update(agent_id=self._scenario.agent.id)
         obs['time'] = 0
         return obs
 
@@ -47,7 +48,7 @@ class SimpleNavEnv(gym.Env):
 
     def get_laserranges(self):
         return self.observation['lidar']
-    
+
     def logfile(self):
         return
-        #self._scenario.world.loginfo()
+        # self._scenario.world.loginfo()

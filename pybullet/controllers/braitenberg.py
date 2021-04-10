@@ -17,17 +17,18 @@ class BraitenbergController:
 
         # get lasers data
         laserRanges = self.env.get_laserranges()
-        laserRanges = [1 - i for i in laserRanges]
+
+        laserRanges = [0.95 - i for i in laserRanges]
 
         Sr = sum(laserRanges[:5])
         Sl = sum(laserRanges[5:])
 
-        right = self.speed*(1+self.reactivity*(Sl-Sr))
-        left = self.speed*(1+self.reactivity*(Sr-Sl))
+        left = self.speed*(1+self.reactivity*(Sl-Sr))
+        right = self.speed*(1+self.reactivity*(Sr-Sl))
 
         if self.verbose:
             print("Sr:", Sr, "Sl:", Sl, "left:",
-                  left, 'right:', right, end='\r')
+                  left, 'right:', right)
         return [left, right]
 
     def reset(self):

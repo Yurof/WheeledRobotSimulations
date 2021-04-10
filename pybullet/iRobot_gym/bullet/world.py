@@ -18,6 +18,7 @@ from iRobot_gym.core.definitions import Pose
 
 import pybullet_data
 
+
 class World(world.World):
 
     @dataclass
@@ -36,7 +37,7 @@ class World(world.World):
         self._state = dict([(a.id, {}) for a in agents])
 
     def init(self) -> None:
-        if self._config.simulation_config.rendering:
+        if self._config.simulation_config.GUI:
             p.connect(p.GUI)  # render True
         else:
             p.connect(p.DIRECT)  # render False
@@ -44,10 +45,18 @@ class World(world.World):
         self._load_scene(self._config.sdf)
         self._load_goal()
         p.setTimeStep(self._config.simulation_config.time_step)
-        #self.logId = p.startStateLogging(p.STATE_LOGGING_PROFILE_TIMINGS, "timings3.json")
+
+        if not (self._config.simulation_config.GUI and self._config.simulation_config.following_camera):
+            p.configureDebugVisualizer(p.COV_ENABLE_GUI, 0)
+
+            #p.addUserDebugText("test", [10, 10, 5])
+            #self.logId = p.startStateLogging(p.STATE_LOGGING_PROFILE_TIMINGS, "timings3.json")
+            #p.configureDebugVisualizer(p.COV_ENABLE_WIREFRAME, 1)
+            #p.configureDebugVisualizer(p.COV_ENABLE_RGB_BUFFER_PREVIEW, 1)
+
         p.setGravity(0, 0, self._config.physics_config.gravity)
         p.resetDebugVisualizerCamera(
-            cameraDistance=4.6, cameraYaw=0, cameraPitch=-89.9, cameraTargetPosition=[3, 4, 0])
+            cameraDistance=14.6, cameraYaw=0, cameraPitch=-89.999, cameraTargetPosition=[10, 10, 0])
 
     def reset(self):
         p.setTimeStep(self._config.simulation_config.time_step)
@@ -63,18 +72,18 @@ class World(world.World):
 
     def _load_goal(self):
         base_path = os.path.dirname(os.path.abspath(__file__))
-        print("goal position", self._config.goal_config.goal_position)
         p.loadURDF(f'{base_path}/../../models/scenes/goal.urdf',
                    self._config.goal_config.goal_position, globalScaling=self._config.goal_config.goal_size)
 
     def get_starting_position(self, agent: Agent) -> Pose:
         return self._agents[0].starting_position,  self._agents[0].starting_orientation
 
-    def update(self):
+    def update(self, agent_id: str, width=640, height=480):
         p.stepSimulation()
         self._time += self._config.simulation_config.time_step
-
-
+        if self._config.simulation_config.GUI and self._config.simulation_config.following_camera:
+            agent = list(filter(lambda a: a.id == agent_id, self._agents))
+            util.follow_agent(agent=agent[0], width=width, height=height)
 
     def state(self) -> Dict[str, Any]:
         for agent in self._agents:

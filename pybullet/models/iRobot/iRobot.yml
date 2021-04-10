@@ -4,7 +4,7 @@ actuators:
   - type: motor
     name: motor
     params:
-      velocity_multiplier: 20.0
+      velocity_multiplier: 15  #0.5m/s
       max_force: 20
 
 sensors:
@@ -12,10 +12,10 @@ sensors:
     name: lidar
     frequency: 25
     params:
-      accuracy: 0.03 # maximum deviation from true scan range (percentage)
-      rays: 10 #1080
-      range: 1.0
-      min_range: 0.05
-      angle_start: -1.56 
-      angle: 3.46 #taille de l'angle
-      debug: True
+      accuracy: 0.00 # maximum deviation from true scan range (percentage)
+      rays: 10 
+      range: 0.95 # 1 minus the size of the sensor
+      min_range: 0
+      angle_start: -90 # degree
+      angle: 180 #degree
+      debug: True 

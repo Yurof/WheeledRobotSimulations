@@ -10,14 +10,14 @@ class RuleBasedController:
         self.verbose = verbose
 
         # behavioral parameters
-        self.threshold = 150
-        self.speed = 0.7
+        self.threshold = 0.8
+        self.speed = 0.1
 
     def get_command(self):
 
         # get lasers data
         laserRanges = self.env.get_laserranges()
-        laserRanges = [100 - i for i in laserRanges]
+        laserRanges = [1 - i for i in laserRanges]
         if sum(laserRanges[:5]) > self.threshold:
             if self.verbose:
                 print("WALL L", sum(laserRanges[:5]))
@@ -33,5 +33,5 @@ class RuleBasedController:
             return [self.speed, self.speed]
 
     def reset(self):
-        self.threshold = 200
-        self.speed = 0.7
+        self.threshold = 0.7
+        self.speed = 0.1

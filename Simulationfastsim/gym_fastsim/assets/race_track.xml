@@ -3,8 +3,9 @@
   <display enable="true"/>
   <!-- world -->
   <map name="race_track.pbm" size="20"/>
-  <robot x="3" y="16" theta="0" diameter="0.1658"/>
-  <goal x="2" y="14" color="0" diameter="0.5"/>
+   <!--diameter = 0.3305/2-->
+  <robot x="3" y="16" theta="0" diameter="0.16525"/>
+  <goal x="2" y="15" color="0" diameter="0.5"/>
   
   <!-- sensors (optionals) -->
   <laser range="1" angle="-90"/>

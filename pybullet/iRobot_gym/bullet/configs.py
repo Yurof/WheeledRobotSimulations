@@ -36,7 +36,8 @@ class GoalConfig(YamlDataClassConfig):
 @dataclass
 class SimulationConfig(YamlDataClassConfig):
     time_step: float = None
-    rendering: bool = None
+    GUI: bool = None
+    following_camera: bool = False
 
 
 @dataclass
@@ -59,7 +60,6 @@ class VehicleSpec(YamlDataClassConfig):
 @dataclass
 class WorldSpec(YamlDataClassConfig):
     name: str = None
-    rendering: bool = None
     sdf: str = None
     physics: PhysicsConfig = None
     simulation: SimulationConfig = None

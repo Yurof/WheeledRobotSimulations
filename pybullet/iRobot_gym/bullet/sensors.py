@@ -6,6 +6,7 @@ import gym
 import numpy as np
 import pybullet as p
 from nptyping import NDArray
+import math
 
 from iRobot_gym.bullet import util
 from iRobot_gym.core import Sensor
@@ -71,7 +72,7 @@ class Lidar(BulletSensor[NDArray[(Any,), np.float]]):
     def __init__(self, name: str, type: str, config: Config):
         super().__init__(name, type)
         self._config = config
-        self._min_range = config.min_range
+        self._min_range = self._config.min_range
         self._rays = self._config.rays
         self._range = self._config.range
         self._hit_color = [1, 0, 0]
@@ -86,8 +87,8 @@ class Lidar(BulletSensor[NDArray[(Any,), np.float]]):
         start = min_distance
         end = min_distance + scan_range
         from_points, to_points = [], []
-        angle = self._config.angle_start + np.pi / 2.0
-        increment = self._config.angle / self._config.rays
+        angle = math.radians(self._config.angle_start) + np.pi / 2.0
+        increment = math.radians(self._config.angle) / (self._rays - 1)
         for i in range(rays):
             from_points.append([
                 start * np.sin(angle),
@@ -128,8 +129,8 @@ class Lidar(BulletSensor[NDArray[(Any,), np.float]]):
         return scan
 
     def _display_rays(self, hit_fractions, scan):
-        angle = self._config.angle_start + np.pi / 2.0
-        increment = self._config.angle / self._config.rays
+        angle = math.radians(self._config.angle_start) + np.pi / 2.0
+        increment = math.radians(self._config.angle) / (self._config.rays-1)
         for i in range(self._rays):
             if len(self._ray_ids) < self._rays:
                 ray_id = p.addUserDebugLine(self._from[i], self._to[i], self._miss_color,

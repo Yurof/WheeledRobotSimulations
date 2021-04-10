@@ -11,17 +11,16 @@ from iRobot_gym.envs import SimpleNavEnv
 import os
 import csv
 
+
 ListePosition = []
 
 
 class SimEnv():
 
-    def __init__(self, env, sleep_time, display):
+    def __init__(self, env, sleep_time):
         self.env = gym.make(env+str('-v0'))
         self.env.reset()
         self.sleep_time = sleep_time
-        self.display = display
-
         self.obs, self.rew, self.done, self.info = self.env.step([0, 0])
 
     def mouvement(self, c, n=1):
@@ -31,12 +30,10 @@ class SimEnv():
             #print("Valeur de obs :" + str(obs))
             #print("Valeur de rew :" + str(rew))
             #print("Valeur de done :" + str(done))
-            print("Valeur de info :" + str(info))
-            if(self.display):
-                time.sleep(self.sleep_time)
+            #print("Valeur de info :" + str(info))
             if self.done:
                 break
-            #self.env.render()
+            time.sleep(self.sleep_time)
 
         return obs, rew, done, info
 
@@ -45,7 +42,7 @@ class SimEnv():
         # initialize controllers
         forward = ForwardController(self.env, verbose=False)
         wall = Follow_wallController(self.env, verbose=False)
-        rule = RuleBasedController(self.env, verbose=True)
+        rule = RuleBasedController(self.env, verbose=False)
         brait = BraitenbergController(self.env, verbose=False)
         self.controller = brait
 
@@ -60,11 +57,10 @@ class SimEnv():
                     self.obs, self.rew, self.done, self.info = self.mouvement(
                         command)
                     x, y, z, roll, pitch, yaw = self.info['pose']
-                    ListePosition.append([self.i, x, y, z, roll, pitch, yaw,
-                                          self.info["progress"], self.obs['lidar'][::len(self.obs['lidar'])-1]])
+                    ListePosition.append(
+                        [self.i, x, y, z, roll, pitch, yaw, self.info["progress"], self.obs['lidar']])
                     self.controller.reset()
-                    if self.i%50 == 0 :
-                        self.env.render()
+
                 print(self.i, end='\r')
                 self.i += 1
             except KeyboardInterrupt:
@@ -77,15 +73,17 @@ class SimEnv():
 
 
 def save_result(name, controller):
-    path = f'results/{name}/bullet_{controller}_'
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    path = f'{base_path}/../results/{name}/bullet_{controller}_'
     i = 1
-    while os.path.exists(path+str(i)+".csv"):
-        i += 1
+    if os.path.exists(path+str(i)+".csv"):
+        while os.path.exists(path+str(i)+".csv"):
+            i += 1
     with open(path+str(i)+".csv", 'w', newline='') as file:
         writer = csv.writer(file)
         print("\ndata saved as ", file)
         writer.writerow(["steps", "x", "y", "z", "roll", "pitch", "yaw",
-                        "distance_to_obj", "lidar"])
+                         "distance_to_obj", "lidar"])
         writer.writerows(ListePosition)
 
 
@@ -93,9 +91,7 @@ if __name__ == "__main__":
     env1 = 'kitchen'
     env2 = 'maze_hard'
     env3 = 'race_track'
-    sleep_time = 1
-    display = True
-    simEnv = SimEnv(env3, sleep_time, display)
+    sleep_time = 0.00001
+    simEnv = SimEnv(env3, sleep_time)
     simEnv.start()
-    
     save_result(env3, 'brait')

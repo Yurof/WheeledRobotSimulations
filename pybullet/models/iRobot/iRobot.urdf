@@ -166,7 +166,7 @@
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <mass value="0.0"/>
-      <inertia ixx="4E-06" ixy="0" ixz="0" iyy="4E-06" iyz="0" izz="4E-06"/>
+      <inertia ixx="4E-06" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
     </inertial>
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -185,7 +185,7 @@
   </link>
 
   <joint name="hokuyo_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="-0.011 0.0 0.085"/>
+    <origin rpy="0 0 0" xyz="0 0.0 0.085"/>
     <parent link="base_footprint"/>
     <child link="laser"/>
     <axis xyz="0 0 1"/>

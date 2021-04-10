@@ -20,9 +20,10 @@ class SimEnv():
         self.env.reset()
         self.sleep_time = sleep_time
         self.display = display
+        self.map_size = self.env.get_map_size()
+        print(self.map_size)
         if(self.display):
             self.env.enable_display()
-
 
         self.obs, self.rew, self.done, self.info = self.env.step([0, 0])
 
@@ -46,9 +47,9 @@ class SimEnv():
         # initialize controllers
         forward = ForwardController(self.env, verbose=False)
         wall = Follow_wallController(self.env, verbose=False)
-        rule = RuleBasedController(self.env, verbose=False)
+        rule = RuleBasedController(self.env, verbose=True)
         brait = BraitenbergController(self.env, verbose=False)
-        self.controller = brait
+        self.controller = rule
 
         # start timers
         then = time.time()
@@ -57,9 +58,11 @@ class SimEnv():
         while not self.done:
             try:
                 command = self.controller.get_command()
-                self.obs, self.rew, self.done, self.info = self.mouvement(command)
-                x, y, z= self.info['robot_pos']
-                ListePosition.append([self.i, x/66, (1000-y)/66,self.info["dist_obj"]])
+                self.obs, self.rew, self.done, self.info = self.mouvement(
+                    command)
+                x, y, theta = self.info['robot_pos']
+                ListePosition.append(
+                    [self.i, x, (self.map_size-y), theta, self.info["dist_obj"], self.obs])
                 self.controller.reset()
                 self.i += 1
             except KeyboardInterrupt:
@@ -69,17 +72,19 @@ class SimEnv():
         print("%d timesteps took %f seconds" % (self.i, now - then))
         self.env.close()
 
+
 def save_result(name, controller):
     base_path = os.path.dirname(os.path.abspath(__file__))
     path = f'{base_path}/../results/{name}/fastsim_{controller}_'
     i = 1
-    while os.path.exists(path+str(i)+".csv"):
-        i += 1
-    with open(path+str(i)+".csv",'w', newline='') as file:
+    if os.path.exists(path+str(i)+".csv"):
+        while os.path.exists(path+str(i)+".csv"):
+            i += 1
+    with open(path+str(i)+".csv", 'w', newline='') as file:
         writer = csv.writer(file)
         print("\ndata saved as ", file)
-        writer.writerow(["steps", "x", "y", "z", "roll", "pitch", "yaw",
-                        "distance_to_obj", "lidar"])
+        writer.writerow(["steps", "x", "y", "roll",
+                         "distance_to_obj", "lidar"])
         writer.writerows(ListePosition)
 
 
@@ -87,9 +92,9 @@ if __name__ == "__main__":
     env1 = 'kitchen-v1'
     env2 = 'maze-v0'
     env3 = 'race_track-v0'
-    sleep_time = 0.1
+    sleep_time = 0.0001
+
     display = True
     simEnv = SimEnv(env3, sleep_time, display)
     simEnv.start()
-    print(os.path.dirname(os.path.abspath(__file__)))
     save_result("race_track", 'brait')
