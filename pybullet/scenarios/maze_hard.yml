@@ -4,12 +4,12 @@ world:
   physics:
     gravity: -9.81
   simulation:
-    time_step: 0.01
-    rendering: False
+    time_step: 0.016666 #240Hz =0.00416666 the default time step , 60Hz =0.016666
+    GUI: True
+    following_camera : False
   goal:
-    goal_position: [1,6,0]
+    goal_position: [2,19,0]
     goal_size : 0.2
-  rendering: True
 
 agents:
   id: A
@@ -18,6 +18,6 @@ agents:
     sensors: [lidar]
   task:
     task_name: maximize_progress
-    params: { time_limit: 120.0, terminate_on_collision: False, goal_size_detection: 0.2}
+    params: { time_limit: 1000.0, terminate_on_collision: False, goal_size_detection: 0.2}
   starting_position: [1, 1, 0.02]
   starting_orientation: [ 0.0, 0.0, 1]

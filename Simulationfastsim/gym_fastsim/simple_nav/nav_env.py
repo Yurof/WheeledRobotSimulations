@@ -74,7 +74,6 @@ class SimpleNavEnv(gym.Env):
         os.chdir(xml_dir)
         settings = fs.Settings(xml_file)
         os.chdir(oldcwd)
-        print("test")
 
         self.map = settings.map()
         self.robot = settings.robot()
@@ -232,3 +231,6 @@ class SimpleNavEnv(gym.Env):
         del self.robot
         del self.map
         pass
+
+    def get_map_size(self):
+        return self.map.get_real_h()

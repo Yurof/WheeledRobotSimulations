@@ -34,16 +34,19 @@ def follow_agent(agent: Agent, width=640, height=480) -> np.ndarray:
     orientation = pybullet.getQuaternionFromEuler((0, 0, yaw))
     rot_matrix = pybullet.getMatrixFromQuaternion(orientation)
     rot_matrix = np.array(rot_matrix).reshape(3, 3)
+    
     camera_position = position + rot_matrix.dot([-0.8, 0, 0.3])
     up_vector = rot_matrix.dot([0, 0, 1])
     target = position
+
     view_matrix = pybullet.computeViewMatrix(
         camera_position, target, up_vector)
+
     proj_matrix = pybullet.computeProjectionMatrixFOV(
         fov=60,
         aspect=float(width) / height,
-        nearVal=0.01,
-        farVal=10.0
+        nearVal=0.1,
+        farVal=5.0
     )
 
     _, _, rgb_image, _, _ = pybullet.getCameraImage(

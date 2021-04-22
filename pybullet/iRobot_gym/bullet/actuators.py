@@ -53,7 +53,7 @@ class Motor(BulletActuator[Tuple[float, float]]):
             self.body_id,
             self.joint_indices,
             pybullet.VELOCITY_CONTROL,
-            targetVelocities=[velocity1, velocity2],
+            targetVelocities=[velocity2, velocity1],
             forces=[self._config.max_force]*2
         )
 
