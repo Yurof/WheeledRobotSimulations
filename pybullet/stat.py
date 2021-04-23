@@ -1,6 +1,7 @@
 import os
 import matplotlib.pyplot as plt
 import numpy as np
+import argparse
 # import RandomMouv_bullet
 
 import csv
@@ -53,8 +54,21 @@ race_track =15
 maze_hard =6.6
 kitchen =5
 """
-ListPlot = ['bullet_brait_1', 'bullet_brait_2']
-plot_position('race_track', ListPlot, startx=3,
-              starty=4, goalx=2, goaly=5, ratio=20)
+if __name__ == "__main__":
 
-plot_dist_to_target('race_track', ListPlot)
+    parser = argparse.ArgumentParser(
+        description='Launch pybullet simulation run.')
+    # "kitchen", "maze_hard", "race_track"
+    parser.add_argument('--env', type=str, default="race_track",
+                        help='environnement')
+    # "forward", "wall", "rule", "brait"
+    parser.add_argument('--listPlot', type=str, default="fastsim_brait_1 bullet_brait_1 ",
+                        help='listPlot')
+
+    args = parser.parse_args()
+    env = args.env
+    listPlot = args.listPlot.split()
+    plot_position(env, listPlot, startx=3,
+                starty=4, goalx=2, goaly=5, ratio=20)
+
+    plot_dist_to_target(env, listPlot)

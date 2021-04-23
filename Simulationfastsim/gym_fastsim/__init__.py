@@ -12,8 +12,10 @@ kitchen_lasers_env = "assets/kitchen_lasers.xml"
 maze_env = "assets/LS_maze_hard.xml"
 race_track_env = "assets/race_track.xml"
 
-register(id='kitchen-v0', entry_point='gym_fastsim.simple_nav:SimpleNavEnv', kwargs={"xml_env":join(dirname(__file__), kitchen_env)})
-register(id='kitchen-v1', entry_point='gym_fastsim.simple_nav:SimpleNavEnv', kwargs={"xml_env":join(dirname(__file__), kitchen_lasers_env)})
-register(id='maze-v0', entry_point='gym_fastsim.simple_nav:SimpleNavEnv', kwargs={"xml_env":join(dirname(__file__), maze_env)})
-register(id='race_track-v0', entry_point='gym_fastsim.simple_nav:SimpleNavEnv', kwargs={"xml_env":join(dirname(__file__), race_track_env)})
-
+try:
+    register(id='kitchen-v0', entry_point='gym_fastsim.simple_nav:SimpleNavEnv', kwargs={"xml_env":join(dirname(__file__), kitchen_env)})
+    register(id='kitchen-v1', entry_point='gym_fastsim.simple_nav:SimpleNavEnv', kwargs={"xml_env":join(dirname(__file__), kitchen_lasers_env)})
+    register(id='maze-v0', entry_point='gym_fastsim.simple_nav:SimpleNavEnv', kwargs={"xml_env":join(dirname(__file__), maze_env)})
+    register(id='race_track-v0', entry_point='gym_fastsim.simple_nav:SimpleNavEnv', kwargs={"xml_env":join(dirname(__file__), race_track_env)})
+except:
+    pass
