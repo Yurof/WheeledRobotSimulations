@@ -21,7 +21,7 @@ class SimEnv():
         self.env = gym.make(env+str('-v0'))
         self.env.reset()
         self.sleep_time = sleep_time
-        self.obs, self.rew, self.done, self.info = self.env.step([0, 0])
+        self.obs, self.rew, self.done, self.info = self.env.step([1, 1])
 
     def mouvement(self, c, n=1):
         for _ in range(n):
@@ -42,33 +42,30 @@ class SimEnv():
         # initialize controllers
         forward = ForwardController(self.env, verbose=False)
         wall = Follow_wallController(self.env, verbose=False)
-        rule = RuleBasedController(self.env, verbose=False)
+        rule = RuleBasedController(self.env, verbose=True)
         brait = BraitenbergController(self.env, verbose=False)
         self.controller = brait
 
-        # start timers
-        then = time.time()
         self.i = 0
 
         while not self.done:
             try:
-                if self.i % 1 == 0:
-                    command = self.controller.get_command()
-                    self.obs, self.rew, self.done, self.info = self.mouvement(
-                        command)
-                    x, y, z, roll, pitch, yaw = self.info['pose']
-                    ListePosition.append(
-                        [self.i, x, y, z, roll, pitch, yaw, self.info["progress"], self.obs['lidar']])
-                    self.controller.reset()
-
-                print(self.i, end='\r')
+                command = self.controller.get_command()
+                self.obs, self.rew, self.done, self.info = self.mouvement(
+                    command)
+                x, y, z, roll, pitch, yaw = self.info['pose']
+                ListePosition.append(
+                    [self.i // 1, x, y, z, roll, pitch, yaw, self.info["progress"], self.obs['lidar']])
+                self.controller.reset()
+                print(self.i, x, y)
                 self.i += 1
+
             except KeyboardInterrupt:
-                print('All done')
+                print('\nAll done')
                 break
-        now = time.time()
-        print("%d timesteps took %f seconds" % (self.i, now - then))
-        self.env.logfile()
+
+        print("number of steps divided:", self.i)
+        print("time:", self.info['time'])
         self.env.close()
 
 
@@ -91,7 +88,7 @@ if __name__ == "__main__":
     env1 = 'kitchen'
     env2 = 'maze_hard'
     env3 = 'race_track'
-    sleep_time = 0.00001
+    sleep_time = 0.001
     simEnv = SimEnv(env3, sleep_time)
     simEnv.start()
     save_result(env3, 'brait')

@@ -43,29 +43,18 @@ class SimEnv():
 
     def start(self):
 
-        # initialize controllers
-        forward = ForwardController(self.env, verbose=False)
-        wall = Follow_wallController(self.env, verbose=False)
-        rule = RuleBasedController(self.env, verbose=True)
-        brait = BraitenbergController(self.env, verbose=False)
-        self.controller = rule
-
         # start timers
         then = time.time()
         self.i = 0
 
-        while not self.done:
+        while self.info['robot_pos'][0] < 100:
             try:
-                command = self.controller.get_command()
-                self.obs, self.rew, self.done, self.info = self.mouvement(
-                    command)
+                self.obs, self.rew, self.done, self.info = self.mouvement([
+                                                                          0.0001, 0.0001])
                 x, y, theta = self.info['robot_pos']
                 ListePosition.append(
                     [self.i, x, (self.map_size-y), theta, self.info["dist_obj"], self.obs])
-                self.controller.reset()
-                print(self.i, x, 20-y)
                 self.i += 1
-
             except KeyboardInterrupt:
                 print('All done')
                 break
@@ -93,9 +82,9 @@ if __name__ == "__main__":
     env1 = 'kitchen-v1'
     env2 = 'maze-v0'
     env3 = 'race_track-v0'
-    sleep_time = 0.0000001
+    sleep_time = 0.000001
 
-    display = False
+    display = True
     simEnv = SimEnv(env3, sleep_time, display)
     simEnv.start()
-    save_result("race_track", 'rule')
+    save_result("race_track", 'brait')

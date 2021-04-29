@@ -1,6 +1,8 @@
 import random
 from numpy import array
 
+speed = 0.0081
+
 
 class BraitenbergController:
 
@@ -11,13 +13,14 @@ class BraitenbergController:
 
         # behavioral parameters
         self.reactivity = 0.8
-        self.speed = 0.2
+        self.speed = speed
 
     def get_command(self):
 
         # get lasers data
         laserRanges = self.env.get_laserranges()
         laserRanges = [1 - i for i in laserRanges]
+        # print(laserRanges)
 
         Sr = sum(laserRanges[:5])
         Sl = sum(laserRanges[5:])
@@ -32,4 +35,4 @@ class BraitenbergController:
 
     def reset(self):
         self.reactivity = 0.8
-        self.speed = 0.2
+        self.speed = speed

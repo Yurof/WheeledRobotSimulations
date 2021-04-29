@@ -34,27 +34,43 @@ def plot_position(name, ListeResults, startx, starty, goalx, goaly, ratio):
 
 
 def plot_dist_to_target(name, ListeResults):
-    for s in ListeResults:
-        df = pd.read_csv(f'{base_path}/../results/{name}/{s}.csv')
-        x = df.x
-        y = df.y
-        steps = df.steps
-        dist = df.distance_to_obj
-        plt.plot(steps, dist, label=s)
-        plt.legend(loc='best')
+    L_df = [pd.read_csv(
+        f'{base_path}/../results/{name}/{s}.csv') for s in ListeResults]
+    L_x = [df.x for df in L_df]
+    L_y = [df.y for df in L_df]
+    L_s = [df.steps for df in L_df]
+    L_d = [df.distance_to_obj for df in L_df]
+
+    plt.subplot(2, 2, 1)
+    for i in range(len(ListeResults)):
+        plt.plot(L_s[i], L_x[i], label=ListeResults[i])
+    plt.legend(loc='best')
+    plt.xlabel("step")
+    plt.ylabel("x")
+
+    plt.subplot(2, 2, 2)
+    for i in range(len(ListeResults)):
+        plt.plot(L_s[i], L_y[i], label=ListeResults[i])
+    plt.legend(loc='best')
+    plt.xlabel("step")
+    plt.ylabel("y")
+
+    plt.subplot(2, 2, 3)
+    for i in range(len(ListeResults)):
+        plt.plot(L_s[i], L_d[i], label=ListeResults[i])
+    plt.legend(loc='best')
     plt.xlabel("step")
     plt.ylabel("distance to objectif")
+    print(max(L_df[0].lidar))
     plt.show()
 
 
-"""
-Ratio:
-race_track =15
-maze_hard =6.6
-kitchen =5
-"""
-ListPlot = ['bullet_brait_1', 'bullet_brait_2']
-plot_position('race_track', ListPlot, startx=3,
+scenario = 'race_track'
+ListPlot = ['fastsim_rule_1', 'fastsim_rule_3']
+#ListPlot = ['bullet_rule_1', 'fastsim_rule_1', 'fastsim_rule_2']
+#ListPlot = ['bullet_brait_1', 'fastsim_brait_1']
+
+plot_position(scenario, ListPlot, startx=3,
               starty=4, goalx=2, goaly=5, ratio=20)
 
-plot_dist_to_target('race_track', ListPlot)
+plot_dist_to_target(scenario, ListPlot)
