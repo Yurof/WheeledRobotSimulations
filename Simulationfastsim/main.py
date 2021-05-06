@@ -10,9 +10,9 @@ from controllers.follow_wall import Follow_wallController
 from controllers.forward import ForwardController
 from controllers.rulebased import RuleBasedController
 from controllers.braitenberg import BraitenbergController
+from controllers.novelty_ctr import NoveltyController
 
 ListePosition = []
-TimeSampling = []
 
 
 class SimEnv():
@@ -29,11 +29,9 @@ class SimEnv():
         self.display = display
         self.map_size = self.env.get_map_size()
         print(self.map_size)
-        if(self.display):
-            self.env.enable_display()
 
         self.obs, self.rew, self.done, self.info = self.env.step([0, 0])
-
+        
         # initialize controllers
         if ctr == "forward":
             self.controller = ForwardController(self.env, verbose=False)
@@ -43,7 +41,11 @@ class SimEnv():
             self.controller = RuleBasedController(self.env, verbose=False)
         elif ctr == "brait":
             self.controller = BraitenbergController(self.env, verbose=False)
-
+        elif ctr == "novelty":
+            self.controller = NoveltyController(self.env)
+        
+        if(self.display):
+            self.env.enable_display()
 
     def mouvement(self, c, n=1):
         for _ in range(n):
@@ -63,7 +65,6 @@ class SimEnv():
     def start(self):
         # start timers
         then = time.time()
-        t1 = then
         self.i = 0
 
         while not self.done:
@@ -74,10 +75,7 @@ class SimEnv():
                 x, y, theta = self.info['robot_pos']
                 ListePosition.append(
                     [self.i, x, (self.map_size-y), theta, self.info["dist_obj"], self.obs])
-                t2 = time.time()
-                if t2 - t1 >= 1:
-                    t1 = t2
-                    TimeSampling.append([x, (self.map_size-y)])
+                
                 self.controller.reset()
                 self.i += 1
             except KeyboardInterrupt:
@@ -102,19 +100,6 @@ def save_result(name, controller):
                          "distance_to_obj", "lidar"])
         writer.writerows(ListePosition)
 
-def save_time_sampling(name, controller):
-    base_path = os.path.dirname(os.path.abspath(__file__))
-    path = f'{base_path}/../time_sampling/{name}/fastsim_{controller}_'
-    i = 1
-    if os.path.exists(path+str(i)+".csv"):
-        while os.path.exists(path+str(i)+".csv"):
-            i += 1
-    with open(path+str(i)+".csv", 'w', newline='') as file:
-        writer = csv.writer(file)
-        print("\ndata saved as ", file)
-        writer.writerow(["x", "y"])
-        writer.writerows(TimeSampling)
-
 
 if __name__ == "__main__":
 
@@ -122,14 +107,14 @@ if __name__ == "__main__":
         description='Launch fastsim simulation run.')
     # "kitchen", "maze", "race_track"
     parser.add_argument('--env', type=str, default="race_track",
-                        help='environnement')
-    # "forward", "wall", "rule", "brait"
+                        help='choose between kitchen, maze and race_track')
+    # "forward", "wall", "rule", "brait", "novelty
     parser.add_argument('--ctr', type=str, default="brait",
-                        help='controller')
+                        help='choose between forward, wall, rule, brait and novelty')
     parser.add_argument('--sleep_time', type=int, default=0.01,
                         help='sleeping time between each step')
     parser.add_argument('--display', type=bool, default=True,
-                        help='display simulation')
+                        help='True or False')
 
     args = parser.parse_args()
     env = args.env
@@ -140,4 +125,4 @@ if __name__ == "__main__":
     simEnv = SimEnv(env, ctr, sleep_time, display)
     simEnv.start()
     save_result(env, ctr)
-    save_time_sampling(env, ctr)
+
