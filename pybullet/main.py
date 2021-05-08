@@ -23,7 +23,7 @@ class SimEnv():
         self.env = gym.make(env+str('-v0'))
         self.env.reset()
         self.sleep_time = sleep_time
-        self.obs, self.rew, self.done, self.info = self.env.step([0, 0])
+        self.obs, self.rew, self.done, self.info = self.env.step([1, 1])
 
         # initialize controllers
         if ctr == "forward":
@@ -72,12 +72,13 @@ class SimEnv():
 
                 print(self.i, end='\r')
                 self.i += 1
+
             except KeyboardInterrupt:
-                print('All done')
+                print('\nAll done')
                 break
-        now = time.time()
-        print("%d timesteps took %f seconds" % (self.i, now - then))
-        self.env.logfile()
+
+        print("number of steps divided:", self.i)
+        print("time:", self.info['time'])
         self.env.close()
 
 

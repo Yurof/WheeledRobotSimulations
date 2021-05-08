@@ -4,7 +4,7 @@ actuators:
   - type: motor
     name: motor
     params:
-      velocity_multiplier: 15  #0.5m/s
+      velocity_multiplier: 16.5  #0.5m/s
       max_force: 20
 
 sensors:
@@ -14,7 +14,7 @@ sensors:
     params:
       accuracy: 0.00 # maximum deviation from true scan range (percentage)
       rays: 10 
-      range: 0.95 # 1 minus the size of the sensor
+      range: 1 # 1 minus the size of the sensor
       min_range: 0
       angle_start: -90 # degree
       angle: 180 #degree

@@ -35,16 +35,34 @@ def plot_position(name, ListeResults, startx, starty, goalx, goaly, ratio):
 
 
 def plot_dist_to_target(name, ListeResults):
-    for s in ListeResults:
-        df = pd.read_csv(f'{base_path}/../results/{name}/{s}.csv')
-        x = df.x
-        y = df.y
-        steps = df.steps
-        dist = df.distance_to_obj
-        plt.plot(steps, dist, label=s)
-        plt.legend(loc='best')
+    L_df = [pd.read_csv(
+        f'{base_path}/../results/{name}/{s}.csv') for s in ListeResults]
+    L_x = [df.x for df in L_df]
+    L_y = [df.y for df in L_df]
+    L_s = [df.steps for df in L_df]
+    L_d = [df.distance_to_obj for df in L_df]
+
+    plt.subplot(2, 2, 1)
+    for i in range(len(ListeResults)):
+        plt.plot(L_s[i], L_x[i], label=ListeResults[i])
+    plt.legend(loc='best')
+    plt.xlabel("step")
+    plt.ylabel("x")
+
+    plt.subplot(2, 2, 2)
+    for i in range(len(ListeResults)):
+        plt.plot(L_s[i], L_y[i], label=ListeResults[i])
+    plt.legend(loc='best')
+    plt.xlabel("step")
+    plt.ylabel("y")
+
+    plt.subplot(2, 2, 3)
+    for i in range(len(ListeResults)):
+        plt.plot(L_s[i], L_d[i], label=ListeResults[i])
+    plt.legend(loc='best')
     plt.xlabel("step")
     plt.ylabel("distance to objectif")
+    print(max(L_df[0].lidar))
     plt.show()
 
 

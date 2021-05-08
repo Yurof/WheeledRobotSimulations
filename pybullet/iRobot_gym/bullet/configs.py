@@ -61,6 +61,7 @@ class VehicleSpec(YamlDataClassConfig):
 class WorldSpec(YamlDataClassConfig):
     name: str = None
     sdf: str = None
+    scale: float = 1.0
     physics: PhysicsConfig = None
     simulation: SimulationConfig = None
     goal: GoalConfig = None

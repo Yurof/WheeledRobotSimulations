@@ -122,7 +122,7 @@ class Lidar(BulletSensor[NDArray[(Any,), np.float]]):
             1.0 - self._config.accuracy, 1.0 + self._config.accuracy, size=ranges.shape)
         scan = np.clip(ranges * noise, a_min=self._config.min_range,
                        a_max=self._config.range)
-
+        # print("noise", noise)
         if self._config.debug:
             self._display_rays(hit_fractions, scan)
 

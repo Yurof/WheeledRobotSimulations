@@ -1,6 +1,7 @@
 world:
   name: maze_hard
-  sdf: maze_hard.sdf
+  sdf: maze_hard.urdf
+  scale: 10
   physics:
     gravity: -9.81
   simulation:
@@ -8,7 +9,7 @@ world:
     GUI: True
     following_camera : False
   goal:
-    goal_position: [2,19,0]
+    goal_position: [2,9,0]
     goal_size : 0.2
 
 agents:
@@ -19,5 +20,5 @@ agents:
   task:
     task_name: maximize_progress
     params: { time_limit: 1000.0, terminate_on_collision: False, goal_size_detection: 0.2}
-  starting_position: [1, 1, 0.02]
-  starting_orientation: [ 0.0, 0.0, 1]
+  starting_position: [1, 1, 0]
+  starting_orientation: [ 0.0, 0.0, 0]
