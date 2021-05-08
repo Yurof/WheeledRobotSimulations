@@ -7,12 +7,12 @@
   <goal x="2" y="1" color="0" diameter="0.2"/> 
   
   <!-- sensors -->
-  <laser range="1" angle="-90"/>
-  <laser range="1" angle="-70"/>
-  <laser range="1" angle="-50"/>
-  <laser range="1" angle="-30"/>
-  <laser range="1" angle="-10"/>
-  <laser range="1" angle="10"/>
+  <laser range="30" angle="-90"/>
+  <laser range="30" angle="-70"/>
+  <laser range="30" angle="-50"/>
+  <laser range="30" angle="-30"/>
+  <laser range="30" angle="-10"/>
+  <laser range="30" angle="10"/>
 
   <laser range="1" angle="30"/>
   <laser range="1" angle="50"/>

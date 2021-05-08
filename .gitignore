@@ -1,11 +1,8 @@
 /src
-*.pyc
+**/*.pyc
 **/__pycache__/ 
 *.egg-info/
 eggs/
 .eggs/
 pybullet/iRobot_gym.egg-info/
-*.pyc
-*.pyc
-*.pyc
-Simulationfastsim/gym_fastsim/simple_nav/__pycache__/nav_env.cpython-38.pyc
+.vscode/

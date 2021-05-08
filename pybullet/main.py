@@ -1,27 +1,39 @@
+import os
+import time
+import csv
+import argparse
+import gym
+from time import sleep
+from iRobot_gym.envs import SimpleNavEnv
 from controllers.follow_wall import Follow_wallController
 from controllers.forward import ForwardController
 from controllers.rulebased import RuleBasedController
 from controllers.braitenberg import BraitenbergController
 
 
-import time
-from time import sleep
-import gym
-from iRobot_gym.envs import SimpleNavEnv
-import os
-import csv
+
 
 
 ListePosition = []
-
+TimeSampling = []
 
 class SimEnv():
 
-    def __init__(self, env, sleep_time):
+    def __init__(self, env, ctr, sleep_time):
         self.env = gym.make(env+str('-v0'))
         self.env.reset()
         self.sleep_time = sleep_time
         self.obs, self.rew, self.done, self.info = self.env.step([1, 1])
+
+        # initialize controllers
+        if ctr == "forward":
+            self.controller = ForwardController(self.env, verbose=False)
+        elif ctr == "wall":
+            self.controller = Follow_wallController(self.env, verbose=False)
+        elif ctr == "rule":
+            self.controller = RuleBasedController(self.env, verbose=False)
+        elif ctr == "brait":
+            self.controller = BraitenbergController(self.env, verbose=False)
 
     def mouvement(self, c, n=1):
         for _ in range(n):
@@ -38,26 +50,27 @@ class SimEnv():
         return obs, rew, done, info
 
     def start(self):
-
-        # initialize controllers
-        forward = ForwardController(self.env, verbose=False)
-        wall = Follow_wallController(self.env, verbose=False)
-        rule = RuleBasedController(self.env, verbose=True)
-        brait = BraitenbergController(self.env, verbose=False)
-        self.controller = brait
-
+        # start timers
+        then = time.time()
+        t1 = then
         self.i = 0
 
         while not self.done:
             try:
-                command = self.controller.get_command()
-                self.obs, self.rew, self.done, self.info = self.mouvement(
-                    command)
-                x, y, z, roll, pitch, yaw = self.info['pose']
-                ListePosition.append(
-                    [self.i // 1, x, y, z, roll, pitch, yaw, self.info["progress"], self.obs['lidar']])
-                self.controller.reset()
-                print(self.i, x, y)
+                if self.i % 1 == 0:
+                    command = self.controller.get_command()
+                    self.obs, self.rew, self.done, self.info = self.mouvement(
+                        command)
+                    x, y, z, roll, pitch, yaw = self.info['pose']
+                    ListePosition.append(
+                        [self.i, x, y, z, roll, pitch, yaw, self.info["progress"], self.obs['lidar']])
+                    t2 = time.time()
+                    if t2 - t1 >= 1:
+                        t1 = t2
+                        TimeSampling.append([x, y])
+                    self.controller.reset()
+
+                print(self.i, end='\r')
                 self.i += 1
 
             except KeyboardInterrupt:
@@ -82,13 +95,39 @@ def save_result(name, controller):
         writer.writerow(["steps", "x", "y", "z", "roll", "pitch", "yaw",
                          "distance_to_obj", "lidar"])
         writer.writerows(ListePosition)
+        
+def save_time_sampling(name, controller):
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    path = f'{base_path}/../time_sampling/{name}/bullet{controller}_'
+    i = 1
+    if os.path.exists(path+str(i)+".csv"):
+        while os.path.exists(path+str(i)+".csv"):
+            i += 1
+    with open(path+str(i)+".csv", 'w', newline='') as file:
+        writer = csv.writer(file)
+        print("\ndata saved as ", file)
+        writer.writerow(["x", "y"])
+        writer.writerows(TimeSampling)
 
 
 if __name__ == "__main__":
-    env1 = 'kitchen'
-    env2 = 'maze_hard'
-    env3 = 'race_track'
-    sleep_time = 0.001
-    simEnv = SimEnv(env3, sleep_time)
+
+    parser = argparse.ArgumentParser(
+        description='Launch pybullet simulation run.')
+    # "kitchen", "maze_hard", "race_track"
+    parser.add_argument('--env', type=str, default="race_track",
+                        help='environnement')
+    # "forward", "wall", "rule", "brait"
+    parser.add_argument('--ctr', type=str, default="brait",
+                        help='controller')
+    parser.add_argument('--sleep_time', type=int, default=0.001,
+                        help='sleeping time between each step')
+
+    args = parser.parse_args()
+    env = args.env
+    ctr = args.ctr
+    sleep_time = args.sleep_time
+    simEnv = SimEnv(env, ctr, sleep_time)
     simEnv.start()
-    save_result(env3, 'brait')
+    save_result(env, ctr)
+    save_time_sampling(env, ctr)
