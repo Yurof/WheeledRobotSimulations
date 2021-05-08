@@ -17,16 +17,17 @@ from scoop import futures
 
 from controllers.novelty.novelty_search import *
 
-env = None
-
-         
-def eval_nn(genotype, nbstep=2000, render=False, nn_size=[12,2,2,10]):
+        
+def eval_nn(genotype, env, nbstep=2000, render=False, name="", nn_size=[12,2,2,10]):
     nn=SimpleNeuralControllerNumpy(*nn_size)
     nn.set_parameters(genotype)
     observation = env.reset()
     old_pos=None
     total_dist=0
     
+    if (render):
+        f=open("novelty_traj_"+name+".log","w")
+        
     for t in range(nbstep):
         if render:
             env.render()
@@ -35,13 +36,19 @@ def eval_nn(genotype, nbstep=2000, render=False, nn_size=[12,2,2,10]):
         observation, reward, done, info = env.step(action)
         pos=info["robot_pos"][:2]
         
+        if(render and t%10==0):
+            f.write(" ".join(map(str,pos))+"\n")
+            
         if (old_pos is not None):
             d=math.sqrt((pos[0]-old_pos[0])**2+(pos[1]-old_pos[1])**2)
             total_dist+=d
         old_pos=list(pos)
         if(done):
             break
-    
+            
+    if (render):
+        f.close()
+        
     dist_obj=info["dist_obj"]
     rpos=[round(x,2) for x in pos]
     
@@ -71,9 +78,7 @@ creator.create("Individual", array.array, typecode="d", fitness=creator.MyFitnes
 creator.create("Strategy", array.array, typecode="d")
 
 
-def launch_nsga2(environment, mu=100, lambda_=200, cxpb=0.6, mutpb=0.3, ngen=50, nn_size=[12,2,2,10], verbose=False):
-    global env
-    env = environment
+def launch_nsga2(environment, mu=100, lambda_=100, ngen=200, nn_size=[12,2,2,10], variant="NS"):
     random.seed()
 
     nn=SimpleNeuralControllerNumpy(*nn_size)
@@ -83,8 +88,17 @@ def launch_nsga2(environment, mu=100, lambda_=200, cxpb=0.6, mutpb=0.3, ngen=50,
     MAX_VALUE = 30
     MIN_STRATEGY = 0.5
     MAX_STRATEGY = 3
+    cxpb=0.6
+    mutpb=0.3
+    
+    if variant=="FIT":
+        weights = (-1.0,)
+    elif variant=="NS":
+    	weights = (1.0,)
+    else:
+    	weights = (-1.0, 1.0)
       
-    creator.create("MyFitness", base.Fitness, weights=(-1.0, 1.0))
+    creator.create("MyFitness", base.Fitness, weights=weights)
     creator.create("Individual", array.array, typecode="d", fitness=creator.MyFitness, strategy=None)
     creator.create("Strategy", array.array, typecode="d")
     
@@ -100,7 +114,7 @@ def launch_nsga2(environment, mu=100, lambda_=200, cxpb=0.6, mutpb=0.3, ngen=50,
                      low=MIN_VALUE, up=MAX_VALUE, eta=20.0, indpb=1.0 / IND_SIZE)
     toolbox.decorate("mate", checkStrategy(MIN_STRATEGY))
     toolbox.decorate("mutate", checkStrategy(MIN_STRATEGY))
-    toolbox.register("evaluate", eval_nn)
+    toolbox.register("evaluate", eval_nn, env=environment)
     toolbox.register("select", tools.selNSGA2)
     
     ## création de la population
@@ -113,10 +127,15 @@ def launch_nsga2(environment, mu=100, lambda_=200, cxpb=0.6, mutpb=0.3, ngen=50,
     fitnesses_bds = toolbox.map(toolbox.evaluate, invalid_ind)
     
     for ind, (fit, bd) in zip(invalid_ind, fitnesses_bds):
-        ind.fitness.values=(fit,0)
+        if (variant=="FIT+NS"):
+            ind.fitness.values=(fit,0)
+        elif (variant=="FIT"):
+            ind.fitness.values=(fit,)
+        elif (variant=="NS"):
+            ind.fitness.values=(0,)
         ind.fit = fit
         ind.bd = bd
-       
+        
     population = toolbox.select(population, len(population))
     if paretofront is not None:
         paretofront.update(population)
@@ -126,10 +145,16 @@ def launch_nsga2(environment, mu=100, lambda_=200, cxpb=0.6, mutpb=0.3, ngen=50,
     add_strategy="random"
     lambdaNov=6
 
-    archive=updateNovelty(population,population,None,k,add_strategy,lambdaNov)
+    if variant=='NS' or variant=='FIT+NS':
+    	archive=updateNovelty(population,population,None,k,add_strategy,lambdaNov)
 
     for ind in population:
-        ind.fitness.values=(ind.fit,ind.novelty)
+        if (variant=="FIT+NS"):
+            ind.fitness.values=(ind.fit,ind.novelty)
+        elif (variant=="FIT"):
+            ind.fitness.values=(ind.fit,)
+        elif (variant=="NS"):
+            ind.fitness.values=(ind.novelty,)
         
     # Begin the generational process
     for gen in range(1, ngen + 1):
@@ -146,16 +171,27 @@ def launch_nsga2(environment, mu=100, lambda_=200, cxpb=0.6, mutpb=0.3, ngen=50,
         fitnesses_bds = toolbox.map(toolbox.evaluate, invalid_ind)
         
         for ind, (fit, bd) in zip(invalid_ind, fitnesses_bds):
-            ind.fitness.values=(fit,0)
+            if (variant=="FIT+NS"):
+                ind.fitness.values=(fit,0)
+            elif (variant=="FIT"):
+                ind.fitness.values=(fit,)
+            elif (variant=="NS"):
+                ind.fitness.values=(0,)
             ind.fit = fit
             ind.bd = bd
        
         pq=population+offspring
         
-        archive=updateNovelty(pq,offspring,archive,k,add_strategy,lambdaNov)
+        if variant=='NS' or variant=='FIT+NS':
+        	archive=updateNovelty(pq,offspring,archive,k,add_strategy,lambdaNov)
 
         for ind in pq:
-            ind.fitness.values=(ind.fit,ind.novelty)
+            if (variant=="FIT+NS"):
+                ind.fitness.values=(ind.fit,ind.novelty)
+            elif (variant=="FIT"):
+                ind.fitness.values=(ind.fit,)
+            elif (variant=="NS"):
+                ind.fitness.values=(ind.novelty,)
            
         ## choisir la nouvelle population à partir de pq
         population = toolbox.select(pq,mu)
@@ -163,7 +199,8 @@ def launch_nsga2(environment, mu=100, lambda_=200, cxpb=0.6, mutpb=0.3, ngen=50,
         if paretofront is not None:
             paretofront.update(population)
 
-    indexmin, _ = min(enumerate([i.fit for i in paretofront]), key=operator.itemgetter(1)) 
+    indexmin, _ = min(enumerate([i.fit for i in paretofront]), key=operator.itemgetter(1))
+    eval_nn(paretofront[indexmin], env=environment, name=variant, render=True)
           
     return population, paretofront, paretofront[indexmin]
 
