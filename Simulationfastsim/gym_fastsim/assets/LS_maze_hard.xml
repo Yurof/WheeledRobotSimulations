@@ -2,12 +2,9 @@
 <fastsim>
   <display enable="true"/>
   <!-- world -->
-  <map name="maze_hard.pbm" size="20"/>
-
-<!-- /!\ WARNING /!\ The robot "diameter" is actually a radius ! --> 
-  <robot x="2" y="18" theta="0" diameter="0.116525"/> <!-- Start pos : 0.1*size, 0.1*size, pi/4 -->
-	
-  <goal x="2" y="2" color="0" diameter="0.5"/> <!-- Goal pos :0.1*size, 0.75*size -->
+  <map name="maze_hard.pbm" size="10"/>
+  <robot x="1" y="9" theta="0" diameter="0.16525"/>
+  <goal x="2" y="1" color="0" diameter="0.2"/> 
   
   <!-- sensors -->
   <laser range="1" angle="-90"/>
@@ -21,5 +18,4 @@
   <laser range="1" angle="50"/>
   <laser range="1" angle="70"/>
   <laser range="1" angle="90"/>
-  <!-- <radar slices="4" color="0"/> --> <!-- radar disabled for now -->
 </fastsim>

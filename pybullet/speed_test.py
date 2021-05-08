@@ -45,7 +45,7 @@ class SimEnv():
                 self.obs, self.rew, self.done, self.info = self.mouvement([
                                                                           1, 1])
                 x, y, z, roll, pitch, yaw = self.info['pose']
-                print(self.i, x, y)
+                # print(self.i, x, y)
                 self.i += 1
                 moyenn.append(self.info['velocity'][0])
                 # print(self.info['velocity'][0])
@@ -57,14 +57,12 @@ class SimEnv():
         print("\ntook %f seconds of execution\n" % (now - then))
         print("real time is:", self.info['time'])
         print('mean velocity', np.mean(moyenn))
-        self.env.logfile()
+        print("\n ")
         self.env.close()
 
 
 if __name__ == "__main__":
-    env1 = 'kitchen'
-    env2 = 'maze_hard'
-    env3 = 'race_track'
-    sleep_time = 0.001
-    simEnv = SimEnv(env3, sleep_time)
+    env1 = 'blank'
+    sleep_time = 0.00
+    simEnv = SimEnv(env1, sleep_time)
     simEnv.start()

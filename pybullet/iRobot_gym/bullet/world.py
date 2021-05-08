@@ -25,6 +25,7 @@ class World(world.World):
     class Config:
         name: str
         sdf: str
+        scale: float
         goal_config: GoalConfig
         simulation_config: SimulationConfig
         physics_config: PhysicsConfig
@@ -56,7 +57,7 @@ class World(world.World):
 
         p.setGravity(0, 0, self._config.physics_config.gravity)
         p.resetDebugVisualizerCamera(
-            cameraDistance=14.6, cameraYaw=0, cameraPitch=-89.999, cameraTargetPosition=[10, 10, 0])
+            cameraDistance=0.75*self._config.scale, cameraYaw=0, cameraPitch=-89.999, cameraTargetPosition=[self._config.scale/2, self._config.scale/2, 0])
 
     def reset(self):
         p.setTimeStep(self._config.simulation_config.time_step)
@@ -66,7 +67,9 @@ class World(world.World):
         self._state = dict([(a.id, {}) for a in self._agents])
 
     def _load_scene(self, sdf_file: str):
-        ids = p.loadSDF(sdf_file)
+        print("load scene", sdf_file)
+        ids = p.loadURDF(sdf_file, globalScaling=self._config.scale)
+        #ids = p.loadSDF(sdf_file)
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
         planeId = p.loadURDF('plane.urdf')
 
