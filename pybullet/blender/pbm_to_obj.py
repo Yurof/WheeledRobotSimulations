@@ -71,7 +71,6 @@ for item in svg_list:
     #multi = (5)/dims[0]
     bpy.context.object.dimensions = 1, 1, 0.2
 
-    #path_to_obj_dir = os.path.join('C:\\Users\\Youssef\\Desktop\maze')
     print(path_to_file)
     dest_path = bpy.path.ensure_ext(os.path.splitext(path_to_file)[0], '.obj')
 

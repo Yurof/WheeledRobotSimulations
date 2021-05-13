@@ -22,7 +22,7 @@ class ActuatorConfig(YamlDataClassConfig):
 @dataclass
 class VehicleConfig(YamlDataClassConfig):
     urdf_file: str = None
-    debug: bool = False
+    visible: bool = False
     actuators: List[ActuatorConfig] = field(default_factory=lambda: [])
     sensors: List[SensorConfig] = field(default_factory=lambda: [])
 

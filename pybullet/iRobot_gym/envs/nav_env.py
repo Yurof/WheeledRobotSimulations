@@ -21,7 +21,7 @@ class SimpleNavEnv(gym.Env):
         assert self._initialized, 'Reset before calling step'
         state = self._scenario.world.state()
         self.observation, info = self._scenario.agent.step(action=action)
-        self.observation['time'] = self._time
+        # self.observation['time'] = self._time
         done = self._scenario.agent.done(state)
         reward = self._scenario.agent.reward(state, action)
         self._time = self._scenario.world.update(
@@ -37,7 +37,6 @@ class SimpleNavEnv(gym.Env):
         obs = self._scenario.agent.reset(
             self._scenario.world.get_starting_position(self._scenario.agent))
         self._scenario.world.update(agent_id=self._scenario.agent.id)
-        obs['time'] = 0
         return obs
 
     def render(self, **kwargs):
@@ -47,7 +46,10 @@ class SimpleNavEnv(gym.Env):
         self._scenario.world.seed(seed)
 
     def get_laserranges(self):
-        return self.observation['lidar']
+        return self.observation[:-2]
+
+    def get_bumpers(self):
+        return [self.observation[-2], self.observation[-1]]
 
     def logfile(self):
         return

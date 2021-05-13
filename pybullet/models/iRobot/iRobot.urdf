@@ -21,6 +21,7 @@
   <material name="yellow">
     <color rgba="1.0, 1.0, 0.0, 1.0"/>
   </material>
+  
 
 
     <link name="base_footprint">
@@ -185,11 +186,57 @@
   </link>
 
   <joint name="hokuyo_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="0 0.0 0.085"/>
+    <origin rpy="0 0 0" xyz="0 0.0 0.09"/>
     <parent link="base_footprint"/>
     <child link="laser"/>
     <axis xyz="0 0 1"/>
   </joint>
 
+
+  <link name="left_bumper_laser">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.0"/>
+      <inertia ixx="4E-06" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+    </inertial>
+
+    <visual>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <geometry>
+            <box size="0.004712 0.01632 0.003089" />
+        </geometry>
+        <material name="yellow"/>
+    </visual>
+  </link>
+
+  <joint name="left_bumper_laser_joint" type="fixed">
+    <origin rpy="0. 0 0.872665" xyz="0.110948 0.122005 0.05"/>
+    <parent link="base_footprint"/>
+    <child link="left_bumper_laser"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+    <link name="right_bumper_laser">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.0"/>
+      <inertia ixx="4E-06" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+    </inertial>
+
+    <visual>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <geometry>
+            <box size="0.004712 0.01632 0.003089" />
+        </geometry>
+        <material name="yellow"/>
+    </visual>
+  </link>
+
+  <joint name="right_bumper_laser_joint" type="fixed">
+    <origin rpy="0. 0 -0.872665" xyz="0.110948 -0.122005 0.05"/>
+    <parent link="base_footprint"/>
+    <child link="right_bumper_laser"/>
+    <axis xyz="0 0 1"/>
+  </joint>
 
 </robot>

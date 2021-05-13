@@ -91,7 +91,7 @@ echo "====================================="
 echo "===== (5/6) Installing fastsim_gym ====="
 echo "====================================="
 echo
-cd "${BASE_DIR}/Simulationfastsim"
+cd "${BASE_DIR}/libfastsim"
 
 pip3 install .
 

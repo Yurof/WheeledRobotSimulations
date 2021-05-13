@@ -19,7 +19,9 @@ class IRobot(Vehicle):
         self._config = config
 
         self._sensor_indices = {
-            'lidar': 4
+            'lidar': 4,
+            'left_bumper': 5,
+            'right_bumper': 6
         }
 
         self._actuator_indices = {
@@ -64,13 +66,14 @@ class IRobot(Vehicle):
     def _load_model(self, model: str, initial_pose: Pose) -> int:
         position, orientation = initial_pose
         orientation = pybullet.getQuaternionFromEuler(orientation)
+
         id = pybullet.loadURDF(model, position, orientation)
         # pybullet.changeDynamics(id, 0, spinningFriction=0.1)
         # pybullet.changeDynamics(id, 1, spinningFriction=0.1)
 
         for k in range(pybullet.getNumJoints(id)):
             print("\nID", id, pybullet.getJointInfo(id, k))
-            print("dynamic: ", pybullet.getDynamicsInfo(id, k))
+        #     print("dynamic: ", pybullet.getDynamicsInfo(id, k))
 
-        print("\ndynamic: ", pybullet.getDynamicsInfo(id, -1))
+        # print("\ndynamic: ", pybullet.getDynamicsInfo(id, -1))
         return id

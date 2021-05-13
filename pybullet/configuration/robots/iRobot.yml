@@ -1,0 +1,45 @@
+urdf_file: /../../models/iRobot/iRobot.urdf
+
+actuators:
+  - type: motor
+    name: motor
+    params:
+      velocity_multiplier: 16.5  #0.5m/s
+      max_force: 20
+
+sensors:
+  - type: lidar
+    name: lidar
+    frequency: 100
+    params:
+      accuracy: 0.01 
+      rays: 10 
+      range: 4
+      min_range: 0
+      angle_start: -90 # degree
+      angle: 180 #degree
+      visible: True 
+
+  - type: left_bumper
+    name: left_bumper
+    frequency: 100
+    params:
+      accuracy: 0.00 
+      rays: 1
+      range: 0.01
+      min_range: 0
+      angle_start: 0 # degree
+      angle: 0 #degree
+      visible: True 
+
+  - type: right_bumper
+    name: right_bumper
+    frequency: 100
+    params:
+      accuracy: 0.00 
+      rays: 1
+      range: 0.01
+      min_range: 0
+      angle_start: 0 # degree
+      angle: 0 #degree
+      visible: True 

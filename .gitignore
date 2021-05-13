@@ -6,3 +6,6 @@ eggs/
 .eggs/
 pybullet/iRobot_gym.egg-info/
 .vscode/
+.vscode/settings.json
+
+readme_assets

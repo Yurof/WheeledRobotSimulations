@@ -68,7 +68,8 @@ if __name__ == "__main__":
     scenario = 'maze_hard'
 
     config = ScenarioSpec()
-    config.load(f'{base_path}/../pybullet/scenarios/{scenario}.yml')
+    config.load(
+        f'{base_path}/../pybullet/configuration/scenarios/{scenario}.yml')
 
     sx, sy, _ = config.agents.starting_position
     gx, gy, _ = config.world.goal.goal_position

@@ -67,7 +67,7 @@ class Lidar(BulletSensor[NDArray[(Any,), np.float]]):
         angle_start: float
         angle: float
         min_range: float
-        debug: bool = True
+        visible: bool = True
 
     def __init__(self, name: str, type: str, config: Config):
         super().__init__(name, type)
@@ -88,7 +88,10 @@ class Lidar(BulletSensor[NDArray[(Any,), np.float]]):
         end = min_distance + scan_range
         from_points, to_points = [], []
         angle = math.radians(self._config.angle_start) + np.pi / 2.0
-        increment = math.radians(self._config.angle) / (self._rays - 1)
+        if self._rays == 1:
+            increment = math.radians(self._config.angle)
+        else:
+            increment = math.radians(self._config.angle) / (self._rays - 1)
         for i in range(rays):
             from_points.append([
                 start * np.sin(angle),
@@ -123,14 +126,17 @@ class Lidar(BulletSensor[NDArray[(Any,), np.float]]):
         scan = np.clip(ranges * noise, a_min=self._config.min_range,
                        a_max=self._config.range)
         # print("noise", noise)
-        if self._config.debug:
+        if self._config.visible:
             self._display_rays(hit_fractions, scan)
 
         return scan
 
     def _display_rays(self, hit_fractions, scan):
         angle = math.radians(self._config.angle_start) + np.pi / 2.0
-        increment = math.radians(self._config.angle) / (self._config.rays-1)
+        if self._rays == 1:
+            increment = math.radians(self._config.angle)
+        else:
+            increment = math.radians(self._config.angle) / (self._rays - 1)
         for i in range(self._rays):
             if len(self._ray_ids) < self._rays:
                 ray_id = p.addUserDebugLine(self._from[i], self._to[i], self._miss_color,

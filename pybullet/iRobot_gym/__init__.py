@@ -8,7 +8,7 @@ base_path = os.path.dirname(__file__)
 
 def _register_single_agent(name: str, file: str):
     scenario = SimpleNavScenario.from_spec(
-        path=f'{base_path}/../scenarios/{file}')
+        path=f'{base_path}/../configuration/scenarios/{file}')
     register(
         id=name,
         entry_point='iRobot_gym.envs:SimpleNavEnv',
@@ -16,7 +16,7 @@ def _register_single_agent(name: str, file: str):
     )
 
 
-for scenario_file in os.listdir(f'{base_path}/../scenarios'):
+for scenario_file in os.listdir(f'{base_path}/../configuration/scenarios'):
     track_name = os.path.basename(scenario_file).split('.')[0]
     name = f'{track_name}'
     _register_single_agent(

@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<fastsim>
+  <display enable="true"/>
+  <!-- world -->
+  <map name="maze_hard.pbm" size="10"/>
+
+<!-- /!\ WARNING /!\ The robot "diameter" is actually a radius ! --> 
+  <robot x="1" y="9" theta="0" diameter="0.16525"/>
+	
+  <goal x="1" y="1" color="0" diameter="0.2"/>
+  
+  <!-- sensors -->
+  <laser range="4" angle="-90"/>
+  <laser range="4" angle="-70"/>
+  <laser range="4" angle="-50"/>
+  <laser range="4" angle="-30"/>
+  <laser range="4" angle="-10"/>
+
+  <laser range="4" angle="10"/>
+  <laser range="4" angle="30"/>
+  <laser range="4" angle="50"/>
+  <laser range="4" angle="70"/>
+  <laser range="4" angle="90"/>
+
+</fastsim>
+

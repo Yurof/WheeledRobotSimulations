@@ -6,6 +6,7 @@ import gym
 from .actuators import Actuator
 from .definitions import Pose
 from .sensors import Sensor
+import numpy as np
 
 
 class Vehicle(ABC):
@@ -14,10 +15,15 @@ class Vehicle(ABC):
         self.actuators['motor'].control(commands)
 
     def observe(self) -> Dict[str, Any]:
-        observations = {}
+        #observations = {}
+        L_obs = []
         for sensor in self.sensors:
-            observations[sensor.name] = sensor.observe()
-        return observations
+            #observations[sensor.name] = sensor.observe()
+            if sensor.name == 'left_bumper' or sensor.name == 'right_bumper':
+                L_obs.append(int(np.round(sensor.observe(), 2) == 0))
+            else:
+                L_obs = sensor.observe().tolist()
+        return L_obs
 
     @property
     @abstractmethod
