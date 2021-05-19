@@ -18,7 +18,7 @@ from scoop import futures
 from controllers.novelty.novelty_search import *
 
         
-def eval_nn(genotype, env, nbstep=2000, render=False, name="", nn_size=[12,2,2,10]):
+def eval_nn(genotype, env, nbstep=2000, render=False, name="", nn_size=[10,2,2,10]):
     nn=SimpleNeuralControllerNumpy(*nn_size)
     nn.set_parameters(genotype)
     observation = env.reset()
@@ -33,7 +33,7 @@ def eval_nn(genotype, env, nbstep=2000, render=False, name="", nn_size=[12,2,2,1
             env.render()
         
         action=nn.predict(observation)
-        observation, reward, done, info = env.step(action)
+        observation, reward, done, info = env.step(action/60)
         pos=info["robot_pos"][:2]
         
         if(render and t%10==0):
@@ -78,7 +78,7 @@ creator.create("Individual", array.array, typecode="d", fitness=creator.MyFitnes
 creator.create("Strategy", array.array, typecode="d")
 
 
-def launch_nsga2(environment, mu=100, lambda_=100, ngen=200, nn_size=[12,2,2,10], variant="NS"):
+def launch_nsga2(environment, mu=100, lambda_=100, ngen=200, nn_size=[10,2,2,10], variant="NS"):
     random.seed()
 
     nn=SimpleNeuralControllerNumpy(*nn_size)

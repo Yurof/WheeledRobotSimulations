@@ -9,13 +9,12 @@ from controllers.follow_wall import Follow_wallController
 from controllers.forward import ForwardController
 from controllers.rulebased import RuleBasedController
 from controllers.braitenberg import BraitenbergController
-
-
-
+from controllers.novelty_ctr import NoveltyController
 
 
 ListePosition = []
 TimeSampling = []
+
 
 class SimEnv():
 
@@ -34,6 +33,8 @@ class SimEnv():
             self.controller = RuleBasedController(self.env, verbose=False)
         elif ctr == "brait":
             self.controller = BraitenbergController(self.env, verbose=False)
+        elif ctr == "novelty":
+            self.controller = NoveltyController(self.env)
 
     def mouvement(self, c, n=1):
         for _ in range(n):
@@ -95,7 +96,8 @@ def save_result(name, controller):
         writer.writerow(["steps", "x", "y", "z", "roll", "pitch", "yaw",
                          "distance_to_obj", "lidar"])
         writer.writerows(ListePosition)
-        
+
+
 def save_time_sampling(name, controller):
     base_path = os.path.dirname(os.path.abspath(__file__))
     path = f'{base_path}/../time_sampling/{name}/bullet{controller}_'
@@ -115,10 +117,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='Launch pybullet simulation run.')
     # "kitchen", "maze_hard", "race_track"
-    parser.add_argument('--env', type=str, default="race_track",
+    parser.add_argument('--env', type=str, default="maze_hard",
                         help='environnement')
-    # "forward", "wall", "rule", "brait"
-    parser.add_argument('--ctr', type=str, default="brait",
+    # "forward", "wall", "rule", "brait", "novelty"
+    parser.add_argument('--ctr', type=str, default="novelty",
                         help='controller')
     parser.add_argument('--sleep_time', type=int, default=0.001,
                         help='sleeping time between each step')
