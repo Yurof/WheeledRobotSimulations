@@ -20,12 +20,14 @@ import math
 
 import os
 from scoop import futures
-
+import csv
 import time
 import pickle
 
+ListePosition = []
 
-def eval_nn(genotype, nbstep=2000, render=False, name="", nn_size=[12, 2, 2, 10]):
+
+def eval_nn(genotype, nbstep=10000, render=False, name="", nn_size=[12, 2, 2, 10]):
     nn = SimpleNeuralControllerNumpy(*nn_size)
     nn.set_parameters(genotype)
     observation = env.reset()
@@ -45,8 +47,11 @@ def eval_nn(genotype, nbstep=2000, render=False, name="", nn_size=[12, 2, 2, 10]
         action = nn.predict(observation)/105
         # print("action ", action)
         observation, reward, done, info = env.step(action)
+        x, y, theta = info['robot_pos']
+        ListePosition.append(
+            [t, x, (10-y), theta, info["dist_obj"], observation])
         pos = info["robot_pos"][:2]
-        # print("observation", observation)
+        print("observation", observation)
         # print("pos", pos[0], 10-pos[1], info["robot_pos"][2])
 
         if(render):
@@ -72,17 +77,33 @@ def eval_nn(genotype, nbstep=2000, render=False, name="", nn_size=[12, 2, 2, 10]
     return round(dist_obj, 2), rpos
 
 
+def save_result(name, controller):
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    path = f'{base_path}/../../results/{name}/fastsim_{controller}_'
+    i = 1
+    if os.path.exists(path+str(i)+".csv"):
+        while os.path.exists(path+str(i)+".csv"):
+            i += 1
+    with open(path+str(i)+".csv", 'w', newline='') as file:
+        writer = csv.writer(file)
+        print("\ndata saved as ", file)
+        writer.writerow(["steps", "x", "y", "theta",
+                         "distance_to_obj", "laser"])
+        writer.writerows(ListePosition)
+
+
 if (__name__ == "__main__"):
-    env = gym.make("maze-v0")
+    env = gym.make("maze_hard-v0")
     base_path = os.path.dirname(os.path.abspath(__file__))
     creator.create("MyFitness", base.Fitness, weights=(-1.0,))
     creator.create("Individual", array.array, typecode="d",
                    fitness=creator.MyFitness, strategy=None)
     creator.create("Strategy", array.array, typecode="d")
-    f = open(f"{base_path}/../../results/paretoHOF2-10.pkl", "rb")
+    f = open(f"{base_path}/../../results/pareto/paretoHOF4-1.pkl", "rb")
     new_dict = pickle.load(f)
     # print(new_dict)
     f.close()
     # p = f.read()
     # print(p)
     eval_nn(new_dict, render=True)
+    save_result("maze_hard", "genotype")

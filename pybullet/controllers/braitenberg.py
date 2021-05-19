@@ -10,7 +10,7 @@ class BraitenbergController:
         self.verbose = verbose
 
         # behavioral parameters
-        self.reactivity = 0.8
+        self.reactivity = 0.02
         self.speed = 1
 
     def get_command(self):
@@ -18,7 +18,7 @@ class BraitenbergController:
         # get lasers data
         laserRanges = self.env.get_laserranges()
 
-        laserRanges = [1 - i for i in laserRanges]
+        laserRanges = [4 - i for i in laserRanges]
         # print(laserRanges)
         Sr = sum(laserRanges[:5])
         Sl = sum(laserRanges[5:])
@@ -32,5 +32,5 @@ class BraitenbergController:
         return [left, right]
 
     def reset(self):
-        self.reactivity = 0.8
+        self.reactivity = 0.02
         self.speed = 1

@@ -12,8 +12,8 @@ def plot_position(name, ListeResults, startx, starty, goalx, goaly, goalsize, ra
         f'{base_path}/../pybullet/models/scenes/{name}/{name}.pbm')
     nb_rapport = img.shape[0]/ratio
 
-    plt.annotate("Goal", xy=(goalx*nb_rapport, goaly*nb_rapport),
-                 xytext=(goalx*nb_rapport, goaly*nb_rapport))
+    # plt.annotate("Goal", xy=(goalx*nb_rapport, goaly*nb_rapport),
+    #              xytext=(goalx*nb_rapport, goaly*nb_rapport-5))
     plt.plot(goalx*nb_rapport, goaly*nb_rapport,
              'go', markersize=goalsize*nb_rapport)
 
@@ -77,7 +77,8 @@ if __name__ == "__main__":
     scale = config.world.scale
 
     # ListPlot = ['fastsim_rule_1', 'fastsim_rule_3']
-    ListPlot = ['bullet_brait_1']
+    # ListPlot = ['fastsim_brait_1', 'bullet_brait_1']
+    ListPlot = ['fastsim_genotype_1', 'bullet_genotype_1']
 
     plot_position(scenario, ListPlot, startx=sx,
                   starty=sy, goalx=gx, goaly=gy, goalsize=gs, ratio=scale)

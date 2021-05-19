@@ -20,8 +20,8 @@ class SimEnv():
     def __init__(self, env, ctr, sleep_time, display):
         if env == "kitchen":
             self.env = gym.make("kitchen-v1")
-        elif env == "maze":
-            self.env = gym.make("maze-v0")
+        elif env == "maze_hard":
+            self.env = gym.make("maze_hard-v0")
         elif env == "race_track":
             self.env = gym.make("race_track-v0")
         self.env.reset()
@@ -106,14 +106,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='Launch fastsim simulation run.')
     # "kitchen", "maze", "race_track"
-    parser.add_argument('--env', type=str, default="maze",
+    parser.add_argument('--env', type=str, default="race_track",
                         help='choose between kitchen, maze and race_track')
     # "forward", "wall", "rule", "brait", "novelty
     parser.add_argument('--ctr', type=str, default="brait",
                         help='choose between forward, wall, rule, brait and novelty')
-    parser.add_argument('--sleep_time', type=int, default=0.01,
+    parser.add_argument('--sleep_time', type=int, default=0.0001,
                         help='sleeping time between each step')
-    parser.add_argument('--display', type=bool, default=True,
+    parser.add_argument('--display', type=bool, default=False,
                         help='True or False')
 
     args = parser.parse_args()

@@ -119,7 +119,7 @@ if __name__ == "__main__":
     # "forward", "wall", "rule", "brait"
     parser.add_argument('--ctr', type=str, default="brait",
                         help='controller')
-    parser.add_argument('--sleep_time', type=int, default=0.001,
+    parser.add_argument('--sleep_time', type=int, default=0.0001,
                         help='sleeping time between each step')
 
     args = parser.parse_args()
@@ -129,4 +129,4 @@ if __name__ == "__main__":
     simEnv = SimEnv(env, ctr, sleep_time)
     simEnv.start()
     save_result(env, ctr)
-    save_time_sampling(env, ctr)
+    #save_time_sampling(env, ctr)

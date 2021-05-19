@@ -9,7 +9,7 @@ world:
     GUI: True
     following_camera : False
   goal:
-    goal_position: [2,5,0]
+    goal_position: [2,6,0]
     goal_size : 0.2
 
 agents:
@@ -19,6 +19,6 @@ agents:
     sensors: [ lidar, left_bumper,right_bumper]
   task:
     task_name: maximize_progress
-    params: { time_limit: 5, goal_size_detection: 0.2}
-  starting_position: [3, 4, 0]
+    params: { time_limit: -1, goal_size_detection: 0.2}
+  starting_position: [3, 4, 0.5]
   starting_orientation: [ 0.0, 0.0, 0]

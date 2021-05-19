@@ -250,7 +250,7 @@ def launch_nsga2(mu=100, lambda_=200, cxpb=0.6, mutpb=0.3, ngen=200, variant="FI
             valuemin = newvaluemin
             print("Gen "+str(gen)+", new min ! min fit=" +
                   str(valuemin)+" index="+str(indexmin))
-            eval_nn(pq[indexmin], True, "gen%04d" % (gen))
+            eval_nn(pq[indexmin], render=False, name="gen%04d" % (gen))
     fbd.close()
     return population, None, paretofront
 
@@ -296,7 +296,7 @@ if (__name__ == "__main__"):
     for i, p in enumerate(paretofront):
         print("Visualizing indiv "+str(i)+", fit="+str(p.fitness.values))
         f = open(
-            f"{base_path}/../../results/pareto/paretoHOF3-{str(i)}.pkl", "wb")
+            f"{base_path}/../../results/pareto/paretoHOF4-{str(i)}.pkl", "wb")
         # print(p)
         # f.write(p)
         eval_nn(p, name=str(i), render=False)
