@@ -14,9 +14,9 @@ class Vehicle(ABC):
         self.actuators['motor'].control(commands)
 
     def observe(self) -> Dict[str, Any]:
-        observations = {}
+        observations = []
         for sensor in self.sensors:
-            observations[sensor.name] = sensor.observe()
+            observations = sensor.observe()
         return observations
 
     @property

@@ -68,9 +68,9 @@ class IRobot(Vehicle):
         # pybullet.changeDynamics(id, 0, spinningFriction=0.1)
         # pybullet.changeDynamics(id, 1, spinningFriction=0.1)
 
-        for k in range(pybullet.getNumJoints(id)):
-            print("\nID", id, pybullet.getJointInfo(id, k))
-            print("dynamic: ", pybullet.getDynamicsInfo(id, k))
+        # for k in range(pybullet.getNumJoints(id)):
+        #     print("\nID", id, pybullet.getJointInfo(id, k))
+        #     print("dynamic: ", pybullet.getDynamicsInfo(id, k))
 
-        print("\ndynamic: ", pybullet.getDynamicsInfo(id, -1))
+        # print("\ndynamic: ", pybullet.getDynamicsInfo(id, -1))
         return id

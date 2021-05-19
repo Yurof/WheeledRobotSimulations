@@ -67,7 +67,6 @@ class World(world.World):
         self._state = dict([(a.id, {}) for a in self._agents])
 
     def _load_scene(self, sdf_file: str):
-        print("load scene", sdf_file)
         ids = p.loadURDF(sdf_file, globalScaling=self._config.scale)
         #ids = p.loadSDF(sdf_file)
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
@@ -106,8 +105,6 @@ class World(world.World):
             self._state[agent.id]['pose'] = np.append((0, 0, 0), (0, 0, 0))
         else:
             self._state[agent.id]['pose'] = pose
-        collision_with_wall = False
-        self._state[agent.id]['wall_collision'] = collision_with_wall
 
         velocity = util.get_velocity(id=agent.vehicle_id)
         if 'velocity' in self._state[agent.id]:

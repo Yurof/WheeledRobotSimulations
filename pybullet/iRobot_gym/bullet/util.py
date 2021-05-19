@@ -34,7 +34,7 @@ def follow_agent(agent: Agent, width=640, height=480) -> np.ndarray:
     orientation = pybullet.getQuaternionFromEuler((0, 0, yaw))
     rot_matrix = pybullet.getMatrixFromQuaternion(orientation)
     rot_matrix = np.array(rot_matrix).reshape(3, 3)
-    
+
     camera_position = position + rot_matrix.dot([-0.8, 0, 0.3])
     up_vector = rot_matrix.dot([0, 0, 1])
     target = position

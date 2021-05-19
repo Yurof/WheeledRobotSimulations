@@ -1,9 +1,3 @@
-from controllers.follow_wall import Follow_wallController
-from controllers.forward import ForwardController
-from controllers.rulebased import RuleBasedController
-from controllers.braitenberg import BraitenbergController
-
-
 import time
 from time import sleep
 import gym
@@ -46,8 +40,39 @@ class SimEnv():
                                                                           1, 1])
                 x, y, z, roll, pitch, yaw = self.info['pose']
                 # print(self.i, x, y)
+                print(self.obs)
+                print("info", self.info)
+                self.env.get_laserranges()
                 self.i += 1
                 moyenn.append(self.info['velocity'][0])
+                # print(self.info['velocity'][0])
+            except KeyboardInterrupt:
+                print('All done')
+                break
+        now = time.time()
+        print(self.i)
+        print("\ntook %f seconds of execution\n" % (now - then))
+        print("real time is:", self.info['time'])
+        print('mean velocity', np.mean(moyenn))
+        print("\n ")
+        self.env.close()
+
+    def rotation(self):
+
+        self.i = 0
+        # start timers
+        then = time.time()
+        moyenn = []
+        while not self.done and (self.info['pose'][5] < 0 or self.i < 2):
+            try:
+                self.obs, self.rew, self.done, self.info = self.mouvement([
+                                                                          1, -1])
+                x, y, z, roll, pitch, yaw = self.info['pose']
+                print(self.i, yaw)
+                self.i += 1
+                time.sleep(self.sleep_time)
+                moyenn.append(self.info['velocity'][0])
+
                 # print(self.info['velocity'][0])
             except KeyboardInterrupt:
                 print('All done')
@@ -63,6 +88,6 @@ class SimEnv():
 
 if __name__ == "__main__":
     env1 = 'blank'
-    sleep_time = 0.00
+    sleep_time = 0.01
     simEnv = SimEnv(env1, sleep_time)
     simEnv.start()

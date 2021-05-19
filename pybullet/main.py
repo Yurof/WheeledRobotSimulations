@@ -18,7 +18,7 @@ TimeSampling = []
 
 class SimEnv():
 
-    def __init__(self, env, ctr, sleep_time):
+    def __init__(self, env, ctr, file_name, sleep_time):
         self.env = gym.make(env+str('-v0'))
         self.env.reset()
         self.sleep_time = sleep_time
@@ -34,7 +34,7 @@ class SimEnv():
         elif ctr == "brait":
             self.controller = BraitenbergController(self.env, verbose=False)
         elif ctr == "novelty":
-            self.controller = NoveltyController(self.env)
+            self.controller = NoveltyController(self.env, file_name)
 
     def mouvement(self, c, n=1):
         for _ in range(n):
@@ -64,7 +64,7 @@ class SimEnv():
                         command)
                     x, y, z, roll, pitch, yaw = self.info['pose']
                     ListePosition.append(
-                        [self.i, x, y, z, roll, pitch, yaw, self.info["progress"], self.obs['lidar']])
+                        [self.i, x, y, z, roll, pitch, yaw, self.info["progress"], self.obs])
                     t2 = time.time()
                     if t2 - t1 >= 1:
                         t1 = t2
@@ -124,12 +124,16 @@ if __name__ == "__main__":
                         help='controller')
     parser.add_argument('--sleep_time', type=int, default=0.001,
                         help='sleeping time between each step')
+    parser.add_argument('--file_name', type=str,
+                        default='maze_nsif-0', help='file name for')
 
     args = parser.parse_args()
     env = args.env
     ctr = args.ctr
+    file_name = args.file_name
     sleep_time = args.sleep_time
-    simEnv = SimEnv(env, ctr, sleep_time)
+
+    simEnv = SimEnv(env, ctr, file_name, sleep_time)
     simEnv.start()
     save_result(env, ctr)
     save_time_sampling(env, ctr)

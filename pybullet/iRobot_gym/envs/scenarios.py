@@ -16,7 +16,7 @@ base_path = os.path.dirname(os.path.abspath(__file__))
 
 
 def load_vehicle(spec: VehicleSpec) -> core.Vehicle:
-    config_file_path = f'{base_path}/../../models/{spec.name}/{spec.name}.yml'
+    config_file_path = f'{base_path}/../../configuration/robots/{spec.name}.yml'
     if not os.path.exists(config_file_path):
         raise NotImplementedError(
             f'No vehicle with name {spec.name} implemented.')
@@ -42,7 +42,7 @@ def load_vehicle(spec: VehicleSpec) -> core.Vehicle:
 
 
 def load_world(spec: WorldSpec, agents: List[Agent]) -> core.World:
-    config_file_path = f'{base_path}/../../scenarios/{spec.name}.yml'
+    config_file_path = f'{base_path}/../../configuration/scenarios/{spec.name}.yml'
     config = ScenarioSpec()
     config.load(config_file_path)
 
