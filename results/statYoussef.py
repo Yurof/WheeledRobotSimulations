@@ -39,21 +39,21 @@ def plot_dist_to_target(name, ListeResults):
     L_s = [df.steps for df in L_df]
     L_d = [df.distance_to_obj for df in L_df]
 
-    plt.subplot(2, 2, 1)
-    for i in range(len(ListeResults)):
-        plt.plot(L_s[i], L_x[i], label=ListeResults[i], alpha=0.5)
-    plt.legend(loc='best')
-    plt.xlabel("step")
-    plt.ylabel("x")
+    # plt.subplot(2, 2, 1)
+    # for i in range(len(ListeResults)):
+    #     plt.plot(L_s[i], L_x[i], label=ListeResults[i], alpha=0.5)
+    # plt.legend(loc='best')
+    # plt.xlabel("step")
+    # plt.ylabel("x")
 
-    plt.subplot(2, 2, 2)
-    for i in range(len(ListeResults)):
-        plt.plot(L_s[i], L_y[i], label=ListeResults[i], alpha=0.5)
-    plt.legend(loc='best')
-    plt.xlabel("step")
-    plt.ylabel("y")
+    # plt.subplot(2, 2, 2)
+    # for i in range(len(ListeResults)):
+    #     plt.plot(L_s[i], L_y[i], label=ListeResults[i], alpha=0.5)
+    # plt.legend(loc='best')
+    # plt.xlabel("step")
+    # plt.ylabel("y")
 
-    plt.subplot(2, 2, 3)
+    # plt.subplot(2, 2, 3)
     for i in range(len(ListeResults)):
         plt.plot(L_s[i], L_d[i], label=ListeResults[i], alpha=0.5)
     plt.legend(loc='best')
@@ -79,6 +79,8 @@ if __name__ == "__main__":
     # ListPlot = ['fastsim_rule_1', 'fastsim_rule_3']
     # ListPlot = ['fastsim_brait_1', 'bullet_brait_1']
     # ListPlot = ['fastsim_genotype_1', 'bullet_genotype_1']
+    ListPlot = ['fastsim_ns-gen10_1', 'fastsim_ns-gen20_1', 'fastsim_ns-gen30_1',
+                'fastsim_ns-gen40_1', 'fastsim_ns-gen50_1', 'fastsim_ns-gen60_1']
 
     plot_position(scenario, ListPlot, startx=sx,
                   starty=sy, goalx=gx, goaly=gy, goalsize=gs, ratio=scale)

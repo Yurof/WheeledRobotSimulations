@@ -125,7 +125,7 @@ if __name__ == "__main__":
     parser.add_argument('--sleep_time', type=int, default=0.001,
                         help='sleeping time between each step')
     parser.add_argument('--file_name', type=str,
-                        default='maze_nsif-0', help='file name for')
+                        default='maze_ns_300-0', help='file name for')
 
     args = parser.parse_args()
     env = args.env
@@ -135,5 +135,5 @@ if __name__ == "__main__":
 
     simEnv = SimEnv(env, ctr, file_name, sleep_time)
     simEnv.start()
-    save_result(env, ctr)
+    # save_result(env, ctr)
     save_time_sampling(env, ctr)

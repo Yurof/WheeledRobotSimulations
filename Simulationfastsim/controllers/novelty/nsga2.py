@@ -17,16 +17,15 @@ import array
 import random
 import operator
 import math
-import gym
 import pickle
 import os
-
+import time
 from scoop import futures
 
 from novelty_search import *
 
 
-def eval_nn(genotype, env, nbstep=2000, render=False, name="", nn_size=[10, 2, 2, 10]):
+def eval_nn(genotype, env, nbstep=5000, render=False, name="", nn_size=[10, 2, 2, 10]):
     nn = SimpleNeuralControllerNumpy(*nn_size)
     nn.set_parameters(genotype)
     observation = env.reset()
@@ -46,6 +45,7 @@ def eval_nn(genotype, env, nbstep=2000, render=False, name="", nn_size=[10, 2, 2
             total_dist += d
         old_pos = list(pos)
         if(done):
+            print("X", end="", flush=True)
             break
 
     dist_obj = info["dist_obj"]
@@ -126,7 +126,7 @@ def launch_nsga2(environment, mu=100, lambda_=100, ngen=2, nn_size=[10, 2, 2, 10
     paretofront = tools.ParetoFront()
 
     # pour sauvegarder la position finale des politiques explorées
-    fbd = open("bd.log", "w")
+    fbd = open(f"bd-{file_name}.log", "w")
 
     # Evaluate the individuals with an invalid fitness
     invalid_ind = [ind for ind in population if not ind.fitness.valid]
@@ -171,7 +171,7 @@ def launch_nsga2(environment, mu=100, lambda_=100, ngen=2, nn_size=[10, 2, 2, 10
     # Begin the generational process
     for gen in range(1, ngen + 1):
         if (gen % 10 == 0):
-            print("+", end="", flush=True)
+            print(gen, end="", flush=True)
         else:
             print(".", end="", flush=True)
 
@@ -192,6 +192,8 @@ def launch_nsga2(environment, mu=100, lambda_=100, ngen=2, nn_size=[10, 2, 2, 10
                 ind.fitness.values = (0,)
             ind.fit = fit
             ind.bd = bd
+            fbd.write(" ".join(map(str, bd))+"\n")
+            fbd.flush()
 
         pq = population+offspring
 
@@ -213,16 +215,42 @@ def launch_nsga2(environment, mu=100, lambda_=100, ngen=2, nn_size=[10, 2, 2, 10
         if paretofront is not None:
             paretofront.update(population)
 
+        if (gen % 10 == 0):
+            for i, p in enumerate(paretofront):
+                f = open(
+                    f"{base_path}/../../../results/individuals/{file_name}-gen{str(gen)}-p{str(i)}.pkl", "wb")
+                pickle.dump(p, f)
+
         indexmin, newvaluemin = min(
             enumerate([i.fit for i in pq]), key=operator.itemgetter(1))
+
         if (newvaluemin < valuemin):
             valuemin = newvaluemin
             print("Gen "+str(gen)+", new min ! min fit=" +
                   str(valuemin)+" index="+str(indexmin))
-            eval_nn(pq[indexmin], environment,
-                    render=False, name="gen%04d" % (gen))
+            dist_obj, rpos = eval_nn(pq[indexmin], environment,
+                                     render=False, name="gen%04d" % (gen))
+            if valuemin < 0.2:
+                for i, p in enumerate(paretofront):
+                    print("Visualizing indiv "+str(i) +
+                          ", fit="+str(p.fitness.values))
+                    f = open(
+                        f"{base_path}/../../../results/individuals/{file_name}-gen{str(gen)}-p{str(i)}.pkl", "wb")
+                    eval_nn(p, env, name=str(i), render=False)
+                    pickle.dump(p, f)
+                break
+
+        if (gen == ngen):
+            for i, p in enumerate(paretofront):
+                print("Visualizing indiv "+str(i) +
+                      ", fit="+str(p.fitness.values))
+                f = open(
+                    f"{base_path}/../../../results/individuals/{file_name}-gen{str(gen)}-p{str(i)}.pkl", "wb")
+                eval_nn(p, env, name=str(i), render=False)
+                pickle.dump(p, f)
     fbd.close()
-    return population, None, paretofront
+
+    # return population, None, paretofront
 
 
 if (__name__ == "__main__"):
@@ -231,22 +259,20 @@ if (__name__ == "__main__"):
         description='Launch maze navigation experiment.')
     parser.add_argument('--env', type=str, default="maze",
                         help='choose between kitchen, maze and race_track')
-    parser.add_argument('--nb_gen', type=int, default=1,
+    parser.add_argument('--nb_gen', type=int, default=300,
                         help='number of generations')
-    parser.add_argument('--mu', type=int, default=50,
+    parser.add_argument('--mu', type=int, default=100,
                         help='population size')
-    parser.add_argument('--lambda_', type=int, default=50,
+    parser.add_argument('--lambda_', type=int, default=100,
                         help='number of individuals to generate')
-    parser.add_argument('--res_dir', type=str, default="res",
-                        help='basename of the directory in which to put the results')
-    parser.add_argument('--variant', type=str, default="FIT+NS", choices=['FIT', 'NS', 'FIT+NS'],
+    parser.add_argument('--variant', type=str, default="NS", choices=['FIT', 'NS', 'FIT+NS'],
                         help='variant to consider')
     parser.add_argument('--hidden_layers', type=int, default=2,
                         help='number of hidden layers of the NN controller')
     parser.add_argument('--neurons_per_layer', type=int, default=10,
                         help='number of hidden layers of the NN controller')
     parser.add_argument('--file_name', type=str,
-                        default='test-0', help='file name')
+                        default='maze_ns1', help='file name')
 
     args = parser.parse_args()
     env = args.env+'-v0'
@@ -265,21 +291,22 @@ if (__name__ == "__main__"):
 
     print("NN: %d hidden layers with %d neurons per layer" %
           (args.hidden_layers, args.neurons_per_layer))
-    nn_size = [12, 2, args.hidden_layers, args.neurons_per_layer]
+
+    start = time.time()
+    nn_size = [10, 2, args.hidden_layers, args.neurons_per_layer]
     base_path = os.path.dirname(os.path.abspath(__file__))
 
-    pop, logbook, paretofront = launch_nsga2(env,
-                                             mu=mu, lambda_=lambda_, ngen=ngen, variant=variant, nn_size=nn_size)
+    # pop, logbook, paretofront =
+    launch_nsga2(env, mu=mu, lambda_=lambda_, ngen=ngen,
+                 variant=variant, nn_size=nn_size)
 
-    for i, p in enumerate(paretofront):
-        print("Visualizing indiv "+str(i)+", fit="+str(p.fitness.values))
-        f = open(
-            f"{base_path}/../../../results/individuals/{file_name}-{str(i)}.pkl", "wb")
-        # print(p)
-        # f.write(p)
-        eval_nn(p, env, name=str(i), render=False)
-        pickle.dump(p, f)
-
-    f.close()
+    # for i, p in enumerate(paretofront):
+    #     print("Visualizing indiv "+str(i)+", fit="+str(p.fitness.values))
+    #     f = open(
+    #         f"{base_path}/../../../results/individuals/{file_name}-f{str(i)}.pkl", "wb")
+    #     eval_nn(p, env, name=str(i), render=False)
+    #     pickle.dump(p, f)
+    # f.close()
 
     env.close()
+    print("\n time taken: ", time.time()-start)

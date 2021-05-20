@@ -87,7 +87,7 @@ class SimEnv():
                 x, y, theta = self.info['robot_pos']
                 ListePosition.append(
                     [self.i, x, (self.map_size-y), theta, self.info["dist_obj"], self.obs])
-
+                print(self.i)
                 self.controller.reset()
                 self.i += 1
             except KeyboardInterrupt:
@@ -98,9 +98,24 @@ class SimEnv():
         self.env.close()
 
 
-def save_result(name, controller):
+def save_result(map_name, controller):
     base_path = os.path.dirname(os.path.abspath(__file__))
-    path = f'{base_path}/../results/{name}/fastsim_{controller}_'
+    path = f'{base_path}/../results/{map_name}/fastsim_{controller}_'
+    i = 1
+    if os.path.exists(path+str(i)+".csv"):
+        while os.path.exists(path+str(i)+".csv"):
+            i += 1
+    with open(path+str(i)+".csv", 'w', newline='') as file:
+        writer = csv.writer(file)
+        print("\ndata saved as ", file)
+        writer.writerow(["steps", "x", "y", "roll",
+                         "distance_to_obj", "lidar"])
+        writer.writerows(ListePosition)
+
+
+def save_result_as(map_name, name):
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    path = f'{base_path}/../results/{map_name}/fastsim_{name}_'
     i = 1
     if os.path.exists(path+str(i)+".csv"):
         while os.path.exists(path+str(i)+".csv"):
@@ -123,12 +138,12 @@ if __name__ == "__main__":
     # "forward", "wall", "rule", "brait", "novelty
     parser.add_argument('--ctr', type=str, default="novelty",
                         help='choose between forward, wall, rule, brait and novelty')
-    parser.add_argument('--file_name', type=str,
-                        default='maze_nsif-0', help='file name for')
     parser.add_argument('--sleep_time', type=int, default=0.00001,
                         help='sleeping time between each step')
     parser.add_argument('--display', type=bool, default=True,
                         help='True or False')
+    parser.add_argument('--file_name', type=str,
+                        default='maze_ns2-gen40-p0', help='file name for')
 
     args = parser.parse_args()
     env = args.env
@@ -138,6 +153,6 @@ if __name__ == "__main__":
     display = args.display
 
     simEnv = SimEnv(env, ctr, file_name, sleep_time, display)
-    # simEnv.generate_ind('test1')
     simEnv.start()
-    save_result(env, ctr)
+    # save_result_as("maze_hard", "ns-gen40")
+    # save_result("maze_hard", ctr)
