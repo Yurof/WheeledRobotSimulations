@@ -19,7 +19,7 @@ class ForwardController:
 
         # behavioral parameters
 
-        self.dist_tooClose = 50
+        self.dist_tooClose = 0.5
 
         self.wall_tooCloseF = False
 
@@ -27,11 +27,11 @@ class ForwardController:
 
         self.wall_tooCloseL = False
 
-        self.right = [1, -1]
+        self.right = [1/117, -1/117]
 
-        self.left = [-1, 1]
+        self.left = [-1/117, 1/117]
 
-        self.forward = [1, 1]
+        self.forward = [1/117, 1/117]
 
         # there is this case where the agent might be stuck and alternate
 
@@ -128,7 +128,7 @@ class ForwardController:
 
     def reset(self):
 
-        self.dist_tooClose = 50
+        self.dist_tooClose = 0.5
 
         self.wall_tooCloseF = False
 
@@ -136,8 +136,8 @@ class ForwardController:
 
         self.wall_tooCloseL = False
 
-        self.right = [1, -1]
+        self.right = [1/117, -1/117]
 
-        self.left = [-1, 1]
+        self.left = [-1/117, 1/117]
 
-        self.forward = [1, 1]
+        self.forward = [1/117, 1/117]

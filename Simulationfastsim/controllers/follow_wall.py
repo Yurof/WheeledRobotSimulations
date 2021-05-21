@@ -21,11 +21,11 @@ class Follow_wallController:
 
         # behavioral parameters
 
-        self.dist_tooClose = 40
+        self.dist_tooClose = 0.4
 
-        self.dist_tooFar = 90
+        self.dist_tooFar = 0.9
 
-        self.dist_obstacle = 50
+        self.dist_obstacle = 0.5
 
         self.obstacleFront = False
 
@@ -41,11 +41,11 @@ class Follow_wallController:
 
         self.wall_tooFarL = False
 
-        self.right = [1, -1]
+        self.right = [1/117, -1/117]
 
-        self.left = [-1, 1]
+        self.left = [-1/117, 1/117]
 
-        self.forward = [1, 1]
+        self.forward = [1/117, 1/117]
 
         # there is this case where the agent might be stuck and alternate
 
@@ -95,7 +95,7 @@ class Follow_wallController:
 
                 self.wall_L_OK = True
 
-            elif dist < 100:
+            elif dist < 1:
 
                 self.wall_tooFarL = True
 
@@ -115,7 +115,7 @@ class Follow_wallController:
 
                 self.wall_R_OK = True
 
-            elif dist < 100:
+            elif dist < 1:
 
                 self.wall_tooFarR = True
 
@@ -180,6 +180,7 @@ class Follow_wallController:
         if (c == self.right and self.old_c == self.left) or \
                 (c == self.left and self.old_c == self.right):
             c = self.old_c
+        
 
         self.old_c = c
 
@@ -193,11 +194,11 @@ class Follow_wallController:
 
         self.forwardcontroller.reset()
 
-        self.dist_tooClose = 40
+        self.dist_tooClose = 0.4
 
-        self.dist_tooFar = 90
+        self.dist_tooFar = 0.9
 
-        self.dist_obstacle = 50
+        self.dist_obstacle = 0.5
 
         self.obstacleFront = False
 
@@ -213,8 +214,8 @@ class Follow_wallController:
 
         self.wall_tooFarL = False
 
-        self.right = [-1, 1]
+        self.right = [1/117, -1/117]
 
-        self.left = [1, -1]
+        self.left = [-1/117, 1/117]
 
-        self.forward = [1, 1]
+        self.forward = [1/117, 1/117]
