@@ -220,6 +220,7 @@ def launch_nsga2(environment, mu=100, lambda_=100, ngen=2, nn_size=[10, 2, 2, 10
                 f = open(
                     f"{base_path}/../../../results/individuals/{file_name}-gen{str(gen)}-p{str(i)}.pkl", "wb")
                 pickle.dump(p, f)
+                break
 
         indexmin, newvaluemin = min(
             enumerate([i.fit for i in pq]), key=operator.itemgetter(1))
@@ -259,20 +260,20 @@ if (__name__ == "__main__"):
         description='Launch maze navigation experiment.')
     parser.add_argument('--env', type=str, default="maze",
                         help='choose between kitchen, maze and race_track')
-    parser.add_argument('--nb_gen', type=int, default=300,
+    parser.add_argument('--nb_gen', type=int, default=200,
                         help='number of generations')
     parser.add_argument('--mu', type=int, default=100,
                         help='population size')
     parser.add_argument('--lambda_', type=int, default=100,
                         help='number of individuals to generate')
-    parser.add_argument('--variant', type=str, default="NS", choices=['FIT', 'NS', 'FIT+NS'],
+    parser.add_argument('--variant', type=str, default="FIT", choices=['FIT', 'NS', 'FIT+NS'],
                         help='variant to consider')
     parser.add_argument('--hidden_layers', type=int, default=2,
                         help='number of hidden layers of the NN controller')
     parser.add_argument('--neurons_per_layer', type=int, default=10,
                         help='number of hidden layers of the NN controller')
     parser.add_argument('--file_name', type=str,
-                        default='maze_ns1', help='file name')
+                        default='maze_fit11', help='file name')
 
     args = parser.parse_args()
     env = args.env+'-v0'

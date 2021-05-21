@@ -125,7 +125,7 @@ if __name__ == "__main__":
     parser.add_argument('--sleep_time', type=int, default=0.001,
                         help='sleeping time between each step')
     parser.add_argument('--file_name', type=str,
-                        default='maze_ns_300-0', help='file name for')
+                        default='NoveltyFitness/3/maze_nsfit3-gen59-p0', help='file name for')
 
     args = parser.parse_args()
     env = args.env

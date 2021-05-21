@@ -16,7 +16,7 @@ def plot_points(points, bg="maze_hard.pbm", title=None):
         ax1.imshow(img, extent=[0, 10, 10, 0])
     if(title):
         ax1.set_title(title)
-    ax1.scatter(x, y, s=10)
+    ax1.scatter(x, y, s=5)
     plt.show()
 
 

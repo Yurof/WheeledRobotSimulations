@@ -87,7 +87,6 @@ class SimEnv():
                 x, y, theta = self.info['robot_pos']
                 ListePosition.append(
                     [self.i, x, (self.map_size-y), theta, self.info["dist_obj"], self.obs])
-                print(self.i)
                 self.controller.reset()
                 self.i += 1
             except KeyboardInterrupt:
@@ -143,7 +142,7 @@ if __name__ == "__main__":
     parser.add_argument('--display', type=bool, default=True,
                         help='True or False')
     parser.add_argument('--file_name', type=str,
-                        default='maze_ns2-gen40-p0', help='file name for')
+                        default='NoveltyFitness/3/maze_nsfit3-gen59-p0', help='file name for')
 
     args = parser.parse_args()
     env = args.env
