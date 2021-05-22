@@ -1,14 +1,15 @@
+"""This class define the robot, it links the joints of the urdf file to the wheel and the laser  """
+
 from dataclasses import dataclass
 from typing import List, Dict, Any
+
+import gym
 from iRobot_gym.bullet.actuators import BulletActuator
 from iRobot_gym.bullet.sensors import BulletSensor
-from iRobot_gym.core.definitions import Pose
-from iRobot_gym.core.vehicles import Vehicle
-
 import pybullet
 
 
-class IRobot(Vehicle):
+class IRobot:
     @dataclass
     class Config:
         urdf_file: str
@@ -28,19 +29,16 @@ class IRobot(Vehicle):
         self._actuators = dict([(a.name, a) for a in actuators])
         self._sensors = sensors
 
-    @property
-    def id(self) -> Any:
-        return self._id
+    def control(self, commands: Dict) -> None:
+        self.actuators['motor'].control(commands)
 
-    @property
-    def sensors(self) -> List[BulletSensor]:
-        return self._sensors
+    def observe(self) -> Dict[str, Any]:
+        observations = []
+        for sensor in self.sensors:
+            observations = sensor.observe()
+        return observations
 
-    @property
-    def actuators(self) -> Dict[str, BulletActuator]:
-        return self._actuators
-
-    def reset(self, pose: Pose):
+    def reset(self, pose):
         if not self._id:
             self._id = self._load_model(
                 self._config.urdf_file, initial_pose=pose)
@@ -61,10 +59,9 @@ class IRobot(Vehicle):
                 joint_indices = self._actuator_indices[name]
             actuator.reset(body_id=self._id, joint_indices=joint_indices)
 
-    def _load_model(self, model: str, initial_pose: Pose) -> int:
+    def _load_model(self, model: str, initial_pose) -> int:
         position, orientation = initial_pose
         orientation = pybullet.getQuaternionFromEuler(orientation)
-        id = pybullet.loadURDF(model, position, orientation)
         # pybullet.changeDynamics(id, 0, spinningFriction=0.1)
         # pybullet.changeDynamics(id, 1, spinningFriction=0.1)
 
@@ -73,4 +70,24 @@ class IRobot(Vehicle):
         #     print("dynamic: ", pybullet.getDynamicsInfo(id, k))
 
         # print("\ndynamic: ", pybullet.getDynamicsInfo(id, -1))
-        return id
+        return pybullet.loadURDF(model, position, orientation)
+
+    @property
+    def id(self) -> Any:
+        return self._id
+
+    @property
+    def sensors(self) -> List[BulletSensor]:
+        return self._sensors
+
+    @property
+    def actuators(self) -> Dict[str, BulletActuator]:
+        return self._actuators
+
+    @property
+    def action_space(self) -> gym.spaces.Dict:
+        return gym.spaces.Dict(dict((name, actuator.space()) for name, actuator in self.actuators.items()))
+
+    @property
+    def observation_space(self) -> gym.spaces.Dict:
+        return gym.spaces.Dict(dict((s.name, s.space()) for s in self.sensors))

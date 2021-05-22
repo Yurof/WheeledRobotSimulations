@@ -1,16 +1,13 @@
-from typing import Optional
+""" calculate the position and velocity of the robot, 
+Also the camera that follow the agent (enable in config file)"""
 
 import numpy as np
 import pybullet
-from nptyping import NDArray
-import matplotlib.pyplot as plt
-
-from iRobot_gym.core import Agent
 
 
-def get_velocity(id: int) -> NDArray[(6,), np.float]:
+def get_velocity(id: int):
     linear, angular = pybullet.getBaseVelocity(id)
-    position, orientation = pybullet.getBasePositionAndOrientation(id)
+    _, orientation = pybullet.getBasePositionAndOrientation(id)
     rotation = pybullet.getMatrixFromQuaternion(orientation)
     rotation = np.reshape(rotation, (-1, 3)).transpose()
     linear = rotation.dot(linear)
@@ -18,7 +15,7 @@ def get_velocity(id: int) -> NDArray[(6,), np.float]:
     return np.append(linear, angular)
 
 
-def get_pose(id: int) -> Optional[NDArray[(6,), np.float]]:
+def get_pose(id: int):
     position, orientation = pybullet.getBasePositionAndOrientation(id)
     if any(np.isnan(position)) or any(np.isnan(orientation)):
         return None
@@ -27,7 +24,7 @@ def get_pose(id: int) -> Optional[NDArray[(6,), np.float]]:
     return pose
 
 
-def follow_agent(agent: Agent, width=640, height=480) -> np.ndarray:
+def follow_agent(agent, width=640, height=480):
     position, orientation = pybullet.getBasePositionAndOrientation(
         agent.vehicle_id)
     _, _, yaw = pybullet.getEulerFromQuaternion(orientation)

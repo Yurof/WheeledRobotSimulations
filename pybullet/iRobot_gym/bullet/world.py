@@ -1,25 +1,23 @@
-import math
-import random
-from dataclasses import dataclass
-from typing import Dict, Any, List
+"""In this file we import all our parameters and initialize all our objects (walls, robot, goal).
+ We also update the last information (position, acceleration, velocity, distance to the goal and time)."""
 
-import gym
 import os
-import numpy as np
-import pybullet as p
-from PIL import Image
+import random
+import math
+from dataclasses import dataclass
+import gym
 from gym import logger
 
-from iRobot_gym.bullet import util
-from iRobot_gym.bullet.configs import GoalConfig, AgentSpec, SimulationConfig, PhysicsConfig
-from iRobot_gym.core import world
-from iRobot_gym.core.agent import Agent
-from iRobot_gym.core.definitions import Pose
-
+import numpy as np
 import pybullet_data
 
+import pybullet as p
 
-class World(world.World):
+from iRobot_gym.bullet import util
+from iRobot_gym.bullet.configs import GoalConfig, SimulationConfig, PhysicsConfig
+
+
+class World:
 
     @dataclass
     class Config:
@@ -30,14 +28,14 @@ class World(world.World):
         simulation_config: SimulationConfig
         physics_config: PhysicsConfig
 
-    def __init__(self, config: Config, agents: List[Agent]):
+    def __init__(self, config: Config, agents):
         self._config = config
         self._map_id = None
         self._time = 0.0
         self._agents = agents
         self._state = dict([(a.id, {}) for a in agents])
 
-    def init(self) -> None:
+    def init(self):
         if self._config.simulation_config.GUI:
             p.connect(p.GUI)  # render True
         else:
@@ -67,18 +65,17 @@ class World(world.World):
         self._state = dict([(a.id, {}) for a in self._agents])
 
     def _load_scene(self, sdf_file: str):
-        ids = p.loadURDF(sdf_file, globalScaling=self._config.scale)
-        #ids = p.loadSDF(sdf_file)
+        p.loadURDF(sdf_file, globalScaling=self._config.scale)
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
-        planeId = p.loadURDF('plane.urdf')
+        p.loadURDF('plane.urdf')
 
     def _load_goal(self):
         base_path = os.path.dirname(os.path.abspath(__file__))
         p.loadURDF(f'{base_path}/../../models/scenes/goal.urdf',
                    self._config.goal_config.goal_position, globalScaling=self._config.goal_config.goal_size)
 
-    def get_starting_position(self, agent: Agent) -> Pose:
-        return self._agents[0].starting_position,  self._agents[0].starting_orientation
+    def get_starting_position(self, agent):
+        return agent.starting_position, agent.starting_orientation
 
     def update(self, agent_id: str, width=640, height=480):
         p.stepSimulation()
@@ -87,17 +84,17 @@ class World(world.World):
             agent = list(filter(lambda a: a.id == agent_id, self._agents))
             util.follow_agent(agent=agent[0], width=width, height=height)
 
-    def state(self) -> Dict[str, Any]:
+    def state(self):
         for agent in self._agents:
-            self._update_race_info(agent=agent)
+            self._update_info(agent=agent)
         return self._state
 
-    def space(self) -> gym.Space:
+    def space(self):
         return gym.spaces.Dict({
             'time': gym.spaces.Box(low=0, high=math.inf, shape=(1,))
         })
 
-    def _update_race_info(self, agent):
+    def _update_info(self, agent):
         goal_pos = self._config.goal_config.goal_position
         pose = util.get_pose(id=agent.vehicle_id)
         if pose is None:
@@ -117,11 +114,11 @@ class World(world.World):
 
         pose = self._state[agent.id]['pose']
         self._state[agent.id]['velocity'] = velocity
-        self._state[agent.id]['progress'] = math.sqrt(
+        self._state[agent.id]['dist_obj'] = math.sqrt(
             (pose[0]-goal_pos[0])**2+(pose[1]-goal_pos[1])**2)
         self._state[agent.id]['time'] = self._time
 
-    def render(self, agent_id: str, width=640, height=480) -> np.ndarray:
+    def render(self, agent_id: str, width=640, height=480):
         agent = list(filter(lambda a: a.id == agent_id, self._agents))
         return util.follow_agent(agent=agent[0], width=width, height=height)
 
@@ -130,4 +127,3 @@ class World(world.World):
             seed = 0
         np.random.seed(seed)
         random.seed(seed)
-        p.ran

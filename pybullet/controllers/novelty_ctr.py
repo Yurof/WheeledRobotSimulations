@@ -1,13 +1,10 @@
-from controllers.fixed_structure_nn_numpy import SimpleNeuralControllerNumpy
 import pickle
 import os
-from deap import *
 import array
-from deap import algorithms
 from deap import base
-from deap import benchmarks
 from deap import creator
-from deap import tools
+from deap import *
+from controllers.fixed_structure_nn_numpy import SimpleNeuralControllerNumpy
 
 
 class NoveltyController:
@@ -29,7 +26,6 @@ class NoveltyController:
         self.nn.set_parameters(indmin)
 
     def get_command(self):
-
         sensors = self.env.get_laserranges()
         action = self.nn.predict(sensors)
         return action

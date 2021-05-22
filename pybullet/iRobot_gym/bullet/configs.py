@@ -1,5 +1,7 @@
+""" Declare type of informations on the .yml files"""
+
 from dataclasses import dataclass, field
-from typing import List, Dict, Any, Tuple
+from typing import List, Dict, Any
 
 from yamldataclassconfig.config import YamlDataClassConfig
 

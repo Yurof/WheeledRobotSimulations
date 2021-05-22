@@ -1,17 +1,38 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any, TypeVar, Tuple, Union
+from typing import Any, TypeVar, Generic
+import math
 
 import gym
 import numpy as np
-import pybullet as p
 from nptyping import NDArray
-import math
+import pybullet as p
 
-from iRobot_gym.bullet import util
-from iRobot_gym.core import Sensor
 
 T = TypeVar('T')
+
+
+class Sensor(Generic[T], ABC):
+
+    def __init__(self, name: str, type: str):
+        self._name = name
+        self._type = type
+
+    @abstractmethod
+    def space(self) -> gym.Space:
+        pass
+
+    @abstractmethod
+    def observe(self) -> T:
+        pass
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def type(self):
+        return self._type
 
 
 class BulletSensor(Sensor[T], ABC):
@@ -92,7 +113,7 @@ class Lidar(BulletSensor[NDArray[(Any,), np.float]]):
             increment = math.radians(self._config.angle)
         else:
             increment = math.radians(self._config.angle) / (self._rays - 1)
-        for i in range(rays):
+        for _ in range(rays):
             from_points.append([
                 start * np.sin(angle),
                 start * np.cos(angle),

@@ -14,11 +14,11 @@ def plot_position(name, ListeResults, startx, starty, goalx, goaly, goalsize, ra
 
     # plt.annotate("Goal", xy=(goalx*nb_rapport, goaly*nb_rapport),
     #              xytext=(goalx*nb_rapport, goaly*nb_rapport-5))
-    plt.plot(goalx*nb_rapport, goaly*nb_rapport,
-             'go', markersize=goalsize*nb_rapport)
+    # plt.plot(goalx*nb_rapport, goaly*nb_rapport,
+    #          'go', markersize=goalsize*nb_rapport)
 
     plt.annotate("Start", xy=(startx*nb_rapport, starty*nb_rapport),
-                 xytext=(startx*nb_rapport-5, starty*nb_rapport-5))
+                 xytext=(startx*nb_rapport-5, starty*nb_rapport-15))
     plt.plot(startx*nb_rapport, starty*nb_rapport, 'rx')
 
     plt.imshow(np.flipud(img), origin='lower')
@@ -28,6 +28,8 @@ def plot_position(name, ListeResults, startx, starty, goalx, goaly, goalsize, ra
         y = df.y
         plt.plot(x*nb_rapport, y*nb_rapport, label=s, alpha=0.5)
         plt.legend(loc='best')
+        plt.axis('off')
+    plt.savefig("controllers_kitchen.png", bbox_inches='tight', dpi=300)
     plt.show()
 
 
@@ -65,7 +67,15 @@ def plot_dist_to_target(name, ListeResults):
 if __name__ == "__main__":
     base_path = os.path.dirname(os.path.abspath(__file__))
 
-    scenario = 'maze_hard'
+    scenario = 'race_track'
+    #ListPlot = ['braitenberg', 'rule_based']
+    ListPlot = ['fastsim_forward_1']
+
+    # scenario = 'maze_hard'
+    # ListPlot = ['braitenberg', 'rule_based']
+
+    # scenario = 'kitchen'
+    # ListPlot = ['fastsim_brait_1', 'fastsim_rule_1']
 
     config = ScenarioSpec()
     config.load(
@@ -79,8 +89,8 @@ if __name__ == "__main__":
     # ListPlot = ['fastsim_rule_1', 'fastsim_rule_3']
     # ListPlot = ['fastsim_brait_1', 'bullet_brait_1']
     # ListPlot = ['fastsim_genotype_1', 'bullet_genotype_1']
-    ListPlot = ['fastsim_ns-gen10_1', 'fastsim_ns-gen20_1', 'fastsim_ns-gen30_1',
-                'fastsim_ns-gen40_1', 'fastsim_ns-gen50_1', 'fastsim_ns-gen60_1']
+    # ListPlot = ['fastsim_ns-gen10_1', 'fastsim_ns-gen20_1', 'fastsim_ns-gen30_1',
+    #             'fastsim_ns-gen40_1', 'fastsim_ns-gen50_1', 'fastsim_ns-gen60_1']
 
     plot_position(scenario, ListPlot, startx=sx,
                   starty=sy, goalx=gx, goaly=gy, goalsize=gs, ratio=scale)

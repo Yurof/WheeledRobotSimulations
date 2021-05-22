@@ -16,8 +16,9 @@ def plot_points(points, bg="maze_hard.pbm", title=None):
         ax1.imshow(img, extent=[0, 10, 10, 0])
     if(title):
         ax1.set_title(title)
-    ax1.scatter(x, y, s=5)
-    plt.show()
+    ax1.scatter(x, y, s=0.5)
+    plt.savefig(f"{title}.png", bbox_inches='tight', dpi=300)
+    # plt.show()
 
 
 base_path = os.path.dirname(os.path.abspath(__file__))

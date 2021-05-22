@@ -41,10 +41,10 @@ def mouvement(l, r, n):
         x, y, z, roll, pitch, yaw = states['pose']
         print(x, y, z, roll, pitch, yaw)
         ListePosition.append([i, x, y, z, roll, pitch, yaw,
-                             states["progress"], obs['lidar'][::len(obs['lidar'])-1]])
+                              states["dist_obj"], obs['lidar'][::len(obs['lidar'])-1]])
 
         print("Step  %d reward=%f robot position=%s progress=%f" % (
-            i, rewards,  str(states["pose"][0:2]), states["progress"]), end="\r")
+            i, rewards,  str(states["pose"][0:2]), states["dist_obj"]), end="\r")
 
         return obs, rewards, done, states
 
@@ -66,12 +66,12 @@ while not done and i < 1000:
             random.uniform(-2, 5), random.uniform(-2, 5), 1)
 
 print("Step  %d reward=%f robot position=%s progress=%f" %
-      (i, rewards,  str(states["pose"][0:3]), states["progress"]), end="\r")
+      (i, rewards,  str(states["pose"][0:3]), states["dist_obj"]), end="\r")
 
 env.close()
 
 with open('results/result.csv', 'w', newline='') as file:
     writer = csv.writer(file)
     writer.writerow(["steps", "x", "y", "z", "roll", "pitch", "yaw",
-                    "distance_to_obj", "lidar"])
+                     "distance_to_obj", "lidar"])
     writer.writerows(ListePosition)

@@ -2,7 +2,7 @@ import random
 from numpy import array
 
 speed = 0.00425
-threshold = 0.7
+threshold = 0.8
 
 
 class RuleBasedController:

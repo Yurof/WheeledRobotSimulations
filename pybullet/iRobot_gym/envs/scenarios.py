@@ -1,12 +1,11 @@
+""" load .yml configuration files"""
 import os
-
-from typing import List
 from dataclasses import dataclass
-from iRobot_gym import core
-from iRobot_gym.tasks import get_task
-from iRobot_gym.core import World, Agent
+from typing import Any
+import gym
+
 from iRobot_gym.bullet.actuators import Motor
-from iRobot_gym.bullet.configs import VehicleConfig, ScenarioSpec, WorldSpec, VehicleSpec, TaskSpec
+from iRobot_gym.bullet.configs import VehicleConfig, ScenarioSpec, WorldSpec, VehicleSpec
 from iRobot_gym.bullet.sensors import Lidar, FixedTimestepSensor
 from iRobot_gym.bullet.vehicle import IRobot
 from iRobot_gym.bullet.world import World
@@ -15,7 +14,60 @@ from iRobot_gym.bullet.world import World
 base_path = os.path.dirname(os.path.abspath(__file__))
 
 
-def load_vehicle(spec: VehicleSpec) -> core.Vehicle:
+class Agent:
+
+    def __init__(self, id: str, vehicle, task_name, task_param, starting_position, starting_orientation):
+        self._id = id
+        self._vehicle = vehicle
+        self._task_name = task_name
+        self._task_param = task_param
+        self._starting_position = starting_position
+        self._starting_orientation = starting_orientation
+
+    @property
+    def id(self) -> str:
+        return self._id
+
+    @property
+    def task_name(self) -> str:
+        return self._task_name
+
+    @property
+    def task_param(self) -> str:
+        return self._task_param
+
+    @property
+    def starting_position(self) -> str:
+        return self._starting_position
+
+    @property
+    def starting_orientation(self) -> str:
+        return self._starting_orientation
+
+    @property
+    def vehicle_id(self) -> Any:
+        return self._vehicle.id
+
+    @property
+    def action_space(self) -> gym.Space:
+        return self._vehicle.action_space
+
+    @property
+    def observation_space(self) -> gym.Space:
+        return self._vehicle.observation_space
+
+    def step(self, action):
+        observation = self._vehicle.observe()
+        self._vehicle.control(action)
+        return observation, {}
+
+    def reset(self, pose):
+        self._vehicle.reset(pose=pose)
+        observation = self._vehicle.observe()
+        return observation
+
+
+def load_vehicle(spec: VehicleSpec):
     config_file_path = f'{base_path}/../../configuration/robots/{spec.name}.yml'
     if not os.path.exists(config_file_path):
         raise NotImplementedError(
@@ -41,7 +93,7 @@ def load_vehicle(spec: VehicleSpec) -> core.Vehicle:
     return vehicle
 
 
-def load_world(spec: WorldSpec, agents: List[Agent]) -> core.World:
+def load_world(spec: WorldSpec, agents):
     config_file_path = f'{base_path}/../../configuration/scenarios/{spec.name}.yml'
     config = ScenarioSpec()
     config.load(config_file_path)
@@ -61,11 +113,6 @@ def load_world(spec: WorldSpec, agents: List[Agent]) -> core.World:
     return World(config=world_config, agents=agents)
 
 
-def task_from_spec(spec: TaskSpec):
-    task = get_task(spec.task_name)
-    return task(**spec.params)
-
-
 @dataclass
 class SimpleNavScenario:
     world: World
@@ -78,6 +125,6 @@ class SimpleNavScenario:
         if rendering:
             spec.world.rendering = rendering
         agent_spec = spec.agents
-        agent = Agent(id=agent_spec.id, vehicle=load_vehicle(agent_spec.vehicle), task=task_from_spec(
-            agent_spec.task), starting_position=agent_spec.starting_position, starting_orientation=agent_spec.starting_orientation)
+        agent = Agent(id=agent_spec.id, vehicle=load_vehicle(agent_spec.vehicle), task_name=agent_spec.task.task_name,
+                      task_param=agent_spec.task.params, starting_position=agent_spec.starting_position, starting_orientation=agent_spec.starting_orientation)
         return SimpleNavScenario(world=load_world(spec.world, agents=[agent]), agent=agent)

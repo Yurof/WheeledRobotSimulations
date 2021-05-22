@@ -141,7 +141,7 @@ while not done:
     action = env.action_space.sample()
     obs, rewards, done, states = env.step(action)
     sleep(0.01)
-    print("Step  %d reward=%f robot position=%s dist_obj=%f" % (t,rewards,  str(states["pose"][0:3]) ,states["progress"] ) , end="\r" )
+    print("Step  %d reward=%f robot position=%s dist_obj=%f" % (t,rewards,  str(states["pose"][0:3]) ,states["dist_obj"] ) , end="\r" )
     image = env.render()
     t+=1
 

@@ -180,9 +180,9 @@ class SimpleNavEnv(gym.Env):
         return [float(self.robot.get_left_bumper()), float(self.robot.get_right_bumper())]
 
     def get_all_sensors(self):
-        #return self.get_laserranges() + self.get_bumpers() + self.get_lightsensors()
+        # return self.get_laserranges() + self.get_bumpers() + self.get_lightsensors()
         return self.get_laserranges()
-        
+
     def step(self, action):
         # Action is: [leftWheelVel, rightWheelVel]
         [v1, v2] = action

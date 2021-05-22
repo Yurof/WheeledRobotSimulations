@@ -1,7 +1,6 @@
 import os
 from gym.envs.registration import register
 from .envs import SimpleNavScenario, SimpleNavEnv
-from .tasks import get_task, register_task, Task
 
 base_path = os.path.dirname(__file__)
 

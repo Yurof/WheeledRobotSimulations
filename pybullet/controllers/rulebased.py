@@ -1,39 +1,36 @@
-import random
-from numpy import array
+"""
+"""
 
 
 class RuleBasedController:
 
-    def __init__(self, env, verbose=False):
-
-        self.env = env
-        self.verbose = verbose
-
-        # behavioral parameters
-        self.threshold = 0.7
-        self.speed = 0.5
+    def __init__(self, env, laser_range=1, speed=0.5, threshold=0.7, verbose=False):
+        self._env = env
+        self._verbose = verbose
+        self._threshold = threshold
+        self._laser_range = laser_range
+        self.speed = speed
 
     def get_command(self):
 
         # get lasers data
-        laserRanges = self.env.get_laserranges()
-        laserRanges = [1 - i for i in laserRanges]
+        laser_ranges = self._env.get_laserranges()
+        laser_ranges = [self._laser_range - i for i in laser_ranges]
 
-        if sum(laserRanges[:5]) > self.threshold:
-            if self.verbose:
-                print("WALL L", sum(laserRanges[:5]), sum(laserRanges[5:]))
+        if sum(laser_ranges[:5]) > self._threshold:
+            if self._verbose:
+                print("WALL L", sum(laser_ranges[:5]), sum(laser_ranges[5:]))
             return [-self.speed, self.speed]
 
-        elif sum(laserRanges[5:]) > self.threshold:
-            if self.verbose:
-                print("WALL R", sum(laserRanges[:5]), sum(laserRanges[5:]))
+        elif sum(laser_ranges[5:]) > self._threshold:
+            if self._verbose:
+                print("WALL R", sum(laser_ranges[:5]), sum(laser_ranges[5:]))
             return [self.speed, -self.speed]
 
         else:
-            if self.verbose:
-                print("NO WALL ", sum(laserRanges[:5]), sum(laserRanges[5:]))
+            if self._verbose:
+                print("NO WALL ", sum(laser_ranges[:5]), sum(laser_ranges[5:]))
             return [self.speed, self.speed]
 
     def reset(self):
-        self.threshold = 0.7
-        self.speed = 0.5
+        pass

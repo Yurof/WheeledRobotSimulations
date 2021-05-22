@@ -18,7 +18,7 @@ agents:
     name: iRobot
     sensors: [ lidar]
   task:
-    task_name: maximize_progress
+    task_name: reward_rapprochement_goal
     params: { time_limit: -1, goal_size_detection: 0.2}
   starting_position: [3, 4, 0.5]
   starting_orientation: [ 0.0, 0.0, 0]

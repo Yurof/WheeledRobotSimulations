@@ -22,7 +22,7 @@ class SimEnv():
     def __init__(self, env, ctr, file_name, sleep_time, display):
         if env == "kitchen":
             self.env = gym.make("kitchen-v1")
-        elif env == "maze":
+        elif env == "maze_hard":
             self.env = gym.make("maze-v0")
         elif env == "race_track":
             self.env = gym.make("race_track-v0")
@@ -47,17 +47,6 @@ class SimEnv():
 
         if(self.display):
             self.env.enable_display()
-
-    # def generate_ind(self, name):
-    #     _, _, paretofront = launch_nsga2(environment=self.env)
-    #     base_path = os.path.dirname(os.path.abspath(__file__))
-    #     for i, p in enumerate(paretofront):
-    #         print("Visualizing indiv "+str(i) +
-    #               ", fit="+str(p.fitness.values))
-    #         f = open(
-    #             f"{base_path}/../../results/individuals/{name}-{str(i)}.pkl", "wb")
-    #         pickle.dump(p, f)
-    #         f.close()
 
     def mouvement(self, c, n=1):
         for _ in range(n):
@@ -131,13 +120,12 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
         description='Launch fastsim simulation run.')
-    # "kitchen", "maze", "race_track"
-    parser.add_argument('--env', type=str, default="maze",
-                        help='choose between kitchen, maze and race_track')
+    parser.add_argument('--env', type=str, default="race_track",
+                        help='choose between kitchen, maze_hard and race_track')
     # "forward", "wall", "rule", "brait", "novelty
-    parser.add_argument('--ctr', type=str, default="novelty",
+    parser.add_argument('--ctr', type=str, default="forward",
                         help='choose between forward, wall, rule, brait and novelty')
-    parser.add_argument('--sleep_time', type=int, default=0.00001,
+    parser.add_argument('--sleep_time', type=int, default=1,
                         help='sleeping time between each step')
     parser.add_argument('--display', type=bool, default=True,
                         help='True or False')
@@ -153,5 +141,5 @@ if __name__ == "__main__":
 
     simEnv = SimEnv(env, ctr, file_name, sleep_time, display)
     simEnv.start()
-    # save_result_as("maze_hard", "ns-gen40")
-    # save_result("maze_hard", ctr)
+    #save_result_as("race_track", "braitenberg")
+    save_result(env, ctr)

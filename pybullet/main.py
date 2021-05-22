@@ -64,7 +64,7 @@ class SimEnv():
                         command)
                     x, y, z, roll, pitch, yaw = self.info['pose']
                     ListePosition.append(
-                        [self.i, x, y, z, roll, pitch, yaw, self.info["progress"], self.obs])
+                        [self.i, x, y, z, roll, pitch, yaw, self.info["dist_obj"], self.obs])
                     t2 = time.time()
                     if t2 - t1 >= 1:
                         t1 = t2
@@ -116,11 +116,10 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
         description='Launch pybullet simulation run.')
-    # "kitchen", "maze_hard", "race_track"
     parser.add_argument('--env', type=str, default="maze_hard",
-                        help='environnement')
+                        help='environnement, kitchen, maze_hard, race_track')
     # "forward", "wall", "rule", "brait", "novelty"
-    parser.add_argument('--ctr', type=str, default="novelty",
+    parser.add_argument('--ctr', type=str, default="rule",
                         help='controller')
     parser.add_argument('--sleep_time', type=int, default=0.001,
                         help='sleeping time between each step')
@@ -135,5 +134,5 @@ if __name__ == "__main__":
 
     simEnv = SimEnv(env, ctr, file_name, sleep_time)
     simEnv.start()
-    # save_result(env, ctr)
-    save_time_sampling(env, ctr)
+    save_result(env, ctr)
+    # save_time_sampling(env, ctr)

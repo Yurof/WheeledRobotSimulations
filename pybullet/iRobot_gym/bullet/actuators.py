@@ -1,17 +1,26 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Tuple, TypeVar, List
+from typing import Tuple, TypeVar, List, Generic
 
 import gym
 import numpy as np
 import pybullet
 
-from iRobot_gym.core import actuators
 
 T = TypeVar('T')
 
 
-class BulletActuator(actuators.Actuator[T], ABC):
+class Actuator(ABC, Generic[T]):
+
+    def __init__(self, name: str):
+        self._name = name
+
+    @property
+    def name(self):
+        return self._name
+
+
+class BulletActuator(Actuator[T], ABC):
     def __init__(self, name: str):
         super().__init__(name)
         self._body_id = None
