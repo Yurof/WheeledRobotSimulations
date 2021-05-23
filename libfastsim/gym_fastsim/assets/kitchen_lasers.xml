@@ -3,23 +3,19 @@
   <display enable="true"/>
   <!-- world -->
   <map name="kitchen.pbm" size="5"/>
-
-  <!-- /!\ WARNING /!\ The robot "diameter" is actually a radius ! --> 
   <robot x="2" y="4" theta="0" diameter="0.16525"/>
-
   <goal x="0.5" y="0.5" color="0" diameter="0.2"/> 
   
-  <!-- sensors -->
-  <laser range="4" angle="-90"/>
-  <laser range="4" angle="-70"/>
-  <laser range="4" angle="-50"/>
-  <laser range="4" angle="-30"/>
-  <laser range="4" angle="-10"/>
-  
-  <laser range="4" angle="10"/>
-  <laser range="4" angle="30"/>
-  <laser range="4" angle="50"/>
-  <laser range="4" angle="70"/>
-  <laser range="4" angle="90"/>
-  
+  <!-- sensors (optionals) -->
+  <laser range="1" angle="-90"/>
+  <laser range="1" angle="-70"/>
+  <laser range="1" angle="-50"/>
+  <laser range="1" angle="-30"/>
+  <laser range="1" angle="-10"/>
+  <laser range="1" angle="10"/>
+
+  <laser range="1" angle="30"/>
+  <laser range="1" angle="50"/>
+  <laser range="1" angle="70"/>
+  <laser range="1" angle="90"/>
 </fastsim>

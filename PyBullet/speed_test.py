@@ -1,10 +1,8 @@
-import time
-from time import sleep
-import gym
-from iRobot_gym.envs import SimpleNavEnv
 import os
-import csv
+import time
+import gym
 import numpy as np
+from iRobot_gym.envs import SimpleNavEnv
 
 
 ListePosition = []
@@ -88,6 +86,6 @@ class SimEnv():
 
 if __name__ == "__main__":
     env1 = 'blank'
-    sleep_time = 0.01
+    sleep_time = 0.0001
     simEnv = SimEnv(env1, sleep_time)
     simEnv.start()

@@ -1,19 +1,15 @@
-from controllers.novelty.fixed_structure_nn_numpy import SimpleNeuralControllerNumpy
-# from controllers.novelty.nsga2 import *
-import os
 import pickle
-from deap import *
+import os
 import array
-from deap import algorithms
 from deap import base
-from deap import benchmarks
 from deap import creator
-from deap import tools
+from deap import *
+from controllers.fixed_structure_nn_numpy import SimpleNeuralControllerNumpy
 
 
 class NoveltyController:
 
-    def __init__(self, env, file, test=False):
+    def __init__(self, env, file):
 
         self.env = env
         self.nn = SimpleNeuralControllerNumpy(*[10, 2, 2, 10])
@@ -30,10 +26,9 @@ class NoveltyController:
         self.nn.set_parameters(indmin)
 
     def get_command(self):
-
         sensors = self.env.get_laserranges()
         action = self.nn.predict(sensors)
-        return action/117
+        return action
 
     def reset(self):
         pass

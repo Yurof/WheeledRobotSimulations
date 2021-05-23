@@ -87,6 +87,6 @@ if __name__ == "__main__":
     env = args.env
     listPlot = args.listPlot.split()
     plot_position(env, listPlot, startx=3,
-                starty=4, goalx=2, goaly=5, ratio=20)
+                  starty=4, goalx=2, goaly=5, ratio=20)
 
     plot_dist_to_target(env, listPlot)

@@ -67,7 +67,7 @@ class SimEnv():
         then = time.time()
         self.i = 0
 
-        while not self.done:
+        while not self.done and self.i < 4000:
             try:
                 command = self.controller.get_command()
                 self.obs, self.rew, self.done, self.info = self.mouvement(
@@ -105,6 +105,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
         description='Launch fastsim simulation run.')
+<<<<<<< Updated upstream:libfastsim/main.py
     # "kitchen", "maze", "race_track"
     parser.add_argument('--env', type=str, default="race_track",
                         help='choose between kitchen, maze and race_track')
@@ -115,6 +116,19 @@ if __name__ == "__main__":
                         help='sleeping time between each step')
     parser.add_argument('--display', type=bool, default=False,
                         help='True or False')
+=======
+    parser.add_argument('--env', type=str, default="kitchen",
+                        help='choose between kitchen, maze_hard and race_track')
+    # "forward", "wall", "rule", "brait", "novelty
+    parser.add_argument('--ctr', type=str, default="rule",
+                        help='choose between forward, wall, rule, brait and novelty')
+    parser.add_argument('--sleep_time', type=int, default=0.00,
+                        help='sleeping time between each step')
+    parser.add_argument('--display', type=bool,
+                        default=False, help='True or False')
+    parser.add_argument('--file_name', type=str,
+                        default='NoveltyFitness/3/maze_nsfit3-gen59-p0', help='file name for')
+>>>>>>> Stashed changes:Simulationfastsim/main.py
 
     args = parser.parse_args()
     env = args.env

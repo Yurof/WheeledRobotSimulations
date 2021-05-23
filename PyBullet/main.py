@@ -21,7 +21,7 @@ class SimEnv():
         self.env = gym.make(env+str('-v0'))
         self.env.reset()
         self.sleep_time = sleep_time
-        self.obs, self.rew, self.done, self.info = self.env.step([1, 1])
+        self.obs, self.rew, self.done, self.info = self.env.step([0, 0])
 
         # initialize controllers
         if ctr == "forward":
@@ -53,7 +53,7 @@ class SimEnv():
         t1 = then
         self.i = 0
 
-        while not self.done:
+        while not self.done and self.i < 4000:
             try:
                 if self.i % 1 == 0:
                     command = self.controller.get_command()
@@ -68,7 +68,7 @@ class SimEnv():
                         TimeSampling.append([x, y])
                     self.controller.reset()
 
-                print(self.i, end='\r')
+                # print(self.i, end='\r')
                 self.i += 1
 
             except KeyboardInterrupt:
@@ -113,6 +113,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
         description='Launch pybullet simulation run.')
+<<<<<<< Updated upstream:pybullet/main.py
     # "kitchen", "maze_hard", "race_track"
     parser.add_argument('--env', type=str, default="race_track",
                         help='environnement')
@@ -120,6 +121,14 @@ if __name__ == "__main__":
     parser.add_argument('--ctr', type=str, default="brait",
                         help='controller')
     parser.add_argument('--sleep_time', type=int, default=0.0001,
+=======
+    parser.add_argument('--env', type=str, default="kitchen",
+                        help='environnement, kitchen, maze_hard, race_track')
+    # "forward", "wall", "rule", "brait", "novelty"
+    parser.add_argument('--ctr', type=str, default="rule",
+                        help='controller')
+    parser.add_argument('--sleep_time', type=int, default=0.01,
+>>>>>>> Stashed changes:PyBullet/main.py
                         help='sleeping time between each step')
 
     args = parser.parse_args()

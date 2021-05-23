@@ -9,7 +9,7 @@ from iRobot_gym.bullet.configs import ScenarioSpec
 
 def plot_position(name, ListeResults, startx, starty, goalx, goaly, goalsize, ratio):
     img = plt.imread(
-        f'{base_path}/../pybullet/models/scenes/{name}/{name}.pbm')
+        f'{base_path}/../PyBullet/models/scenes/{name}/{name}.pbm')
     nb_rapport = img.shape[0]/ratio
 
     # plt.annotate("Goal", xy=(goalx*nb_rapport, goaly*nb_rapport),
@@ -17,8 +17,13 @@ def plot_position(name, ListeResults, startx, starty, goalx, goaly, goalsize, ra
     plt.plot(goalx*nb_rapport, goaly*nb_rapport,
              'go', markersize=goalsize*nb_rapport)
 
+<<<<<<< Updated upstream
     plt.annotate("Start", xy=(startx*nb_rapport, starty*nb_rapport),
                  xytext=(startx*nb_rapport-5, starty*nb_rapport-5))
+=======
+    # plt.annotate("Start", xy=(startx*nb_rapport, starty*nb_rapport),
+    #              xytext=(startx*nb_rapport-5, starty*nb_rapport-15))
+>>>>>>> Stashed changes
     plt.plot(startx*nb_rapport, starty*nb_rapport, 'rx')
 
     plt.imshow(np.flipud(img), origin='lower')
@@ -28,6 +33,11 @@ def plot_position(name, ListeResults, startx, starty, goalx, goaly, goalsize, ra
         y = df.y
         plt.plot(x*nb_rapport, y*nb_rapport, label=s, alpha=0.5)
         plt.legend(loc='best')
+<<<<<<< Updated upstream
+=======
+        plt.axis('off')
+    plt.savefig(name, bbox_inches='tight', dpi=300)
+>>>>>>> Stashed changes
     plt.show()
 
 
@@ -58,18 +68,38 @@ def plot_dist_to_target(name, ListeResults):
         plt.plot(L_s[i], L_d[i], label=ListeResults[i], alpha=0.5)
     plt.legend(loc='best')
     plt.xlabel("step")
-    plt.ylabel("distance to objectif")
+    plt.ylabel("distance à objectif")
+    plt.savefig(name+'_dist', bbox_inches='tight', dpi=300)
     plt.show()
 
 
 if __name__ == "__main__":
     base_path = os.path.dirname(os.path.abspath(__file__))
 
+<<<<<<< Updated upstream
     scenario = 'maze_hard'
+=======
+    scenario = 'race_track'
+    #ListPlot = ['braitenberg', 'rule_based']
+    #ListPlot = ['fastsim_forward_1']
+    #ListPlot = ['fastsim braitenberg', 'pybullet braitenberg']
+    ListPlot = ['fastsim rule', 'bullet  rule']
+
+    # scenario = 'maze_hard'
+    # # ListPlot = ['braitenberg', 'rule_based']
+    # #ListPlot = ['fastsim_brait_1', 'bullet_brait_1']
+    # ListPlot = ['fastsim braitenberg', 'pybullet braitenberg']
+
+    scenario = 'kitchen'
+    # ListPlot = ['fastsim_brait_1', 'bullet_brait_1']
+    # ListPlot = ['fastsim braitenberg', 'pybullet braitenberg']
+    # ListPlot = ['fastsim_rule_1', 'bullet_rule_1']
+    # ListPlot = ['fastsim_rule_2', 'bullet_rule_2']
+>>>>>>> Stashed changes
 
     config = ScenarioSpec()
     config.load(
-        f'{base_path}/../pybullet/configuration/scenarios/{scenario}.yml')
+        f'{base_path}/../PyBullet/configuration/scenarios/{scenario}.yml')
 
     sx, sy, _ = config.agents.starting_position
     gx, gy, _ = config.world.goal.goal_position

@@ -1,8 +1,13 @@
 import random
 from numpy import array
 
+<<<<<<< Updated upstream:libfastsim/controllers/rulebased.py
 speed = 0.00425
 threshold = 0.7
+=======
+speed = 1/(115*2)
+threshold = 0.5
+>>>>>>> Stashed changes:Simulationfastsim/controllers/rulebased.py
 
 
 class RuleBasedController:

@@ -21,4 +21,4 @@ agents:
     task_name: maximize_progress
     params: { time_limit: -1.0, goal_size_detection: 0.2}
   starting_position: [1, 1, 0]
-  starting_orientation: [ 0.0, 0.0, 0]
+  starting_orientation: [ 0, 0.0, 0]

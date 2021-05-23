@@ -98,7 +98,7 @@ pip3 install .
 cd "${BASE_DIR}/src"
 echo
 echo "======================================"
-echo "===== (6/6) Installing pybullet-gym ====="
+echo "===== (6/6) Installing PyBullet-gym ====="
 echo "======================================"
 echo
 if [ ! -d "pybullet-gym" ] ; then

@@ -12,9 +12,15 @@ sensors:
     name: lidar
     frequency: 100
     params:
+<<<<<<< Updated upstream:pybullet/configuration/robots/iRobot.yml
       accuracy: 0.00 
       rays: 10 
       range: 4
+=======
+      accuracy: 0.01 
+      rays: 10
+      range: 1
+>>>>>>> Stashed changes:PyBullet/configuration/robots/iRobot.yml
       min_range: 0
       angle_start: -90 # degree
       angle: 180 #degree
