@@ -39,11 +39,6 @@ We have modified a model of the iRobot create.
 documentation can be found here : https://github.com/jbmouret/libfastsim
 and here for the python binding : https://github.com/alexendy/pyfastsim
 
-## Example
-
-```
-python RandomMouv.py
-```
 
 # Pybullet
 
@@ -114,3 +109,5 @@ sensors:
       angle: 180
       debug: True # visible laser of not
 ```
+## Run
+In the `pybullet` and `Simulationfastsim` folder we have a `main.py` file used to run each simulations.
