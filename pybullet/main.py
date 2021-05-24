@@ -56,7 +56,7 @@ class SimEnv():
         t1 = then
         self.i = 0
 
-        while not self.done:
+        while (not self.done) and self.i<5000:
             try:
                 if self.i % 1 == 0:
                     command = self.controller.get_command()
@@ -97,6 +97,17 @@ def save_result(name, controller):
                          "distance_to_obj", "lidar"])
         writer.writerows(ListePosition)
 
+def save_result_ind(criteria, file_name):
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    path = f'{base_path}/../results/individuals/{criteria}/pybullet/{file_name}'
+    if os.path.exists(path+".csv"):
+        os.remove(path+".csv")
+    with open(path+".csv", 'w', newline='') as file:
+        writer = csv.writer(file)
+        print("\ndata saved as ", file)
+        writer.writerow(["steps", "x", "y", "roll",
+                         "distance_to_obj", "lidar"])
+        writer.writerows(ListePosition)
 
 def save_time_sampling(name, controller):
     base_path = os.path.dirname(os.path.abspath(__file__))
@@ -119,20 +130,27 @@ if __name__ == "__main__":
     parser.add_argument('--env', type=str, default="maze_hard",
                         help='environnement, kitchen, maze_hard, race_track')
     # "forward", "wall", "rule", "brait", "novelty"
-    parser.add_argument('--ctr', type=str, default="rule",
+    parser.add_argument('--ctr', type=str, default="novelty",
                         help='controller')
-    parser.add_argument('--sleep_time', type=int, default=0.001,
+    parser.add_argument('--sleep_time', type=int, default=0,
                         help='sleeping time between each step')
     parser.add_argument('--file_name', type=str,
-                        default='NoveltyFitness/3/maze_nsfit3-gen59-p0', help='file name for')
+                        default='NoveltyFitness/1/maze_nsfit1-gen24-p3', help='file name for')
+    parser.add_argument('--criteria', type=str,
+                        default='null', help='choose between "Fitness", "NoveltySearch", "NoveltyFitness"')
 
     args = parser.parse_args()
     env = args.env
     ctr = args.ctr
     file_name = args.file_name
     sleep_time = args.sleep_time
+    criteria = args.criteria
+    file_name2 = file_name.split("/")[-1]
 
     simEnv = SimEnv(env, ctr, file_name, sleep_time)
     simEnv.start()
-    save_result(env, ctr)
+    if criteria == "null":
+        save_result(env, ctr)
+    else:
+        save_result_ind(criteria, file_name2)
     # save_time_sampling(env, ctr)

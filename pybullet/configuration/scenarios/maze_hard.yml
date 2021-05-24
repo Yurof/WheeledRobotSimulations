@@ -6,7 +6,7 @@ world:
     gravity: -9.81
   simulation:
     time_step: 0.016666666666666666 #240Hz =0.00416666 the default time step , 60Hz =0.016666
-    GUI: True
+    GUI: False
     following_camera : False
   goal:
     goal_position: [1,9,0]

@@ -12,7 +12,7 @@ sensors:
     name: lidar
     frequency: 100
     params:
-      accuracy: 0.01 
+      accuracy: 0
       rays: 10 
       range: 1
       min_range: 0

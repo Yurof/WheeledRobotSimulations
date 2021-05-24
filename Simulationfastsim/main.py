@@ -68,7 +68,7 @@ class SimEnv():
         then = time.time()
         self.i = 0
 
-        while not self.done:
+        while (not self.done) and self.i<5000:
             try:
                 command = self.controller.get_command()
                 self.obs, self.rew, self.done, self.info = self.mouvement(
@@ -100,6 +100,18 @@ def save_result(map_name, controller):
                          "distance_to_obj", "lidar"])
         writer.writerows(ListePosition)
 
+def save_result_ind(criteria, file_name):
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    path = f'{base_path}/../results/individuals/{criteria}/FastSim/{file_name}'
+    if os.path.exists(path+".csv"):
+        os.remove(path+".csv")
+    with open(path+".csv", 'w', newline='') as file:
+        writer = csv.writer(file)
+        print("\ndata saved as ", file)
+        writer.writerow(["steps", "x", "y", "roll",
+                         "distance_to_obj", "lidar"])
+        writer.writerows(ListePosition)
+
 
 def save_result_as(map_name, name):
     base_path = os.path.dirname(os.path.abspath(__file__))
@@ -120,17 +132,19 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
         description='Launch fastsim simulation run.')
-    parser.add_argument('--env', type=str, default="race_track",
+    parser.add_argument('--env', type=str, default="maze_hard",
                         help='choose between kitchen, maze_hard and race_track')
     # "forward", "wall", "rule", "brait", "novelty
-    parser.add_argument('--ctr', type=str, default="forward",
+    parser.add_argument('--ctr', type=str, default="novelty",
                         help='choose between forward, wall, rule, brait and novelty')
-    parser.add_argument('--sleep_time', type=int, default=1,
+    parser.add_argument('--sleep_time', type=int, default=0,
                         help='sleeping time between each step')
     parser.add_argument('--display', type=bool, default=True,
                         help='True or False')
     parser.add_argument('--file_name', type=str,
                         default='NoveltyFitness/3/maze_nsfit3-gen59-p0', help='file name for')
+    parser.add_argument('--criteria', type=str,
+                        default='null', help='choose between "Fitness", "NoveltySearch", "NoveltyFitness"')
 
     args = parser.parse_args()
     env = args.env
@@ -138,8 +152,14 @@ if __name__ == "__main__":
     file_name = args.file_name
     sleep_time = args.sleep_time
     display = args.display
+    criteria = args.criteria
+    file_name2 = file_name.split("/")[-1]
 
     simEnv = SimEnv(env, ctr, file_name, sleep_time, display)
     simEnv.start()
     #save_result_as("race_track", "braitenberg")
-    save_result(env, ctr)
+    if criteria == "null":
+        save_result(env, ctr)
+    else:
+        save_result_ind(criteria, file_name2)
+
