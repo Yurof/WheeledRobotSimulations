@@ -13,8 +13,6 @@ from controllers.rulebased import RuleBasedController
 from controllers.braitenberg import BraitenbergController
 from controllers.novelty_ctr import NoveltyController
 
-ListePosition = []
-
 
 class SimEnv():
     """This is the main class that runs the fastsim simulation daccording to the arguments.
@@ -29,6 +27,13 @@ class SimEnv():
     """
 
     def __init__(self):
+        self._sleep_time = args.sleep_time
+        self._verbose = args.verbose
+        self._display = args.display
+        self._ctr = args.ctr
+        self._i = 0
+        self._Liste_position = []
+
         if args.env == "kitchen":
             self._env = gym.make("kitchen-v1")
         elif args.env == "maze_hard":
@@ -36,13 +41,7 @@ class SimEnv():
         elif args.env == "race_track":
             self._env = gym.make("race_track-v0")
         self._env.reset()
-        self._sleep_time = args.sleep_time
-        self._verbose = args.verbose
-        self._display = args.display
-        self._i = 0
-        self._ctr = args.ctr
         self.map_size = self._env.get_map_size()
-
         self.obs, self.rew, self.done, self.info = self._env.step([0, 0])
 
         # initialize controllers
@@ -84,7 +83,7 @@ class SimEnv():
 
             if args.save_res:
                 x, y, theta = info['robot_pos']
-                ListePosition.append(
+                self._Liste_position.append(
                     [self._i, x, (self.map_size-y), theta, info["dist_obj"], obs])
             if done:
                 break
@@ -122,7 +121,7 @@ class SimEnv():
             writer = csv.writer(file)
             writer.writerow(["steps", "x", "y", "roll",
                              "distance_to_obj", "laser"])
-            writer.writerows(ListePosition)
+            writer.writerows(self._Liste_position)
             print("\ndata saved in:", file.name)
 
 
@@ -139,7 +138,7 @@ if __name__ == "__main__":
         description='Launch fastsim simulation run.')
     parser.add_argument('--env', type=str, default="maze_hard",
                         help='choose between kitchen, maze_hard and race_track')
-    parser.add_argument('--ctr', type=str, default="braitenberg",
+    parser.add_argument('--ctr', type=str, default="novelty",
                         help='choose between forward, wall, rule, braitenberg and novelty')
     parser.add_argument('--sleep_time', type=float, default=0.0001,
                         help='sleeping time between each step')
