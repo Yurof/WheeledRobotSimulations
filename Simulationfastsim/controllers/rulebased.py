@@ -13,7 +13,7 @@ class RuleBasedController:
         _laser_range: A float indicating the range of the lasers.
     """
 
-    def __init__(self, env, laser_range=1, speed=1/(117*2), threshold=0.7, verbose=False):
+    def __init__(self, env, laser_range=1, speed=1/(117*2), threshold=1.2, verbose=False):
         """Inits RuleBasedController with the attributes values"""
         self._env = env
         self._verbose = verbose

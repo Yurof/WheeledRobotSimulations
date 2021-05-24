@@ -79,10 +79,10 @@ if __name__ == "__main__":
                 'fastsim_gen-30', 'fastsim_gen-20', 'fastsim_gen-10']
 
     scenario = 'maze_hard'
-    # ListPlot = ['braitenberg', 'rule_based']
+    ListPlot = ['braitenberg', 'rule_based']
 
     # scenario = 'kitchen'
-    # ListPlot = ['fastsim_brait_1', 'fastsim_rule_1']
+    #ListPlot = ['fastsim_braitenberg_1', 'fastsim_rule_1']
 
     config = ScenarioSpec()
     config.load(

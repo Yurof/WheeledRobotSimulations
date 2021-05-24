@@ -94,7 +94,7 @@ class SimEnv():
 
     def start(self):
         """Forward the simulation until its complete."""
-        while not self.done:
+        while not self.done and self._i < 5000:
             try:
                 command = self._controller.get_command()
                 self.obs, self.rew, self.done, self.info = self._movement(
@@ -139,13 +139,13 @@ if __name__ == "__main__":
         description='Launch fastsim simulation run.')
     parser.add_argument('--env', type=str, default="maze_hard",
                         help='choose between kitchen, maze_hard and race_track')
-    parser.add_argument('--ctr', type=str, default="novelty",
+    parser.add_argument('--ctr', type=str, default="braitenberg",
                         help='choose between forward, wall, rule, braitenberg and novelty')
     parser.add_argument('--sleep_time', type=float, default=0.0001,
                         help='sleeping time between each step')
     parser.add_argument('--display', type=bool, default=True,
                         help='True or False')
-    parser.add_argument('--save_res', type=bool, default=False,
+    parser.add_argument('--save_res', type=bool, default=True,
                         help='save the result in a csv file: True or False')
     parser.add_argument('--verbose', type=bool, default=False,
                         help='verbose for controller: True or False')
