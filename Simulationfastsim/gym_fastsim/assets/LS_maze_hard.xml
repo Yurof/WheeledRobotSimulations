@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <fastsim>
-  <display enable="true"/>
+  <display enable="false"/>
   <!-- world -->
   <map name="maze_hard.pbm" size="10"/>
   <robot x="1" y="9" theta="0" diameter="0.16525"/>

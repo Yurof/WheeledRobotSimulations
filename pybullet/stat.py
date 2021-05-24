@@ -32,6 +32,32 @@ def plot_position(name, ListeResults, startx, starty, goalx, goaly, ratio):
         plt.plot(x*nb_rapport, y*nb_rapport, label=s, alpha=0.5)
         plt.legend(loc='best')
     plt.show()
+    
+def plot_position2(name, ListeResults, startx, starty, goalx, goaly, ratio):
+    img = plt.imread(f'{base_path}/models/scenes/{name}/{name}.pbm')
+    nb_rapport = img.shape[0]/ratio
+
+    plt.imshow(np.flipud(img), origin='lower')
+    
+    df = pd.read_csv(f'{base_path}/../results/individuals/NoveltySearch/FastSim/maze_ns10-gen52-p0.csv')
+    x = df.x
+    y = df.y
+    plt.plot(x*nb_rapport, y*nb_rapport, label="FastSim", alpha=0.5)
+    print(x)
+    plt.legend(loc='best')
+
+    df = pd.read_csv(f'{base_path}/../results/individuals/NoveltySearch/PyBullet/maze_ns10-gen52-p0.csv')
+    x = df.x
+    y = df.y
+    print(x)
+    plt.plot(x*nb_rapport, y*nb_rapport, label="PyBullet", alpha=0.5)
+    
+    plt.legend(loc='best')
+    
+    plt.axis('off')
+    plt.savefig("novelty_error", bbox_inches='tight', dpi=300)
+    plt.show()
+    
 
 
 def plot_dist_to_target(name, ListeResults):
@@ -77,16 +103,19 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='Launch pybullet simulation run.')
     # "kitchen", "maze_hard", "race_track"
-    parser.add_argument('--env', type=str, default="race_track",
+    parser.add_argument('--env', type=str, default="maze_hard",
                         help='environnement')
     # "forward", "wall", "rule", "brait"
-    parser.add_argument('--listPlot', type=str, default="fastsim_brait_1 bullet_brait_1 ",
+    parser.add_argument('--listPlot', type=str, default="bullet_brait_2 bullet_brait_1 ",
                         help='listPlot')
+    parser.add_argument('--criteria', type=str,
+                        default='null', help='choose between "Fitness", "NoveltySearch", "NoveltyFitness"')
+
 
     args = parser.parse_args()
     env = args.env
     listPlot = args.listPlot.split()
-    plot_position(env, listPlot, startx=3,
-                  starty=4, goalx=2, goaly=5, ratio=20)
-
-    plot_dist_to_target(env, listPlot)
+    criteria = args.criteria
+    plot_position2(env, listPlot, startx=3,
+                starty=4, goalx=2, goaly=5, ratio=10)
+    # plot_dist_to_target(env, listPlot)

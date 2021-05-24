@@ -137,7 +137,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
         description='Launch fastsim simulation run.')
-    parser.add_argument('--env', type=str, default="race_track",
+    parser.add_argument('--env', type=str, default="maze_hard",
                         help='choose between kitchen, maze_hard and race_track')
     parser.add_argument('--ctr', type=str, default="novelty",
                         help='choose between forward, wall, rule, braitenberg and novelty')
