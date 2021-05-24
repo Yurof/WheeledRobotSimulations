@@ -8,3 +8,4 @@ pybullet/iRobot_gym.egg-info/
 .vscode/
 .vscode/settings.json
 *.pyc
+/.vscode
