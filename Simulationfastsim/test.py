@@ -5,7 +5,7 @@ import gym_fastsim
 import time
 import os
 import csv
-from controllers.follow_wall import Follow_wallController
+from controllers.follow_wall import FollowWallController
 from controllers.forward import ForwardController
 from controllers.rulebased import RuleBasedController
 from controllers.braitenberg import BraitenbergController
@@ -74,7 +74,7 @@ def save_result(name, controller):
         writer = csv.writer(file)
         print("\ndata saved as ", file)
         writer.writerow(["steps", "x", "y", "roll",
-                         "distance_to_obj", "lidar"])
+                         "distance_to_obj", "laser"])
         writer.writerows(ListePosition)
 
 

@@ -16,10 +16,10 @@ agents:
   id: A
   vehicle:
     name: iRobot
-    sensors: [ lidar]
+    sensors: [ laser]
   task:
     task_name: reward_rapprochement_goal
-    params: { time_limit: 1000.0, goal_size_detection: 0.}
+    params: { time_limit: -1, goal_size_detection: 0.}
   starting_position: [0, 5, 0.0]
   starting_orientation: [ 0.0, 0.0, 0]
  

@@ -10,15 +10,15 @@ world:
     following_camera : False
   goal:
     goal_position: [2,6,0]
-    goal_size : 0.2
+    goal_size : 0.5
 
 agents:
   id: A
   vehicle:
     name: iRobot
-    sensors: [ lidar]
+    sensors: [ laser]
   task:
     task_name: reward_rapprochement_goal
-    params: { time_limit: -1, goal_size_detection: 0.2}
+    params: { time_limit: -1, goal_size_detection: 0.5}
   starting_position: [3, 4, 0.5]
   starting_orientation: [ 0.0, 0.0, 0]

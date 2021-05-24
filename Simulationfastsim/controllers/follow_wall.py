@@ -1,7 +1,7 @@
 from .forward import ForwardController
 
 
-class Follow_wallController:
+class FollowWallController:
 
     """
 
@@ -180,7 +180,6 @@ class Follow_wallController:
         if (c == self.right and self.old_c == self.left) or \
                 (c == self.left and self.old_c == self.right):
             c = self.old_c
-        
 
         self.old_c = c
 

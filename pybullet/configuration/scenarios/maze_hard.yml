@@ -16,7 +16,7 @@ agents:
   id: A
   vehicle:
     name: iRobot
-    sensors: [ lidar]
+    sensors: [laser]
   task:
     task_name: reward_rapprochement_goal
     params: { time_limit: -1.0, goal_size_detection: 0.2}

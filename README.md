@@ -16,9 +16,9 @@ Run `install-dependencies.sh` to install the necessary libraries:
 
 | Image                                      | 3D Render                                      | Name           |
 | ------------------------------------------ | ---------------------------------------------- | -------------- |
-| ![kitchen](readme_assets/kitchen.svg)      | ![kitchen3D](readme_assets/kitchen3D.png)      | `Kitchen-v0`   |
-| ![maze_hard](readme_assets/maze_hard.svg)  | ![maze_hard3D](readme_assets/maze_hard3D.png)  | `Maze_hard-v0` |
-| ![maze_hard](readme_assets/race_track.svg) | ![maze_hard3D](readme_assets/race_track3D.png) | `Maze_hard-v0` |
+| ![kitchen](assets/readme/kitchen.svg)      | ![kitchen3D](assets/readme/kitchen3D.png)      | `Kitchen-v0`   |
+| ![maze_hard](assets/readme/maze_hard.svg)  | ![maze_hard3D](assets/readme/maze_hard3D.png)  | `Maze_hard-v0` |
+| ![maze_hard](assets/readme/race_track.svg) | ![maze_hard3D](assets/readme/race_track3D.png) | `Maze_hard-v0` |
 
 ```console
 blender --background --python pbm_to_obj.py
@@ -28,7 +28,7 @@ in the blender folder to convert an pbm image to a 3D object using Blender and P
 
 ## Robot
 
-<img src="readme_assets/irobot.png" width="300">
+<img src="assets/readme/irobot.png" width="300">
 
 We have modified a model of the iRobot create.
 
@@ -66,7 +66,7 @@ each scene is configured in a yml file with its name in the "scenarios" folder l
 world:
   name: race_track
   sdf: race_track.urdf
-  scale: 20
+  scale: 20 #size of the map in meter
   physics:
     gravity: -9.81
   simulation:
@@ -74,24 +74,19 @@ world:
     GUI: True
     following_camera: False
   goal:
-    goal_position: [2, 5, 0]
-    goal_size: 0.2
+    goal_position: [2, 5, 0] #x,y,z
+    goal_size: 0.2 #diameter of the cylinder
 
 agents:
   id: A
   vehicle:
     name: iRobot
-    sensors: [lidar]
+    sensors: [laser]
   task:
-    task_name: maximize_progress
-    params:
-      {
-        time_limit: 1000.0,
-        terminate_on_collision: False,
-        goal_size_detection: 0.2,
-      }
-  starting_position: [3, 4, 0]
-  starting_orientation: [0.0, 0.0, 0]
+    task_name: maximize_progress #type of reward function
+    params: { time_limit: 1000.0, goal_size_detection: 0.2 }
+  starting_position: [3, 4, 0] #x,y,z
+  starting_orientation: [0, 0, 0] #roll,pitch yaw
 ```
 
 And for the configuration of the robot:
@@ -103,49 +98,19 @@ actuators:
   - type: motor
     name: motor
     params:
-      velocity_multiplier: 16.5 #0.5m/s
+      velocity_multiplier: 16.5 # 0.5m/s
       max_force: 20
 
 sensors:
   - type: lidar
     name: lidar
-    frequency: 25
+    frequency: 100
     params:
-      accuracy: 0.00
-      rays: 10
-      range: 1
-      min_range: 0
-      angle_start: -90
+      inaccuracy: 0.00
+      rays: 10 # number of lasers
+      range: 1 # range in meter
+      min_range: 0 # laser start offset
+      angle_start: -90 # degree
       angle: 180
-      debug: True
+      debug: True # visible laser of not
 ```
-
-## Example
-
-```
-python simple_usage.py
-```
-
-```python
-import gym
-from time import sleep
-from iRobot_gym.envs import SimpleNavEnv
-
-env = gym.make('Kitchen_Gui-v0')
-
-done = False
-obs = env.reset()
-t = 0
-
-while not done:
-    action = env.action_space.sample()
-    obs, rewards, done, states = env.step(action)
-    sleep(0.01)
-    print("Step  %d reward=%f robot position=%s dist_obj=%f" % (t,rewards,  str(states["pose"][0:3]) ,states["dist_obj"] ) , end="\r" )
-    image = env.render()
-    t+=1
-
-env.close()
-```
-
-![pybullet_._gif](readme_assets/pybullet.gif)

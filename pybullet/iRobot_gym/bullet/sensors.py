@@ -79,10 +79,10 @@ class FixedTimestepSensor(BulletSensor[T], ABC):
         self._sensor.reset(body_id=body_id, joint_index=joint_index)
 
 
-class Lidar(BulletSensor[NDArray[(Any,), np.float]]):
+class Laser(BulletSensor[NDArray[(Any,), np.float]]):
     @dataclass
     class Config:
-        accuracy: float
+        inaccuracy: float
         rays: int
         range: float
         angle_start: float
@@ -143,7 +143,7 @@ class Lidar(BulletSensor[NDArray[(Any,), np.float]]):
             :, 2].astype(dtype=np.float)
         ranges = self._config.range * hit_fractions + self._config.min_range
         noise = np.random.uniform(
-            1.0 - self._config.accuracy, 1.0 + self._config.accuracy, size=ranges.shape)
+            1.0 - self._config.inaccuracy, 1.0 + self._config.inaccuracy, size=ranges.shape)
         scan = np.clip(ranges * noise, a_min=self._config.min_range,
                        a_max=self._config.range)
         # print("noise", noise)

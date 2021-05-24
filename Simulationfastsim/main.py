@@ -4,116 +4,133 @@ import gym
 import gym_fastsim
 import time
 import os
+import sys
 import csv
 import argparse
-import pickle
-from controllers.follow_wall import Follow_wallController
+from controllers.follow_wall import FollowWallController
 from controllers.forward import ForwardController
 from controllers.rulebased import RuleBasedController
 from controllers.braitenberg import BraitenbergController
 from controllers.novelty_ctr import NoveltyController
-# from controllers.novelty.nsga2 import *
 
 ListePosition = []
 
 
 class SimEnv():
+    """This is the main class that runs the fastsim simulation daccording to the arguments.
 
-    def __init__(self, env, ctr, file_name, sleep_time, display):
-        if env == "kitchen":
-            self.env = gym.make("kitchen-v1")
-        elif env == "maze_hard":
-            self.env = gym.make("maze-v0")
-        elif env == "race_track":
-            self.env = gym.make("race_track-v0")
-        self.env.reset()
-        self.sleep_time = sleep_time
-        self.display = display
-        self.map_size = self.env.get_map_size()
+    Attributes:
+        _env: The actual environnment.
+        _sleep_time: float, representing the sleep time between each step.
+        _ctr: string, the name of the controller.
+        _verbose: bool, activate verbose or not.
+        _i: int, iterator for steps.
+        _liste_position: list of tuples, values to save in the csv file.
+    """
 
-        self.obs, self.rew, self.done, self.info = self.env.step([0, 0])
+    def __init__(self):
+        if args.env == "kitchen":
+            self._env = gym.make("kitchen-v1")
+        elif args.env == "maze_hard":
+            self._env = gym.make("maze-v0")
+        elif args.env == "race_track":
+            self._env = gym.make("race_track-v0")
+        self._env.reset()
+        self._sleep_time = args.sleep_time
+        self._verbose = args.verbose
+        self._display = args.display
+        self._i = 0
+        self._ctr = args.ctr
+        self.map_size = self._env.get_map_size()
+
+        self.obs, self.rew, self.done, self.info = self._env.step([0, 0])
 
         # initialize controllers
-        if ctr == "forward":
-            self.controller = ForwardController(self.env, verbose=False)
-        elif ctr == "wall":
-            self.controller = Follow_wallController(self.env, verbose=False)
-        elif ctr == "rule":
-            self.controller = RuleBasedController(self.env, verbose=False)
-        elif ctr == "brait":
-            self.controller = BraitenbergController(self.env, verbose=False)
-        elif ctr == "novelty":
-            self.controller = NoveltyController(self.env, file_name)
+        if self._ctr == "forward":
+            self._controller = ForwardController(
+                self._env, verbose=self._verbose)
+        elif self._ctr == "wall":
+            self._controller = FollowWallController(
+                self._env, verbose=self._verbose)
+        elif self._ctr == "rule":
+            self._controller = RuleBasedController(
+                self._env, verbose=self._verbose)
+        elif self._ctr == "braitenberg":
+            self._controller = BraitenbergController(
+                self._env, verbose=self._verbose)
+        elif self._ctr == "novelty":
+            self._controller = NoveltyController(
+                self._env, args.file_name, verbose=self._verbose)
+        else:
+            print("\nNo controller named", self._ctr)
+            sys.exit()
 
-        if(self.display):
-            self.env.enable_display()
+        if(self._display):
+            self._env.enable_display()
 
-    def mouvement(self, c, n=1):
-        for _ in range(n):
-            obs, rew, done, info = self.env.step(c)
+    def _movement(self, action, nbr=1):
+        for _ in range(nbr):
+            obs, rew, done, info = self._env.step(action)
             #print("Valeur de obs :" + str(obs))
             #print("Valeur de rew :" + str(rew))
             #print("Valeur de done :" + str(done))
             #print("Valeur de info :" + str(info))
-            if(self.display):
-                time.sleep(self.sleep_time)
-            if self.done:
+
+            print(self._i, end='\r')
+            self._i += 1
+
+            if(self._display):
+                time.sleep(self._sleep_time)
+
+            if args.save_res:
+                x, y, theta = info['robot_pos']
+                ListePosition.append(
+                    [self._i, x, (self.map_size-y), theta, info["dist_obj"], obs])
+            if done:
                 break
-            self.env.render()
+            self._env.render()
 
         return obs, rew, done, info
 
     def start(self):
-        # start timers
-        then = time.time()
-        self.i = 0
-
+        """Forward the simulation until its complete."""
         while not self.done:
             try:
-                command = self.controller.get_command()
-                self.obs, self.rew, self.done, self.info = self.mouvement(
+                command = self._controller.get_command()
+                self.obs, self.rew, self.done, self.info = self._movement(
                     command)
-                x, y, theta = self.info['robot_pos']
-                ListePosition.append(
-                    [self.i, x, (self.map_size-y), theta, self.info["dist_obj"], self.obs])
-                self.controller.reset()
-                self.i += 1
+                self._controller.reset()
+
             except KeyboardInterrupt:
-                print('All done')
+                print(' The simulation was forcibly stopped.')
                 break
-        now = time.time()
-        print("%d timesteps took %f seconds" % (self.i, now - then))
-        self.env.close()
+
+        print("Number of steps:", self._i)
+        self._env.close()
+
+    def save_result(self):
+        """Save the simulation data in a csv file in the folder
+        corresponding to the controller and name it accordingly.
+        """
+        base_path = os.path.dirname(os.path.abspath(__file__))
+        path = f'{base_path}/../results/{args.env}/fastsim_{args.ctr}_'
+        i = 1
+        if os.path.exists(path+str(i)+".csv"):
+            while os.path.exists(path+str(i)+".csv"):
+                i += 1
+        with open(path+str(i)+".csv", 'w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(["steps", "x", "y", "roll",
+                             "distance_to_obj", "laser"])
+            writer.writerows(ListePosition)
+            print("\ndata saved in:", file.name)
 
 
-def save_result(map_name, controller):
-    base_path = os.path.dirname(os.path.abspath(__file__))
-    path = f'{base_path}/../results/{map_name}/fastsim_{controller}_'
-    i = 1
-    if os.path.exists(path+str(i)+".csv"):
-        while os.path.exists(path+str(i)+".csv"):
-            i += 1
-    with open(path+str(i)+".csv", 'w', newline='') as file:
-        writer = csv.writer(file)
-        print("\ndata saved as ", file)
-        writer.writerow(["steps", "x", "y", "roll",
-                         "distance_to_obj", "lidar"])
-        writer.writerows(ListePosition)
-
-
-def save_result_as(map_name, name):
-    base_path = os.path.dirname(os.path.abspath(__file__))
-    path = f'{base_path}/../results/{map_name}/fastsim_{name}_'
-    i = 1
-    if os.path.exists(path+str(i)+".csv"):
-        while os.path.exists(path+str(i)+".csv"):
-            i += 1
-    with open(path+str(i)+".csv", 'w', newline='') as file:
-        writer = csv.writer(file)
-        print("\ndata saved as ", file)
-        writer.writerow(["steps", "x", "y", "roll",
-                         "distance_to_obj", "lidar"])
-        writer.writerows(ListePosition)
+def main():
+    sim_env = SimEnv()
+    sim_env.start()
+    if args.save_res:
+        sim_env.save_result()
 
 
 if __name__ == "__main__":
@@ -122,24 +139,17 @@ if __name__ == "__main__":
         description='Launch fastsim simulation run.')
     parser.add_argument('--env', type=str, default="race_track",
                         help='choose between kitchen, maze_hard and race_track')
-    # "forward", "wall", "rule", "brait", "novelty
-    parser.add_argument('--ctr', type=str, default="forward",
-                        help='choose between forward, wall, rule, brait and novelty')
-    parser.add_argument('--sleep_time', type=int, default=1,
+    parser.add_argument('--ctr', type=str, default="novelty",
+                        help='choose between forward, wall, rule, braitenberg and novelty')
+    parser.add_argument('--sleep_time', type=float, default=0.0001,
                         help='sleeping time between each step')
     parser.add_argument('--display', type=bool, default=True,
                         help='True or False')
+    parser.add_argument('--save_res', type=bool, default=False,
+                        help='save the result in a csv file: True or False')
+    parser.add_argument('--verbose', type=bool, default=False,
+                        help='verbose for controller: True or False')
     parser.add_argument('--file_name', type=str,
-                        default='NoveltyFitness/3/maze_nsfit3-gen59-p0', help='file name for')
-
+                        default='NoveltyFitness/9/maze_nsfit9-gen38-p0', help='file name of the invidual to load if ctr=novelty')
     args = parser.parse_args()
-    env = args.env
-    ctr = args.ctr
-    file_name = args.file_name
-    sleep_time = args.sleep_time
-    display = args.display
-
-    simEnv = SimEnv(env, ctr, file_name, sleep_time, display)
-    simEnv.start()
-    #save_result_as("race_track", "braitenberg")
-    save_result(env, ctr)
+    main()

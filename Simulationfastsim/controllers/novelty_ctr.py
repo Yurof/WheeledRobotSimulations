@@ -1,22 +1,28 @@
-from controllers.novelty.fixed_structure_nn_numpy import SimpleNeuralControllerNumpy
-# from controllers.novelty.nsga2 import *
+"""The controller that load an individual class."""
+
 import os
 import pickle
-from deap import *
 import array
-from deap import algorithms
 from deap import base
-from deap import benchmarks
 from deap import creator
-from deap import tools
+from controllers.novelty.fixed_structure_nn_numpy import SimpleNeuralControllerNumpy
 
 
 class NoveltyController:
+    """The controller load a generated individual then use the SimpleNeuralController
+    to take the next action.
 
-    def __init__(self, env, file, test=False):
+    Attributes:
+        _env: The actual environnment.
+        _nn: the neural controller
+    """
 
-        self.env = env
-        self.nn = SimpleNeuralControllerNumpy(*[10, 2, 2, 10])
+    def __init__(self, env, file, verbose=False, v_max=117):
+        """Inits NoveltyController with the attributes values and load the file"""
+        self._env = env
+        self._verbose = verbose
+        self._v_max = v_max
+        self._nn = SimpleNeuralControllerNumpy(*[10, 2, 2, 10])
         base_path = os.path.dirname(os.path.abspath(__file__))
 
         creator.create("MyFitness", base.Fitness, weights=(-1.0,))
@@ -25,15 +31,19 @@ class NoveltyController:
         creator.create("Strategy", array.array, typecode="d")
 
         f = open(f"{base_path}/../../results/individuals/{file}.pkl", "rb")
-        indmin = pickle.load(f)
-
-        self.nn.set_parameters(indmin)
+        self._nn.set_parameters(pickle.load(f))
 
     def get_command(self):
+        """Calculates the futur action of the robot.
 
-        sensors = self.env.get_laserranges()
-        action = self.nn.predict(sensors)
-        return action/117
+        Returns:
+            [left, right]: the action for the left and right wheel.
+        """
+        action = self._nn.predict(self._env.get_laserranges())/self._v_max
+        if self._verbose:
+            print(action)
+
+        return action
 
     def reset(self):
         pass

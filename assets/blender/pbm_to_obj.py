@@ -1,6 +1,6 @@
+import os
 import bpy
 import bmesh
-import os
 
 
 def curve_to_mesh(context, curve):
@@ -21,14 +21,10 @@ def curve_to_mesh(context, curve):
 
 bpy.ops.object.select_all(action='SELECT')
 
-# delete all objects
 bpy.ops.object.delete()
 
 path_to_obj_dir = os.path.dirname(os.path.abspath(__file__))
-# file_list = sorted(os.listdir(path_to_obj_dir))
-# svg_list = [item for item in file_list if item.endswith('.svg')]
 
-print("here ", os.path.dirname(os.path.abspath(__file__)))
 file_list = sorted(os.listdir())
 pbm_list = [item for item in file_list if item.endswith('.pbm')]
 

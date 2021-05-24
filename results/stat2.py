@@ -29,7 +29,7 @@ def plot_position(name, ListeResults, startx, starty, goalx, goaly, goalsize, ra
         plt.plot(x*nb_rapport, y*nb_rapport, label=s, alpha=0.5)
         plt.legend(loc='best')
         plt.axis('off')
-    plt.savefig("controllers_kitchen.png", bbox_inches='tight', dpi=300)
+    plt.savefig("a.png", bbox_inches='tight', dpi=300)
     plt.show()
 
 
@@ -61,6 +61,7 @@ def plot_dist_to_target(name, ListeResults):
     plt.legend(loc='best')
     plt.xlabel("step")
     plt.ylabel("distance to objectif")
+    plt.savefig("b.png", bbox_inches='tight', dpi=300)
     plt.show()
 
 
@@ -69,9 +70,15 @@ if __name__ == "__main__":
 
     scenario = 'race_track'
     #ListPlot = ['braitenberg', 'rule_based']
-    ListPlot = ['fastsim_forward_1']
+    # ListPlot = ['fastsim_forward_1']
+    ListPlot = ['fastsim', 'bullet 100%', 'bullet 99%']
+    ListPlot = ['fastsim_gen-38',  # 'fastsim_gen-150_', 'fastsim_gen-140_',
+                # 'fastsim_gen-130_', 'fastsim_gen-120_', 'fastsim_gen-110_',
+                # 'fastsim_gen-100_',  'fastsim_gen-90_', 'fastsim_gen-80_',
+                # 'fastsim_gen-70_', 'fastsim_gen-60_', 'fastsim_gen-50_','fastsim_gen-40_',
+                'fastsim_gen-30', 'fastsim_gen-20', 'fastsim_gen-10']
 
-    # scenario = 'maze_hard'
+    scenario = 'maze_hard'
     # ListPlot = ['braitenberg', 'rule_based']
 
     # scenario = 'kitchen'

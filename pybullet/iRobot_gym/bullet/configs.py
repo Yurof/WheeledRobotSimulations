@@ -1,4 +1,4 @@
-""" Declare type of informations on the .yml files"""
+""" Declare the type of informations on the .yml files"""
 
 from dataclasses import dataclass, field
 from typing import List, Dict, Any

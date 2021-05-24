@@ -8,14 +8,14 @@ actuators:
       max_force: 20
 
 sensors:
-  - type: lidar
-    name: lidar
+  - type: laser
+    name: laser
     frequency: 100
     params:
-      accuracy: 0.01 
-      rays: 10 
-      range: 1
-      min_range: 0
+      inaccuracy: 0.00
+      rays: 10 #number of lasers
+      range: 1  #range of the lasers
+      min_range: 0 
       angle_start: -90 # degree
       angle: 180 #degree
       visible: True 

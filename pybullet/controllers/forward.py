@@ -1,5 +1,5 @@
+"""The Forward controller class."""
 import random
-from numpy import array
 
 
 class ForwardController:

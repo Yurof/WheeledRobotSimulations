@@ -2,11 +2,10 @@
 import os
 from dataclasses import dataclass
 from typing import Any
-import gym
 
 from iRobot_gym.bullet.actuators import Motor
 from iRobot_gym.bullet.configs import VehicleConfig, ScenarioSpec, WorldSpec, VehicleSpec
-from iRobot_gym.bullet.sensors import Lidar, FixedTimestepSensor
+from iRobot_gym.bullet.sensors import Laser, FixedTimestepSensor
 from iRobot_gym.bullet.vehicle import IRobot
 from iRobot_gym.bullet.world import World
 
@@ -48,14 +47,6 @@ class Agent:
     def vehicle_id(self) -> Any:
         return self._vehicle.id
 
-    @property
-    def action_space(self) -> gym.Space:
-        return self._vehicle.action_space
-
-    @property
-    def observation_space(self) -> gym.Space:
-        return self._vehicle.observation_space
-
     def step(self, action):
         observation = self._vehicle.observe()
         self._vehicle.control(action)
@@ -84,7 +75,7 @@ def load_vehicle(spec: VehicleSpec):
             f'Sensors {requested_sensors - available_sensors} not available.')
     sensors = list(
         filter(lambda s: s.name in requested_sensors, config.sensors))
-    sensors = [FixedTimestepSensor(sensor=Lidar(name=c.name, type=c.type, config=Lidar.Config(**c.params)), frequency=c.frequency, time_step=0.01) for c in
+    sensors = [FixedTimestepSensor(sensor=Laser(name=c.name, type=c.type, config=Laser.Config(**c.params)), frequency=c.frequency, time_step=0.01) for c in
                sensors]
     actuators = [Motor(name=c.name, config=Motor.Config(**c.params))
                  for c in config.actuators]
@@ -98,7 +89,6 @@ def load_world(spec: WorldSpec, agents):
     config = ScenarioSpec()
     config.load(config_file_path)
 
-    #spec.simulation.rendering = spec.rendering
     sdf_path = f'{base_path}/../../models/scenes/{spec.name}/{spec.sdf}'
 
     world_config = World.Config(
@@ -119,7 +109,7 @@ class SimpleNavScenario:
     agent: Agent
 
     @staticmethod
-    def from_spec(path: str, rendering: bool = False) -> 'SimpleNavScenario':
+    def from_spec(path, rendering=False):
         spec = ScenarioSpec()
         spec.load(path)
         if rendering:

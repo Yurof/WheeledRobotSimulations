@@ -1,11 +1,18 @@
-""" calculate the position and velocity of the robot, 
+""" calculate the position and velocity of the robot,
 Also the camera that follow the agent (enable in config file)"""
 
 import numpy as np
 import pybullet
 
 
-def get_velocity(id: int):
+def get_velocity(id):
+    """Ask PyBullet the velocity of the agent.
+
+    Args:
+        id: id of the agent.
+    Return:
+        [x, y, z, roll, pitch, yaw]
+    """
     linear, angular = pybullet.getBaseVelocity(id)
     _, orientation = pybullet.getBasePositionAndOrientation(id)
     rotation = pybullet.getMatrixFromQuaternion(orientation)
@@ -15,7 +22,14 @@ def get_velocity(id: int):
     return np.append(linear, angular)
 
 
-def get_pose(id: int):
+def get_pose(id):
+    """Ask PyBullet the position of the agent.
+
+    Args:
+        id: id of the agent.
+    Return:
+        [x, y, z, roll, pitch, yaw]
+    """
     position, orientation = pybullet.getBasePositionAndOrientation(id)
     if any(np.isnan(position)) or any(np.isnan(orientation)):
         return None
@@ -25,6 +39,8 @@ def get_pose(id: int):
 
 
 def follow_agent(agent, width=640, height=480):
+    """The camera that follow the agent.
+    """
     position, orientation = pybullet.getBasePositionAndOrientation(
         agent.vehicle_id)
     _, _, yaw = pybullet.getEulerFromQuaternion(orientation)
@@ -45,7 +61,6 @@ def follow_agent(agent, width=640, height=480):
         nearVal=0.1,
         farVal=5.0
     )
-
     _, _, rgb_image, _, _ = pybullet.getCameraImage(
         width=width,
         height=height,
