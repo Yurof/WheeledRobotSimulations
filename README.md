@@ -16,9 +16,9 @@ Run `install-dependencies.sh` to install the necessary libraries:
 
 | Image                                      | 3D Render                                      | Name           |
 | ------------------------------------------ | ---------------------------------------------- | -------------- |
-| ![kitchen](assets/readme/kitchen.svg)      | ![kitchen3D](assets/readme/kitchen3D.png)      | `Kitchen-v0`   |
-| ![maze_hard](assets/readme/maze_hard.svg)  | ![maze_hard3D](assets/readme/maze_hard3D.png)  | `Maze_hard-v0` |
-| ![maze_hard](assets/readme/race_track.svg) | ![maze_hard3D](assets/readme/race_track3D.png) | `Maze_hard-v0` |
+| ![kitchen](assets/readme/kitchen.svg)      | ![kitchen3D](assets/readme/kitchen3D.png)      | `kitchen-v0`   |
+| ![maze_hard](assets/readme/maze_hard.svg)  | ![maze_hard3D](assets/readme/maze_hard3D.png)  | `maze_hard-v0` |
+| ![maze_hard](assets/readme/race_track.svg) | ![maze_hard3D](assets/readme/race_track3D.png) | `race_track-v0` |
 
 ```console
 blender --background --python pbm_to_obj.py
