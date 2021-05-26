@@ -1,9 +1,10 @@
 # Prandroide
 
 Learning and generalization on a navigation task of a wheeled robot
-![pybullet_._gif](assets/readme/pybullet2.gif)
 
-# installation
+<div style="text-align:center"><img src="assets/readme/pybullet2.gif" width="400" height="400"/></div>
+
+## installation
 
 Run `install-dependencies.sh` to install the necessary libraries:
 
@@ -32,7 +33,7 @@ in the blender folder to convert an pbm image to a 3D object using Blender and P
 
 ## Robot
 
-<img src="assets/readme/irobot_create.png" width="300">
+<div style="text-align:center"><img src="assets/readme/irobot_create.png" width="300"></div>
 
 We have modified a model of the iRobot create.
 
