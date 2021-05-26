@@ -1,7 +1,10 @@
 # Prandroide
 
-Learning and generalization on a navigation task of a wheeled robot
+Learning and generalization on a navigation task of a wheeled robot.
 
+The objective of this project is to develop several simulation environments  for wheeled robots based on existing simulation libraries. The aim is to highlight the problems of transferring learned policies between different simulators. The first simulation environment will be based on the fast simulation library libfastsim. The second environment will be more realistic and will be based on the pybullet library.
+
+## demonstration
 <div style="text-align:center"><img src="assets/readme/pybullet2.gif" width="400" height="400"/></div>
 
 ## installation
