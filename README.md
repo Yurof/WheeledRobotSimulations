@@ -11,6 +11,9 @@ Run `install-dependencies.sh` to install the necessary libraries:
 - pybind11
 - pyfastsim
 - pybullet-gym
+- deap
+
+boost and dsl 1.2 may be necessary for libfastsim
 
 ## Scenes
 
@@ -111,3 +114,5 @@ sensors:
 ```
 ## Run
 In the `pybullet` and `Simulationfastsim` folder we have a `main.py` file used to run each simulations.
+
+![pybullet_._gif](assets/readme/pybullet.gif)
