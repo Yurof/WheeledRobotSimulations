@@ -10,6 +10,8 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
+
+
 BASE_DIR="${PWD}"
 
 # Create dir
@@ -17,15 +19,22 @@ mkdir -p "${BASE_DIR}/src"
 
 echo
 echo "====================================="
-echo "===== (1/6) Installing gym ====="
+echo "===== (1/7) Installing gym ====="
 echo "====================================="
 echo
 pip3 install gym
 
+echo
+echo "====================================="
+echo "===== (2/7) Installing deap ====="
+echo "====================================="
+echo
+pip3 install deap
+
 # 1) Install pybind11
 echo
 echo "====================================="
-echo "===== (2/6) Installing pybind11 ====="
+echo "===== (3/7) Installing pybind11 ====="
 echo "====================================="
 echo
 
@@ -46,7 +55,7 @@ PYBIND11_DIR="${BASE_DIR}/src/pybind11"
 # 2) Install and patch fastsim
 echo
 echo "===================================================="
-echo "===== (3/6) Patching and installing libfastsim ====="
+echo "===== (4/7) Patching and installing libfastsim ====="
 echo "===================================================="
 echo
 cd "${BASE_DIR}/src"
@@ -79,7 +88,7 @@ FASTSIM_DIR="${BASE_DIR}/src/libfastsim/install"
 # 3) Install pyfastsim
 echo
 echo "======================================"
-echo "===== (4/6) Installing pyfastsim ====="
+echo "===== (5/7) Installing pyfastsim ====="
 echo "======================================"
 echo
 cd "${BASE_DIR}/src/pyfastsim"
@@ -88,7 +97,7 @@ CPPFLAGS="-I\"${PYBIND11_DIR}/include\" -I\"${FASTSIM_DIR}/include\"" LDFLAGS="-
 # 1) Install fastsim_gym
 echo
 echo "====================================="
-echo "===== (5/6) Installing fastsim_gym ====="
+echo "===== (6/7) Installing fastsim_gym ====="
 echo "====================================="
 echo
 cd "${BASE_DIR}/Simulationfastsim"
@@ -98,7 +107,7 @@ pip3 install .
 cd "${BASE_DIR}/src"
 echo
 echo "======================================"
-echo "===== (6/6) Installing pybullet-gym ====="
+echo "===== (7/7) Installing pybullet-gym ====="
 echo "======================================"
 echo
 if [ ! -d "pybullet-gym" ] ; then
