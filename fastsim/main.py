@@ -139,8 +139,8 @@ if __name__ == "__main__":
     parser.add_argument('--env', type=str, default="maze_hard",
                         help='choose between kitchen, maze_hard and race_track')
     parser.add_argument('--ctr', type=str, default="novelty",
-                        help='choose between forward, wall, rule, braitenberg and novelty')
-    parser.add_argument('--sleep_time', type=float, default=0.0001,
+                        help='choose between wall, rule, braitenberg and novelty')
+    parser.add_argument('--sleep_time', type=float, default=0.00,
                         help='sleeping time between each step')
     parser.add_argument('--display', type=bool, default=True,
                         help='True or False')

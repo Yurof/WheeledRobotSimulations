@@ -1,8 +1,9 @@
 # Prandroide
 
 Learning and generalization on a navigation task of a wheeled robot
+![pybullet_._gif](assets/readme/pybullet2.gif)
 
-## installation
+# installation
 
 Run `install-dependencies.sh` to install the necessary libraries:
 
@@ -17,10 +18,10 @@ boost and SDL 1.2 may be necessary for libfastsim.
 
 ## Scenes
 
-| Image                                      | 3D Render                                      | Name           |
-| ------------------------------------------ | ---------------------------------------------- | -------------- |
-| ![kitchen](assets/readme/kitchen.svg)      | ![kitchen3D](assets/readme/kitchen3D.png)      | `kitchen-v0`   |
-| ![maze_hard](assets/readme/maze_hard.svg)  | ![maze_hard3D](assets/readme/maze_hard3D.png)  | `maze_hard-v0` |
+| Image                                      | 3D Render                                      | Name            |
+| ------------------------------------------ | ---------------------------------------------- | --------------- |
+| ![kitchen](assets/readme/kitchen.svg)      | ![kitchen3D](assets/readme/kitchen3D.png)      | `kitchen-v0`    |
+| ![maze_hard](assets/readme/maze_hard.svg)  | ![maze_hard3D](assets/readme/maze_hard3D.png)  | `maze_hard-v0`  |
 | ![maze_hard](assets/readme/race_track.svg) | ![maze_hard3D](assets/readme/race_track3D.png) | `race_track-v0` |
 
 ```console
@@ -31,7 +32,7 @@ in the blender folder to convert an pbm image to a 3D object using Blender and P
 
 ## Robot
 
-<img src="assets/readme/irobot.png" width="300">
+<img src="assets/readme/irobot_create.png" width="300">
 
 We have modified a model of the iRobot create.
 
@@ -41,7 +42,6 @@ We have modified a model of the iRobot create.
 
 documentation can be found here : https://github.com/jbmouret/libfastsim
 and here for the python binding : https://github.com/alexendy/pyfastsim
-
 
 # Pybullet
 
@@ -53,8 +53,6 @@ You can install `irobot_gym` with the following commands:
 cd pybullet
 pip install -e .
 ```
-
-## Environments
 
 ### Configuration
 
@@ -112,7 +110,37 @@ sensors:
       angle: 180
       debug: True # visible laser of not
 ```
-## Run
-In the `pybullet` and `Simulationfastsim` folder we have a `main.py` file used to run each simulations.
 
-![pybullet_._gif](assets/readme/pybullet2.gif)
+# Run
+
+In the `pybullet` and `fastsim` folder we have a `main.py` file used to run each simulation.
+Witch take for arguments:
+
+- `--env` : environnement: `kitchen`, `maze_hard`, `race_track`.
+- `--ctr` : choose controller: `forward`, `wall`, `rule`, `braitenberg`, `novelty`.
+- `--sleep_time` : sleeping time between each step.
+- `--save_res` : save the result in a csv file: True or False.
+- `--verbose` : verbose for the controller: True or False.
+- `--file_name` : file name of the invidual to load if `--ctr`=`novelty`.
+
+# Gym
+
+`step` : [v1,v2] to move the left and right whell.
+
+`observation` : a list giving the value of each laser.
+
+`info` :
+| info['s'] | description | return |
+|--------------|----------------------------|-----------------------------|
+| pose | position of the robot | [x, y, z, roll, pitch, yaw] |
+| acceleration | acceleration of the robot | [x, y, z, roll, pitch, yaw] |
+| velocity | velocity of the robot | [x, y, z, roll, pitch, yaw] |
+| dist_obj | distance to the objectif | a float |
+| time | simulation time | a float |
+
+`reward`, we have different reward functions that can be changed:
+
+- `reward_binary_goal_based`: a reward of 1 is given when you get close enough to the goal.
+- `reward_displacement` : the reward corresponds to the distance from the previous position.
+- `reward_rapprochement_goal` : the reward corresponds to the distance to the goal.
+- `no_reward`: no reward.

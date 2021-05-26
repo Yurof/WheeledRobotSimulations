@@ -122,7 +122,7 @@ if __name__ == "__main__":
     parser.add_argument('--env', type=str, default="maze_hard",
                         help='environnement: kitchen, maze_hard, race_track')
     parser.add_argument('--ctr', type=str, default="novelty",
-                        help='controller: forward, wall, rule, braitenberg, novelty')
+                        help='controller: wall, rule, braitenberg, novelty')
     parser.add_argument('--sleep_time', type=float, default=0.001,
                         help='sleeping time between each step')
     parser.add_argument('--save_res', type=bool, default=False,
